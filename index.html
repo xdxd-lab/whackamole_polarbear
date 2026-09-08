@@ -1,1 +1,37 @@
-<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>雪地敲敲樂 v15</title><script>location.replace('whack_a_mole_20260909v15.html')</script><p><a href="whack_a_mole_20260909v15.html">開啟雪地敲敲樂 v15</a></p>
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#7BC96F" />
+<title>打企鵝・北極狐｜離線版 2026-09-09 v15</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="cloud"></div><div class="cloud two"></div>
+<div class="snow-layer snow-back" aria-hidden="true"></div>
+<div class="snow-layer snow-mid" aria-hidden="true"></div>
+<div class="snow-layer snow-front" aria-hidden="true"></div>
+<main class="game" aria-label="打企鵝與北極狐遊戲">
+  <section class="top">
+    <div class="brand"><h1>🔨 雪地敲敲樂</h1><p>打企鵝、打北極狐；小心別敲到北極熊！</p></div>
+    <div class="scoreboard" aria-live="polite">
+      <div class="stat"><div class="label">分數</div><div class="value" id="score">0</div></div>
+      <div class="stat"><div class="label">連擊</div><div class="value" id="combo">0</div></div>
+      <div class="stat"><div class="label">時間</div><div class="value hot" id="time">30</div></div>
+    </div>
+  </section>
+  <section class="card" style="position:relative">
+    <div class="board" id="board" aria-label="遊戲區"></div>
+    <div class="overlay show" id="overlay"><div class="modal">
+      <h2 id="modalTitle">準備好了嗎？</h2><div class="bigscore" id="finalScore" hidden>0</div>
+      <p id="modalText">企鵝 <b>+1</b>、北極狐 <b>+3</b>，誤敲北極熊會 <b>-2</b> 並中斷連擊。</p>
+      <button class="btn primary" id="modalBtn" style="width:100%">開始遊戲</button>
+      <p class="tiny">支援手機觸控、滑鼠；最高分會儲存在這台裝置。</p>
+    </div></div>
+  </section>
+  <div class="progress" aria-hidden="true"><div class="bar" id="bar"></div></div>
+  <section class="controls"><button class="btn primary" id="startBtn">開始 / 重新開始</button><select id="difficulty" aria-label="難度"><option value="easy">悠閒</option><option value="normal" selected>普通</option><option value="hard">高手</option></select><button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button></section>
+  <div class="tiny" style="text-align:center">最高分：<b id="best">0</b> · 版本 2026-09-09 v15 · GitHub Pages</div>
+</main><div class="toast" id="toast">+1</div><script src="assets/app.js"></script>
+</body></html>
