@@ -1,0 +1,25 @@
+/* V15 character rendering: V15 art packed into five-state sprite sheets. */
+.penguin-img,.bear-img,.fox-img{
+  display:none;
+  position:absolute!important;
+  left:50%!important;
+  bottom:0!important;
+  transform:translateX(-50%)!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  opacity:1!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+  background-color:transparent!important;
+  background-repeat:no-repeat!important;
+  background-size:500% 100%!important;
+  background-position-y:bottom!important;
+}
+.mole.normal .penguin-img,.mole.bad .bear-img,.mole.bonus .fox-img{display:block!important}
+.mole.bad .bear-img{background-image:url('./bear_sheet_v15.webp')!important}
+.mole.bonus .fox-img{background-image:url('./fox_sheet_v15.webp')!important}
+.mole.normal .penguin-img{background-image:url('./penguin_sheet_v15.webp')!important}
