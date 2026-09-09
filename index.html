@@ -8,27 +8,41 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <title>打企鵝・北極狐｜2026-09-09 v16</title>
-<link rel="stylesheet" href="assets/style.css?v=16-20260909-2017">
+<link rel="stylesheet" href="assets/style.css?v=16-20260909-2030">
 <style>
-/* V16: use the 15 verified individual character frames already stored in the repo.
-   No sprite-sheet dependency: each gameplay state selects one real image file. */
-.penguin-img,.bear-img,.fox-img{display:none;position:absolute!important;left:50%!important;bottom:0!important;transform:translateX(-50%)!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;opacity:1!important;filter:none!important;mix-blend-mode:normal!important;background-color:transparent!important;background-repeat:no-repeat!important;background-size:contain!important;background-position:center bottom!important}
-.mole.normal .penguin-img,.mole.bad .bear-img,.mole.bonus .fox-img{display:block!important}
-.mole.bad .bear-img{background-image:url('assets/bear_peek.webp?v=16')!important}
-.hole.bear-warning .bear-img{background-image:url('assets/bear_warning.webp?v=16')!important}
-.hole.bear-sneaky .bear-img{background-image:url('assets/bear_sneaky.webp?v=16')!important}
-.hole.bear-pain .bear-img{background-image:url('assets/bear_pain.webp?v=16')!important}
-.hole.bear-sad .bear-img{background-image:url('assets/bear_sad.webp?v=16')!important}
-.mole.bonus .fox-img{background-image:url('assets/fox_peek.webp?v=16')!important}
-.hole.fox-warning .fox-img{background-image:url('assets/fox_warning.webp?v=16')!important}
-.hole.fox-sneaky .fox-img{background-image:url('assets/fox_sneaky.webp?v=16')!important}
-.hole.fox-pain .fox-img{background-image:url('assets/fox_pain.webp?v=16')!important}
-.hole.fox-sad .fox-img{background-image:url('assets/fox_sad.webp?v=16')!important}
-.mole.normal .penguin-img{background-image:url('assets/penguin_peek.webp?v=16')!important}
-.hole.penguin-warning .penguin-img{background-image:url('assets/penguin_warning.webp?v=16')!important}
-.hole.penguin-sneaky .penguin-img{background-image:url('assets/penguin_sneaky.webp?v=16')!important}
-.hole.penguin-pain .penguin-img{background-image:url('assets/penguin_pain.webp?v=16')!important}
-.hole.penguin-sad .penguin-img{background-image:url('assets/penguin_sad.webp?v=16')!important}
+/* V16 character rendering fix:
+   - use the V15/V16 five-state sprite sheets (not the older individual bear files)
+   - override the older background shorthand with equal/higher specificity
+   - disable tiling explicitly
+   - select each state with CSS !important so app/browser cache cannot leave an old frame offset */
+.mole.normal .penguin-img,.mole.bad .bear-img,.mole.bonus .fox-img{
+  display:block!important;
+  position:absolute!important;
+  left:50%!important;
+  bottom:0!important;
+  transform:translateX(-50%)!important;
+  width:100%!important;
+  height:100%!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  margin:0!important;
+  padding:0!important;
+  opacity:1!important;
+  filter:none!important;
+  mix-blend-mode:normal!important;
+  background-color:transparent!important;
+  background-repeat:no-repeat!important;
+  background-size:500% 100%!important;
+  background-position-y:bottom!important;
+  background-position-x:0%!important;
+}
+.mole.bad .bear-img{background-image:url('assets/bear_sheet_v15.webp?v=16-2030')!important}
+.mole.bonus .fox-img{background-image:url('assets/fox_sheet_v15.webp?v=16-2030')!important}
+.mole.normal .penguin-img{background-image:url('assets/penguin_sheet_v15.webp?v=16-2030')!important}
+.hole.bear-warning .bear-img,.hole.fox-warning .fox-img,.hole.penguin-warning .penguin-img{background-position-x:25%!important}
+.hole.bear-sneaky .bear-img,.hole.fox-sneaky .fox-img,.hole.penguin-sneaky .penguin-img{background-position-x:50%!important}
+.hole.bear-pain .bear-img,.hole.fox-pain .fox-img,.hole.penguin-pain .penguin-img{background-position-x:75%!important}
+.hole.bear-sad .bear-img,.hole.fox-sad .fox-img,.hole.penguin-sad .penguin-img{background-position-x:100%!important}
 </style>
 </head>
 <body>
@@ -40,5 +54,5 @@
 <div class="progress" aria-hidden="true"><div class="bar" id="bar"></div></div>
 <section class="controls"><button class="btn primary" id="startBtn">開始 / 重新開始</button><select id="difficulty" aria-label="難度"><option value="easy">悠閒</option><option value="normal" selected>普通</option><option value="hard">高手</option></select><button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button></section>
 <div class="tiny" style="text-align:center">最高分：<b id="best">0</b> · 版本 2026-09-09 v16 · GitHub Pages</div>
-</main><div class="toast" id="toast">+1</div><script src="assets/app.js?v=16-20260909-2017"></script>
+</main><div class="toast" id="toast">+1</div><script src="assets/app.js?v=16-20260909-2030"></script>
 </body></html>
