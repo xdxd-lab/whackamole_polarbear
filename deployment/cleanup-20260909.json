@@ -1,0 +1,19 @@
+{
+  "scope": "assets/*.webp older than one day at the user's request time",
+  "request_time_utc": "2026-09-09T12:39:09Z",
+  "cutoff_utc": "2026-09-08T12:39:09Z",
+  "base_commit": "3fdaaa88813495f5e959a6cfb3e117ae13677ce6",
+  "removed_paths": [
+    "assets/bear_peek.webp", "assets/bear_warning.webp", "assets/bear_sneaky.webp", "assets/bear_pain.webp", "assets/bear_sad.webp",
+    "assets/fox_peek.webp", "assets/fox_warning.webp", "assets/fox_sneaky.webp", "assets/fox_pain.webp", "assets/fox_sad.webp",
+    "assets/penguin_peek.webp", "assets/penguin_warning.webp", "assets/penguin_sneaky.webp", "assets/penguin_pain.webp", "assets/penguin_sad.webp"
+  ],
+  "historical_asset_commits": {
+    "bear": {"sha": "0d67fdd8599f0817fdb2fae3a64394b0b4d95d4e", "committed_at": "2026-09-04T07:25:11Z"},
+    "fox_and_penguin": {"sha": "4ddfa56d0bbfd3cabd180418201bab92b576a522", "committed_at": "2026-09-04T18:15:54Z"}
+  },
+  "retained_newer_webp": ["assets/bear_sheet_v15.webp", "assets/fox_sheet_v15.webp", "assets/penguin_sheet_v15.webp"],
+  "retained_files_warning": "The three newer sprite sheets failed decoding in the downloaded Pages artifact. They are retained solely because they are outside the requested age-based deletion scope, not because they have passed verification.",
+  "release_status": "Cleanup only. V16 re-publication has not been completed. index.html is unchanged by this cleanup.",
+  "verified_local_v16": {"bytes": 10038785, "sha256": "9c0526c67c8e3037ae5a11abbca7c0ff8d044c70477eb5075a15a4efd7ab3517"}
+}
