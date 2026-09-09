@@ -4,55 +4,445 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#8fd8ff" />
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-<meta http-equiv="Pragma" content="no-cache" />
-<meta http-equiv="Expires" content="0" />
-<title>打企鵝・北極狐｜2026-09-09 v16</title>
-<link rel="stylesheet" href="assets/style.css?v=16-20260909-2030">
+<title>打企鵝・北極狐｜離線版 2026-09-09 v16</title>
 <style>
-/* V16 character rendering fix:
-   - use the V15/V16 five-state sprite sheets (not the older individual bear files)
-   - override the older background shorthand with equal/higher specificity
-   - disable tiling explicitly
-   - select each state with CSS !important so app/browser cache cannot leave an old frame offset */
+  :root{
+    --sky-top:#8fd8ff; --sky-mid:#cfeeff; --sky-bottom:#eef9ff;
+    --snow:#f8fdff; --snow-shadow:#d9ecf8;
+    --panel:rgba(255,255,255,.88); --ink:#23302a; --accent:#ffb703; --danger:#ef476f;
+    --good:#2a9d8f; --hole:#4b362f; --shadow:0 14px 36px rgba(28,58,42,.14);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Noto Sans TC","PingFang TC",sans-serif;color:var(--ink);overscroll-behavior:none}
+  body{
+    min-height:100dvh;display:flex;justify-content:center;align-items:center;
+    padding:max(14px,env(safe-area-inset-top)) max(14px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left));
+    user-select:none;position:relative;overflow:hidden;
+    background:
+      radial-gradient(circle at 20% 18%, rgba(255,255,255,.82) 0 5%, transparent 6%),
+      radial-gradient(circle at 76% 14%, rgba(255,255,255,.68) 0 4%, transparent 5%),
+      linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 42%, var(--sky-bottom) 68%, #f4fbff 100%);
+  }
+  body:before{
+    content:"";position:fixed;left:-8%;right:-8%;bottom:0;height:43vh;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(120% 95% at 8% 100%, #ffffff 0 45%, transparent 46%),
+      radial-gradient(100% 90% at 34% 100%, #f6fbff 0 43%, transparent 44%),
+      radial-gradient(110% 85% at 68% 100%, #edf7ff 0 42%, transparent 43%),
+      radial-gradient(115% 90% at 94% 100%, #ffffff 0 46%, transparent 47%);
+  }
+  body:after{
+    content:"";position:fixed;left:0;right:0;bottom:0;height:24vh;pointer-events:none;z-index:0;
+    background:linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(248,252,255,.85) 16%, rgba(244,250,255,.96) 100%);
+    box-shadow:0 -18px 50px rgba(255,255,255,.55) inset;
+  }
+  .snow-layer{position:fixed;inset:-120vh 0 0 0;pointer-events:none;z-index:1;will-change:transform,opacity;background-repeat:repeat}
+  .snow-back{
+    opacity:.42;background-size:280px 280px;
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,.95) 0 1.2px, transparent 1.6px),
+      radial-gradient(circle, rgba(255,255,255,.85) 0 1.8px, transparent 2.2px),
+      radial-gradient(circle, rgba(255,255,255,.75) 0 1px, transparent 1.4px);
+    background-position: 0 0, 120px 40px, 40px 140px;
+    animation:snowfallA 20s linear infinite;
+  }
+  .snow-mid{
+    opacity:.58;background-size:220px 220px;
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,.96) 0 1.8px, transparent 2.4px),
+      radial-gradient(circle, rgba(255,255,255,.88) 0 2.6px, transparent 3.1px),
+      radial-gradient(circle, rgba(255,255,255,.8) 0 1.4px, transparent 1.9px);
+    background-position: 24px 0, 138px 78px, 76px 150px;
+    animation:snowfallB 14s linear infinite;
+  }
+  .snow-front{
+    opacity:.72;background-size:170px 170px;
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,.98) 0 2.2px, transparent 2.9px),
+      radial-gradient(circle, rgba(255,255,255,.92) 0 3.2px, transparent 3.9px),
+      radial-gradient(circle, rgba(255,255,255,.85) 0 1.6px, transparent 2.1px);
+    background-position: 0 12px, 94px 70px, 30px 130px;
+    animation:snowfallC 10s linear infinite;
+  }
+  @keyframes snowfallA{from{transform:translate3d(-1vw,-12vh,0)}to{transform:translate3d(2vw,112vh,0)}}
+  @keyframes snowfallB{from{transform:translate3d(1vw,-10vh,0)}to{transform:translate3d(-2vw,112vh,0)}}
+  @keyframes snowfallC{from{transform:translate3d(-2vw,-8vh,0)}to{transform:translate3d(3vw,112vh,0)}}
+  .cloud,.cloud:before,.cloud:after{position:fixed;background:#fff;border-radius:999px;opacity:.8;pointer-events:none;z-index:1}.cloud{width:92px;height:30px;top:7%;left:7%;filter:blur(.2px)}.cloud:before{content:"";width:40px;height:40px;left:13px;top:-18px}.cloud:after{content:"";width:52px;height:52px;right:8px;top:-25px}.cloud.two{transform:scale(.75);left:auto;right:8%;top:15%}
+  .game{width:min(680px,100%);display:grid;gap:12px;position:relative;z-index:2}
+  .top{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:stretch}
+  .brand,.scoreboard,.controls,.card{background:var(--panel);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.7);box-shadow:var(--shadow);border-radius:22px}
+  .brand{padding:15px 18px}.brand h1{font-size:clamp(24px,5vw,36px);line-height:1;margin:0 0 5px}.brand p{margin:0;font-size:13px;opacity:.7}
+  .scoreboard{display:grid;grid-template-columns:repeat(3,minmax(64px,1fr));overflow:hidden}.stat{padding:10px 12px;text-align:center;min-width:72px}.stat+.stat{border-left:1px solid #dde7df}.label{font-size:11px;opacity:.58;font-weight:700;letter-spacing:.05em}.value{font-size:25px;font-weight:900;font-variant-numeric:tabular-nums}.value.hot{color:var(--danger)}
+  .card{padding:14px}.board{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,2vw,14px);aspect-ratio:1/1;max-height:66dvh}
+  .hole{position:relative;overflow:hidden;border-radius:24px;cursor:pointer;touch-action:manipulation;isolation:isolate;background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(212,233,245,.38))}
+  .hole:before{content:"";position:absolute;left:9%;right:9%;bottom:7%;height:31%;background:var(--hole);border-radius:50%;box-shadow:inset 0 8px 0 rgba(0,0,0,.2),0 5px 0 rgba(255,255,255,.16);z-index:1}
+  .mole{position:absolute;left:13%;width:74%;height:80%;bottom:-70%;z-index:2;transition:bottom .14s cubic-bezier(.2,.85,.3,1.18),transform .08s;filter:drop-shadow(0 7px 4px rgba(0,0,0,.15));pointer-events:none}
+  .hole.up .mole{bottom:8%}.hole.hit .mole{transform:translateY(9%) scale(.94)}
+  .character{display:none;width:100%;height:100%;overflow:visible}.penguin-img,.bear-img,.fox-img{display:none;width:100%;height:100%;margin:0;object-fit:contain;object-position:center bottom;opacity:1;filter:none;mix-blend-mode:normal;background:transparent}.mole.normal .penguin-img,.mole.bad .bear-img,.mole.bonus .fox-img{display:block}
+  .character .outline{stroke:#26332d;stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round}.character .soft{stroke:#26332d;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+  .hole.bear-warning .mole{bottom:2%;left:2%;animation:bearwarn .18s ease-in-out 2}
+  .hole.bear-sneaky .mole{bottom:-6%;left:6%;transition:bottom .18s ease-in}
+  .hole.bear-pain .mole{animation:bearshake .18s linear 2}
+  .hole.bear-sad .mole{bottom:-8%;transition:bottom .30s ease-in}
+  .hole.fox-warning .mole{animation:bearwarn .18s ease-in-out 2}
+  .hole.fox-sneaky .mole{bottom:0%;transition:bottom .18s ease-in}
+  .hole.fox-pain .mole{animation:bearshake .18s linear 2}
+  .hole.fox-sad .mole{bottom:-8%;transition:bottom .30s ease-in}
+  .hole.penguin-warning .mole{animation:bearwarn .18s ease-in-out 2}
+  .hole.penguin-sneaky .mole{bottom:0%;transition:bottom .18s ease-in}
+  .hole.penguin-pain .mole{animation:bearshake .18s linear 2}
+  .hole.penguin-sad .mole{bottom:-8%;transition:bottom .30s ease-in}
+  @keyframes bearwarn{50%{transform:translateY(-3px) rotate(-1deg)}}
+  @keyframes bearshake{25%{transform:translateX(-4px) rotate(-1deg)}75%{transform:translateX(4px) rotate(1deg)}}
+
+  .controls{display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:12px}.btn,select{border:0;border-radius:15px;font:inherit;font-weight:800}.btn{padding:13px 17px;background:#fff;box-shadow:inset 0 0 0 1px #dce7df;cursor:pointer}.btn.primary{background:var(--accent);box-shadow:none}.btn:active{transform:translateY(1px)}select{padding:0 34px 0 14px;background:#fff;min-width:118px}
+  .progress{height:8px;background:rgba(255,255,255,.5);border-radius:999px;overflow:hidden}.bar{height:100%;width:100%;background:linear-gradient(90deg,var(--good),var(--accent),var(--danger));transform-origin:left;transition:transform .1s linear}
+  .overlay{position:absolute;inset:0;display:grid;place-items:center;background:rgba(34,49,40,.34);backdrop-filter:blur(5px);z-index:20;border-radius:22px;opacity:0;visibility:hidden;transition:.2s}.overlay.show{opacity:1;visibility:visible}.modal{width:min(410px,88%);background:#fff;border-radius:24px;padding:24px;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,.25)}.modal h2{font-size:31px;margin:0 0 8px}.modal p{margin:7px 0 18px;line-height:1.6}.bigscore{font-size:52px;font-weight:950;color:var(--good);line-height:1}.tiny{font-size:12px;opacity:.62}
+  .toast{position:fixed;left:50%;top:18%;transform:translate(-50%,-8px);z-index:30;font-weight:900;font-size:24px;opacity:0;pointer-events:none;text-shadow:0 2px 0 #fff}.toast.show{animation:pop .55s ease-out}@keyframes pop{0%{opacity:0;transform:translate(-50%,4px) scale(.8)}25%{opacity:1;transform:translate(-50%,-8px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-28px) scale(1)}}
+  @media(max-width:560px){body{align-items:start}.top{grid-template-columns:1fr}.brand{text-align:center}.scoreboard{min-height:68px}.card{padding:10px}.board{gap:6px}.hole{border-radius:18px}.controls{grid-template-columns:1fr 1fr}.controls .primary{grid-column:1/-1;grid-row:1}.controls select{width:100%;min-height:45px}.controls .btn:not(.primary){min-height:45px}}
+  @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+  /* v5 polar-bear + fox bottom alignment fix */
+  .hole.penguin-active:before,
+  .hole.bear-active:before,
+  .hole.fox-active:before{opacity:0!important}
+  .mole.normal,
+  .mole.bad,
+  .mole.bonus{
+    left:4%!important;
+    width:92%!important;
+    height:92%!important;
+    display:flex!important;
+    align-items:flex-end!important;
+    justify-content:center!important;
+    filter:drop-shadow(0 5px 3px rgba(0,0,0,.08))!important;
+  }
+  .mole.normal .penguin-img,
+  .mole.bad .bear-img,
+  .mole.bonus .fox-img{
+    display:block!important;
+    position:absolute!important;
+    left:50%!important;
+    bottom:0!important;
+    transform:translateX(-50%)!important;
+    width:auto!important;
+    height:auto!important;
+    max-width:100%!important;
+    max-height:100%!important;
+    object-fit:initial!important;
+    object-position:initial!important;
+    opacity:1!important;
+    filter:none!important;
+    mix-blend-mode:normal!important;
+    background:transparent!important;
+    margin:0!important;
+    padding:0!important;
+  }
+  .hole.penguin-sneaky .mole,
+  .hole.bear-sneaky .mole,
+  .hole.fox-sneaky .mole{bottom:0%!important;transition:bottom .18s ease-in!important}
+  .hole.bear-warning .mole{bottom:2%!important;left:2%!important}
+  .hole.bear-sneaky .mole{bottom:-6%!important;left:6%!important;transition:bottom .18s ease-in!important}
+  .hole.penguin-sad .mole,
+  .hole.bear-sad .mole,
+  .hole.fox-sad .mole{bottom:-8%!important;transition:bottom .30s ease-in!important}
+
+
+/* v15: unify version labels; retain the snowy background, snowfall and gameplay fixes. */
+.overlay{pointer-events:none}.overlay.show{pointer-events:auto}
+.hole[data-state="hidden"] .mole{visibility:hidden!important}
+.hole[data-outcome="hit"] .mole{animation:none!important;transform:none;transition:none!important}
+/* Do not allow export resolution to change the intended display size. */
 .mole.normal .penguin-img,.mole.bad .bear-img,.mole.bonus .fox-img{
-  display:block!important;
-  position:absolute!important;
-  left:50%!important;
-  bottom:0!important;
-  transform:translateX(-50%)!important;
-  width:100%!important;
-  height:100%!important;
-  max-width:100%!important;
-  max-height:100%!important;
-  margin:0!important;
-  padding:0!important;
-  opacity:1!important;
-  filter:none!important;
-  mix-blend-mode:normal!important;
-  background-color:transparent!important;
-  background-repeat:no-repeat!important;
-  background-size:500% 100%!important;
-  background-position-y:bottom!important;
-  background-position-x:0%!important;
+ width:100%!important;height:100%!important;object-fit:contain!important;
+ object-position:center bottom!important;
 }
-.mole.bad .bear-img{background-image:url('assets/bear_sheet_v15.webp?v=16-2030')!important}
-.mole.bonus .fox-img{background-image:url('assets/fox_sheet_v15.webp?v=16-2030')!important}
-.mole.normal .penguin-img{background-image:url('assets/penguin_sheet_v15.webp?v=16-2030')!important}
-.hole.bear-warning .bear-img,.hole.fox-warning .fox-img,.hole.penguin-warning .penguin-img{background-position-x:25%!important}
-.hole.bear-sneaky .bear-img,.hole.fox-sneaky .fox-img,.hole.penguin-sneaky .penguin-img{background-position-x:50%!important}
-.hole.bear-pain .bear-img,.hole.fox-pain .fox-img,.hole.penguin-pain .penguin-img{background-position-x:75%!important}
-.hole.bear-sad .bear-img,.hole.fox-sad .fox-img,.hole.penguin-sad .penguin-img{background-position-x:100%!important}
 </style>
 </head>
 <body>
 <div class="cloud"></div><div class="cloud two"></div>
-<div class="snow-layer snow-back" aria-hidden="true"></div><div class="snow-layer snow-mid" aria-hidden="true"></div><div class="snow-layer snow-front" aria-hidden="true"></div>
+<div class="snow-layer snow-back" aria-hidden="true"></div>
+<div class="snow-layer snow-mid" aria-hidden="true"></div>
+<div class="snow-layer snow-front" aria-hidden="true"></div>
 <main class="game" aria-label="打企鵝與北極狐遊戲">
-<section class="top"><div class="brand"><h1>🔨 雪地敲敲樂</h1><p>打企鵝、打北極狐；小心別敲到北極熊！</p></div><div class="scoreboard" aria-live="polite"><div class="stat"><div class="label">分數</div><div class="value" id="score">0</div></div><div class="stat"><div class="label">連擊</div><div class="value" id="combo">0</div></div><div class="stat"><div class="label">時間</div><div class="value hot" id="time">30</div></div></div></section>
-<section class="card" style="position:relative"><div class="board" id="board" aria-label="遊戲區"></div><div class="overlay show" id="overlay"><div class="modal"><h2 id="modalTitle">準備好了嗎？</h2><div class="bigscore" id="finalScore" hidden>0</div><p id="modalText">企鵝 <b>+1</b>、北極狐 <b>+3</b>，誤敲北極熊會 <b>-2</b> 並中斷連擊。</p><button class="btn primary" id="modalBtn" style="width:100%">開始遊戲</button><p class="tiny">支援手機觸控、滑鼠；最高分會儲存在這台裝置。</p></div></div></section>
-<div class="progress" aria-hidden="true"><div class="bar" id="bar"></div></div>
-<section class="controls"><button class="btn primary" id="startBtn">開始 / 重新開始</button><select id="difficulty" aria-label="難度"><option value="easy">悠閒</option><option value="normal" selected>普通</option><option value="hard">高手</option></select><button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button></section>
-<div class="tiny" style="text-align:center">最高分：<b id="best">0</b> · 版本 2026-09-09 v16 · GitHub Pages</div>
-</main><div class="toast" id="toast">+1</div><script src="assets/app.js?v=16-20260909-2030"></script>
-</body></html>
+  <section class="top">
+    <div class="brand"><h1>🔨 雪地敲敲樂</h1><p>打企鵝、打北極狐；小心別敲到北極熊！</p></div>
+    <div class="scoreboard" aria-live="polite">
+      <div class="stat"><div class="label">分數</div><div class="value" id="score">0</div></div>
+      <div class="stat"><div class="label">連擊</div><div class="value" id="combo">0</div></div>
+      <div class="stat"><div class="label">時間</div><div class="value hot" id="time">30</div></div>
+    </div>
+  </section>
+
+  <section class="card" style="position:relative">
+    <div class="board" id="board" aria-label="遊戲區"></div>
+    <div class="overlay show" id="overlay">
+      <div class="modal">
+        <h2 id="modalTitle">準備好了嗎？</h2>
+        <div class="bigscore" id="finalScore" hidden>0</div>
+        <p id="modalText">企鵝 <b>+1</b>、北極狐 <b>+3</b>，誤敲北極熊會 <b>-2</b> 並中斷連擊。</p>
+        <button class="btn primary" id="modalBtn" style="width:100%">開始遊戲</button>
+        <p class="tiny">支援手機觸控、滑鼠；最高分會儲存在這台裝置。</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="progress" aria-hidden="true"><div class="bar" id="bar"></div></div>
+  <section class="controls">
+    <button class="btn primary" id="startBtn">開始 / 重新開始</button>
+    <select id="difficulty" aria-label="難度">
+      <option value="easy">悠閒</option><option value="normal" selected>普通</option><option value="hard">高手</option>
+    </select>
+    <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
+  </section>
+  <div class="tiny" style="text-align:center">最高分：<b id="best">0</b> · 版本 2026-09-09 v16 · GitHub Pages · 資產驗證版</div>
+</main>
+<div class="toast" id="toast">+1</div>
+<script>(async () => {
+  'use strict';
+  const VERSION = '20260909-v16';
+  const BEST_KEY = 'wam_best_20260904v7';
+  const $ = id => document.getElementById(id);
+  const board = $('board'), overlay = $('overlay');
+  const startBtn = $('startBtn'), modalBtn = $('modalBtn'), difficulty = $('difficulty');
+  const settings = {
+    easy: {spawn: 1050, show: 780},
+    normal: {spawn: 850, show: 600},
+    hard: {spawn: 650, show: 470}
+  };
+  const states = ['peek','warning','sneaky','pain','sad'];
+  async function loadPublishSprites() {
+    const config = {"bear":{"url":"assets/v16-20260909/bear-45461a4e9175.avif","sha256":"45461a4e9175a12a1a157d722123815190ba38adea450bce565a33fa22b834ac","width":192,"height":192},"fox":{"url":"assets/v16-20260909/fox-f19184045350.avif","sha256":"f191840453502462c830049c2b370ad217fb7435350b19d56bacc5f5a4201ae2","width":192,"height":192},"penguin":{"url":"assets/v16-20260909/penguin-9422776ebeb6.avif","sha256":"9422776ebeb668774e2032140128b06a3574f92c8ae840ac0c23648626598311","width":192,"height":128}};
+    const result = {};
+    const ids = ['peek','warning','sneaky','pain','sad'];
+    await Promise.all(Object.entries(config).map(async ([species,cfg]) => {
+      const response = await fetch(cfg.url, {cache:'no-cache'});
+      if (!response.ok) throw new Error(species + ': HTTP ' + response.status);
+      const bytes = await response.arrayBuffer();
+      const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
+      if (digest !== cfg.sha256) throw new Error(species + ': 圖檔完整性驗證失敗');
+      const blobURL = URL.createObjectURL(new Blob([bytes], {type:'image/avif'}));
+      try {
+        const sheet = new Image();
+        sheet.src = blobURL;
+        await sheet.decode();
+        if(sheet.naturalWidth!==cfg.width*5 || sheet.naturalHeight!==cfg.height) throw new Error(species + ': 圖片尺寸不符');
+        const canvas = document.createElement('canvas'); canvas.width=cfg.width; canvas.height=cfg.height;
+        const ctx = canvas.getContext('2d');
+        if(!ctx) throw new Error('無法建立圖片畫布');
+        result[species] = {};
+        ids.forEach((state,i)=>{
+          ctx.clearRect(0,0,canvas.width,canvas.height);
+          ctx.drawImage(sheet,i*cfg.width,0,cfg.width,cfg.height,0,0,cfg.width,cfg.height);
+          result[species][state]=canvas.toDataURL('image/png');
+        });
+      } finally { URL.revokeObjectURL(blobURL); }
+    }));
+    return result;
+  }
+  startBtn.disabled=true; modalBtn.disabled=true; modalBtn.textContent='驗證角色圖片中…';
+  const sprites = await loadPublishSprites().catch(error=>{
+    $('modalTitle').textContent='角色圖片未載入';
+    $('modalText').textContent=error.message+'。請重新整理；圖片未完整載入前不會開始計分。';
+    modalBtn.textContent='請重新整理';
+    throw error;
+  });
+  modalBtn.textContent='開始遊戲';
+  startBtn.disabled=false; modalBtn.disabled=false;
+  const speciesByType = {bad:'bear', bonus:'fox', normal:'penguin'};
+  const names = {bear:'北極熊',fox:'北極狐',penguin:'企鵝'};
+  const holes = [];
+  for (let i=0;i<9;i++) {
+    const h = document.createElement('button');
+    h.type = 'button'; h.className = 'hole'; h.dataset.state = 'hidden';
+    h.setAttribute('aria-label', `洞 ${i+1}`);
+    h.innerHTML = '<div class="mole"><img class="penguin-img" alt="" aria-hidden="true"><img class="fox-img" alt="" aria-hidden="true"><img class="bear-img" alt="" aria-hidden="true"></div>';
+    h.addEventListener('pointerdown', e => {e.preventDefault(); hit(i);});
+    h.addEventListener('keydown', e => {
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();hit(i);}
+    });
+    board.appendChild(h); holes.push(h);
+  }
+  let running=false, loading=false, ready=false, loadError=null;
+  let score=0, combo=0, maxCombo=0, timeLeft=30, best=0;
+  let actor=null, lastHole=-1, session=0, clockTimer=null, started=0;
+  let soundOn=true, audioCtx=null;
+  const timers=new Set(), activeAudio=new Set();
+  try {best=Math.max(0,Number(localStorage.getItem(BEST_KEY))||0);} catch (_) {}
+  $('best').textContent=best;
+  function beep(freq=440,dur=.06,type='sine',vol=.05){
+    if(!soundOn) return;
+    try {
+      audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();
+      if(audioCtx.state==='suspended') audioCtx.resume().catch(()=>{});
+      const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+      o.type=type;o.frequency.value=freq;g.gain.value=vol;
+      o.connect(g);g.connect(audioCtx.destination);activeAudio.add(o);
+      o.onended=()=>{activeAudio.delete(o);o.disconnect();g.disconnect();};
+      o.start();g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+dur);o.stop(audioCtx.currentTime+dur);
+    } catch (_) {}
+  }
+  function vibrate(ms){try{if(navigator.vibrate)navigator.vibrate(ms);}catch(_){} }
+  function later(fn,ms){
+    const generation=session;
+    const id=setTimeout(()=>{timers.delete(id);if(running&&generation===session)fn();},ms);
+    timers.add(id);return id;
+  }
+  function cancel(id){if(id!=null){clearTimeout(id);timers.delete(id);}}
+  function clearTimers(){timers.forEach(clearTimeout);timers.clear();}
+  function update(){
+    $('score').textContent=score;$('combo').textContent=combo;
+    $('time').textContent=Math.max(0,Math.ceil(timeLeft));
+    $('bar').style.transform=`scaleX(${Math.max(0,timeLeft/30)})`;
+  }
+  function showToast(text){
+    const el=$('toast');el.textContent=text;el.classList.remove('show');
+    void el.offsetWidth;el.classList.add('show');
+  }
+  function resetHole(h){
+    // Hide BEFORE cancelling animations or releasing position locks.
+    // A hidden outgoing sprite must never flash at its idle position.
+    h.dataset.state='hidden';
+    const m=h.querySelector('.mole');m.style.visibility='hidden';
+    m.getAnimations().forEach(a=>a.cancel());
+    h.className='hole';delete h.dataset.character;delete h.dataset.outcome;
+    m.className='mole';m.removeAttribute('style');
+    h.setAttribute('aria-label',`洞 ${holes.indexOf(h)+1}`);
+  }
+  function resetAll(){holes.forEach(resetHole);actor=null;}
+  function setState(a,state){
+    a.phase=state;a.h.dataset.state=state;
+    a.h.classList.remove(...states.map(s=>`${a.species}-${s}`));
+    if(state!=='peek') a.h.classList.add(`${a.species}-${state}`);
+    const img=a.m.querySelector(`.${a.species}-img`);
+    img.src=sprites[a.species][state];
+    // These are outcome branches, NOT an automatic five-frame slideshow.
+    a.h.setAttribute('aria-label',`${names[a.species]}，${state==='peek'||state==='warning'?(a.type==='bad'?'別打！':a.type==='bonus'?'+3 分':'+1 分'):'已離開可打擊階段'}`);
+  }
+  function spawn(){
+    if(!running)return;
+    resetAll();
+    let i;do{i=Math.floor(Math.random()*holes.length);}while(i===lastHole);lastHole=i;
+    const r=Math.random(),type=r<.12?'bad':r<.34?'bonus':'normal';
+    const h=holes[i],m=h.querySelector('.mole'),species=speciesByType[type];
+    const cfg=settings[difficulty.value]||settings.normal;
+    const recovered=Math.round((cfg.spawn-cfg.show)*.5);
+    const warningAt=Math.round(cfg.show*.62)+recovered;
+    const hideAt=cfg.show+recovered;
+    const a={i,h,m,type,species,phase:'peek',deadline:performance.now()+hideAt,warningTimer:null,hideTimer:null,nextTimer:null};
+    actor=a;h.dataset.character=species;
+    m.className=`mole ${type}`;h.classList.add('up',`${species}-active`);
+    setState(a,'peek');
+    a.warningTimer=later(()=>{if(actor===a&&a.phase==='peek')setState(a,'warning');},warningAt);
+    a.hideTimer=later(()=>escape(a),hideAt);
+    a.nextTimer=later(spawn,cfg.spawn);
+  }
+  function escape(a){
+    if(actor!==a||!['peek','warning'].includes(a.phase))return;
+    cancel(a.warningTimer);a.h.dataset.outcome='escape';
+    a.h.classList.remove('up');setState(a,'sneaky');
+    if(a.type!=='bad')combo=0;
+    update();
+    // v8's short escape window is retained: 135/125/90 ms.
+    // The already scheduled next spawn clears this actor.
+  }
+  function hit(i){
+    const a=actor;
+    if(!running||!a||a.i!==i||!['peek','warning'].includes(a.phase))return;
+    if(performance.now()>=a.deadline){escape(a);return;}
+    cancel(a.warningTimer);cancel(a.hideTimer);cancel(a.nextTimer);
+    // Lock the on-screen anchor before removing .up. The former code
+    // fell to bottom:-70% here and then rose to -8% at the sad frame.
+    const cs=getComputedStyle(a.m);
+    a.m.style.setProperty('bottom',cs.bottom,'important');
+    a.m.style.setProperty('left',cs.left,'important');
+    a.m.style.setProperty('transition','none','important');
+    a.h.dataset.outcome='hit';a.h.classList.remove('up');a.h.classList.add('hit');
+    setState(a,'pain');
+    let delta;
+    if(a.type==='bad'){
+      delta=-2;combo=0;beep(120,.12,'sawtooth',.07);vibrate(55);showToast('誤敲北極熊 -2');
+    }else{
+      delta=a.type==='bonus'?3:1;combo++;maxCombo=Math.max(maxCombo,combo);
+      beep(a.type==='bonus'?760:420+Math.min(combo,12)*25,.07,a.type==='bonus'?'triangle':'sine');
+      vibrate(a.type==='bonus'?18:10);
+      if(combo%5===0){delta++;showToast(`連擊獎勵 +${delta}`);}
+      else showToast(`${names[a.species]} +${delta}`);
+    }
+    score=Math.max(0,score+delta);update();
+    later(()=>{
+      if(actor!==a||a.phase!=='pain')return;
+      a.h.classList.remove('hit');setState(a,'sad');
+      // Anchor stays fixed. Only this animation moves the outgoing sprite,
+      // in one direction: down. No peek/sneaky callbacks survive a hit.
+      const distance=Math.max(0,a.h.clientHeight-a.m.offsetTop+2);
+      a.m.animate([{transform:'translateY(0px)'},{transform:`translateY(${distance}px)`}],
+        {duration:340,easing:'ease-in',fill:'forwards'});
+      later(()=>{
+        if(actor!==a)return;
+        resetHole(a.h);actor=null;later(spawn,80);
+      },340);
+    },220);
+  }
+  const images=[];
+  const assetsReady=Promise.all(Object.values(sprites).flatMap(set=>Object.values(set)).map(url=>new Promise((resolve,reject)=>{
+    const img=new Image();images.push(img);
+    img.onload=()=>{
+      if(!img.naturalWidth){reject(new Error('空白圖片'));return;}
+      (typeof img.decode==='function'?img.decode():Promise.resolve()).then(resolve,reject);
+    };
+    img.onerror=()=>reject(new Error('角色圖片載入失敗'));img.src=url;
+  }))).then(()=>{ready=true;}).catch(e=>{loadError=e;});
+  async function start(){
+    if(loading)return;
+    // Resume audio inside the user gesture, before waiting for images.
+    beep(520,.08,'triangle');
+    if(!ready){
+      loading=true;startBtn.disabled=true;modalBtn.disabled=true;
+      const label=modalBtn.textContent;modalBtn.textContent='圖片載入中…';
+      await assetsReady;loading=false;startBtn.disabled=false;modalBtn.disabled=false;modalBtn.textContent=label;
+    }
+    if(loadError){
+      $('modalTitle').textContent='圖片未載入完成';
+      $('modalText').textContent='請重新開啟這份完整遊戲檔，或重新整理網頁。遊戲不會以舊圖代替缺少的圖片。';
+      overlay.classList.add('show');return;
+    }
+    session++;clearTimers();clearInterval(clockTimer);resetAll();
+    score=0;combo=0;maxCombo=0;timeLeft=30;running=true;started=performance.now();
+    overlay.classList.remove('show');$('finalScore').hidden=true;update();spawn();
+    clockTimer=setInterval(()=>{
+      timeLeft=Math.max(0,30-(performance.now()-started)/1000);
+      if(timeLeft===0)finish();update();
+    },100);
+  }
+  function finish(){
+    if(!running)return;
+    running=false;session++;clearTimers();clearInterval(clockTimer);resetAll();
+    beep(260,.09,'triangle');
+    if(score>best){
+      best=score;try{localStorage.setItem(BEST_KEY,String(best));}catch(_){}
+      $('best').textContent=best;$('modalTitle').textContent='🏆 新紀錄！';
+    }else $('modalTitle').textContent='時間到！';
+    $('finalScore').textContent=score;$('finalScore').hidden=false;
+    $('modalText').innerHTML=`你這局得到 <b>${score}</b> 分，最高連擊 <b>${maxCombo}</b>。再來一局挑戰更高分吧！`;
+    modalBtn.textContent='再玩一次';overlay.classList.add('show');update();
+  }
+  startBtn.addEventListener('click',start);modalBtn.addEventListener('click',start);
+  $('soundBtn').addEventListener('click',()=>{
+    soundOn=!soundOn;$('soundBtn').textContent=soundOn?'🔊 音效':'🔇 靜音';
+    $('soundBtn').setAttribute('aria-pressed',String(soundOn));
+    if(soundOn)beep(520);else activeAudio.forEach(o=>{try{o.stop();}catch(_){}});
+  });
+  difficulty.addEventListener('change',()=>{if(running)start();});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&running)finish();});
+  document.documentElement.dataset.gameVersion=VERSION;
+  update();
+})();
+</script>
+
+
+
+
+
+</body>
+</html>

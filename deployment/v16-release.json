@@ -1,0 +1,63 @@
+{
+  "version": "V16",
+  "source_file_sha256": "9c0526c67c8e3037ae5a11abbca7c0ff8d044c70477eb5075a15a4efd7ab3517",
+  "index_git_blob": "aa3b280b53e94bddb1b51cff998cd3f1ad3cc430",
+  "index_bytes": 26559,
+  "source_handling": "Approved V16 code and complete source canvases. Web images re-encoded to AVIF quality 35, maximum edge 192px. Original offline HTML is unchanged; this web export is not byte-identical to the original artwork.",
+  "rendering": "SHA-256 verification of three downloaded image packs, decode and extract 15 separate PNG frames, original V16 IMG renderer and outcome state machine. No external legacy CSS or app.js; no CSS background sprite renderer.",
+  "atlases": {
+    "bear": {
+      "url": "assets/v16-20260909/bear-45461a4e9175.avif",
+      "sha256": "45461a4e9175a12a1a157d722123815190ba38adea450bce565a33fa22b834ac",
+      "git_sha": "d72f189a857e71fbd4f6ffa6e0289543ffefa10f",
+      "bytes": 15655,
+      "width": 192,
+      "height": 192
+    },
+    "fox": {
+      "url": "assets/v16-20260909/fox-f19184045350.avif",
+      "sha256": "f191840453502462c830049c2b370ad217fb7435350b19d56bacc5f5a4201ae2",
+      "git_sha": "0ae0afcea92c8ad1530dde87c10b671c5b7d4445",
+      "bytes": 14958,
+      "width": 192,
+      "height": 192
+    },
+    "penguin": {
+      "url": "assets/v16-20260909/penguin-9422776ebeb6.avif",
+      "sha256": "9422776ebeb668774e2032140128b06a3574f92c8ae840ac0c23648626598311",
+      "git_sha": "461c3d868e03379abde3a9bceb155e956f731848",
+      "bytes": 14753,
+      "width": 192,
+      "height": 128
+    }
+  },
+  "cleanup": {
+    "cutoff_utc": "2026-09-08T12:48:52Z",
+    "already_committed": "2cb8600849f99ea23663ebfe142411e98afcfc10",
+    "removed_webp_count": 15,
+    "removed_paths": [
+      "assets/bear_peek.webp",
+      "assets/bear_warning.webp",
+      "assets/bear_sneaky.webp",
+      "assets/bear_pain.webp",
+      "assets/bear_sad.webp",
+      "assets/fox_peek.webp",
+      "assets/fox_warning.webp",
+      "assets/fox_sneaky.webp",
+      "assets/fox_pain.webp",
+      "assets/fox_sad.webp",
+      "assets/penguin_peek.webp",
+      "assets/penguin_warning.webp",
+      "assets/penguin_sneaky.webp",
+      "assets/penguin_pain.webp",
+      "assets/penguin_sad.webp"
+    ],
+    "remaining_legacy_sheets": "Three V15 sheets are newer than the requested cutoff and remain unreferenced. All new image URLs are under assets/v16-20260909/."
+  },
+  "validation": {
+    "local_browser_tests_passed": 6,
+    "cases": "hit and escape branches for each species; IMG visible; no background tiling; hit motion downwards; snowfall animation active; no JavaScript errors.",
+    "scope": "In-memory browser rendering; test-only fetch and Python SHA-256 adapter. No live network validation.",
+    "git_transfer": "All four content blob SHAs returned by GitHub match expected local hashes."
+  }
+}
