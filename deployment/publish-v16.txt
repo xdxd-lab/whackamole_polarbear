@@ -1,0 +1,7 @@
+V16 web release
+Source commit: c3acdfe16520aded59579079eb60a8dc6d864c8b
+Entry point: index.html
+Index blob: aa3b280b53e94bddb1b51cff998cd3f1ad3cc430
+Active assets: assets/v16-20260909/
+Legacy cleanup commit: 2cb8600849f99ea23663ebfe142411e98afcfc10
+Rendering: individual IMG frames decoded from verified image packs; no legacy CSS or scripts.
