@@ -8,8 +8,22 @@
 <meta http-equiv="Pragma" content="no-cache" />
 <meta http-equiv="Expires" content="0" />
 <title>打企鵝・北極狐｜離線版 2026-09-09 v15</title>
-<link rel="stylesheet" href="assets/style.css?v=15-20260909-0940">
-<link rel="stylesheet" href="assets/v15.css?v=15-20260909-0940">
+<link rel="stylesheet" href="assets/style.css?v=15-20260909-1135">
+<style>
+/* V15 character rendering is inlined here so it cannot disappear if a secondary CSS file is stale or missing. */
+.penguin-img,.bear-img,.fox-img{
+  display:none;position:absolute!important;left:50%!important;bottom:0!important;
+  transform:translateX(-50%)!important;width:100%!important;height:100%!important;
+  max-width:100%!important;max-height:100%!important;margin:0!important;padding:0!important;
+  opacity:1!important;filter:none!important;mix-blend-mode:normal!important;
+  background-color:transparent!important;background-repeat:no-repeat!important;
+  background-size:500% 100%!important;background-position-y:bottom!important;
+}
+.mole.normal .penguin-img,.mole.bad .bear-img,.mole.bonus .fox-img{display:block!important}
+.mole.bad .bear-img{background-image:url('assets/bear_sheet_v15.webp?v=15-20260909-1135')!important}
+.mole.bonus .fox-img{background-image:url('assets/fox_sheet_v15.webp?v=15-20260909-1135')!important}
+.mole.normal .penguin-img{background-image:url('assets/penguin_sheet_v15.webp?v=15-20260909-1135')!important}
+</style>
 </head>
 <body>
 <div class="cloud"></div><div class="cloud two"></div>
@@ -39,6 +53,6 @@
   <div class="tiny" style="text-align:center">最高分：<b id="best">0</b> · 版本 2026-09-09 v15 · GitHub Pages</div>
 </main>
 <div class="toast" id="toast">+1</div>
-<script src="assets/app.js?v=15-20260909-0940"></script>
+<script src="assets/app.js?v=15-20260909-1135"></script>
 </body>
 </html>
