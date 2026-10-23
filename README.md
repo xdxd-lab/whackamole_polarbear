@@ -6,13 +6,21 @@
 
 ## 目前版本
 
-- **V16（2026-09-09）**：公開遊戲版本。
+- **V17（2026-10-23）**：公開遊戲版本；保留 V16 角色圖與遊戲邏輯，新增自動資產驗證。
 - 遊戲入口：[index.html](./index.html)
-- 正式角色素材：[assets/v16-20260909/](./assets/v16-20260909/)
+- 正式角色素材（沿用 V16，未更動圖片）：[assets/v16-20260909/](./assets/v16-20260909/)
 - 原始碼 Repository：[xdxd-lab/whackamole_polarbear](https://github.com/xdxd-lab/whackamole_polarbear)
 
 ## 遊戲規則
 
 每局 30 秒，可選擇「悠閒」、「普通」或「高手」難度。敲到企鵝得 1 分，北極狐得 3 分；誤敲北極熊扣 2 分並中斷連擊。最高分儲存在遊玩裝置的瀏覽器中。
 
-> **注意：** GitHub Pages 是線上遊玩網址。單獨下載 `index.html` 並非完整離線版，因為 V16 還需要同一 Repository 中的角色圖片素材。
+> **注意：** GitHub Pages 是線上遊玩網址。單獨下載 `index.html` 並非完整離線版，因為 V17 還需要同一 Repository 中的角色圖片素材。
+
+## 自動化驗證（V17）
+
+每次推送至 `main`、提出 Pull Request 或手動執行時，GitHub Actions 會核對三張正式 AVIF 的路徑、檔案大小及 SHA-256，並在 Chromium 檢查尺寸、15 個角色狀態的解碼及遊戲啟動顯示。失敗時測試工作會標示失敗，提供核對報告與截圖。舊 V15 資源暫時保留，後續只在確認無引用與測試通過後才清理。
+
+- [驗證工作流程](./.github/workflows/verify-v17-assets.yml)
+- [驗證程式](./scripts/verify-assets.mjs)
+- [GitHub Actions](https://github.com/xdxd-lab/whackamole_polarbear/actions/workflows/verify-v17-assets.yml)
