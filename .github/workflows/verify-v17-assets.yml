@@ -1,4 +1,4 @@
-name: Verify V17 character assets
+name: Verify V18 character assets and UI
 
 on:
   push:
@@ -30,7 +30,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: v17-asset-audit
+          name: v18-asset-audit
           path: test-results/
           if-no-files-found: warn
           retention-days: 30
