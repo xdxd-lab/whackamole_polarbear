@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#8fd8ff" />
-<title>打企鵝・北極狐｜V17 資產驗證版 2026-10-23</title>
+<title>打企鵝・北極狐｜V18 音效與玩具槌子版 2026-10-24</title>
 <style>
   :root{
     --sky-top:#8fd8ff; --sky-mid:#cfeeff; --sky-bottom:#eef9ff;
@@ -71,7 +71,7 @@
   .game{width:min(680px,100%);display:grid;gap:12px;position:relative;z-index:2}
   .top{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:stretch}
   .brand,.scoreboard,.controls,.card{background:var(--panel);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.7);box-shadow:var(--shadow);border-radius:22px}
-  .brand{padding:15px 18px}.brand h1{font-size:clamp(24px,5vw,36px);line-height:1;margin:0 0 5px}.brand p{margin:0;font-size:13px;opacity:.7}
+  .brand{padding:15px 18px}.brand h1{font-size:clamp(24px,5vw,36px);line-height:1;margin:0 0 5px;display:flex;align-items:center;gap:.2em}.toy-mallet{width:1.25em;height:1.25em;flex:none;filter:drop-shadow(0 2px 2px rgba(92,48,67,.2))}.brand p{margin:0;font-size:13px;opacity:.7}
   .scoreboard{display:grid;grid-template-columns:repeat(3,minmax(64px,1fr));overflow:hidden}.stat{padding:10px 12px;text-align:center;min-width:72px}.stat+.stat{border-left:1px solid #dde7df}.label{font-size:11px;opacity:.58;font-weight:700;letter-spacing:.05em}.value{font-size:25px;font-weight:900;font-variant-numeric:tabular-nums}.value.hot{color:var(--danger)}
   .card{padding:14px}.board{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,2vw,14px);aspect-ratio:1/1;max-height:66dvh}
   .hole{position:relative;overflow:hidden;border-radius:24px;cursor:pointer;touch-action:manipulation;isolation:isolate;background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(212,233,245,.38))}
@@ -99,7 +99,7 @@
   .progress{height:8px;background:rgba(255,255,255,.5);border-radius:999px;overflow:hidden}.bar{height:100%;width:100%;background:linear-gradient(90deg,var(--good),var(--accent),var(--danger));transform-origin:left;transition:transform .1s linear}
   .overlay{position:absolute;inset:0;display:grid;place-items:center;background:rgba(34,49,40,.34);backdrop-filter:blur(5px);z-index:20;border-radius:22px;opacity:0;visibility:hidden;transition:.2s}.overlay.show{opacity:1;visibility:visible}.modal{width:min(410px,88%);background:#fff;border-radius:24px;padding:24px;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,.25)}.modal h2{font-size:31px;margin:0 0 8px}.modal p{margin:7px 0 18px;line-height:1.6}.bigscore{font-size:52px;font-weight:950;color:var(--good);line-height:1}.tiny{font-size:12px;opacity:.62}
   .toast{position:fixed;left:50%;top:18%;transform:translate(-50%,-8px);z-index:30;font-weight:900;font-size:24px;opacity:0;pointer-events:none;text-shadow:0 2px 0 #fff}.toast.show{animation:pop .55s ease-out}@keyframes pop{0%{opacity:0;transform:translate(-50%,4px) scale(.8)}25%{opacity:1;transform:translate(-50%,-8px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-28px) scale(1)}}
-  @media(max-width:560px){body{align-items:start}.top{grid-template-columns:1fr}.brand{text-align:center}.scoreboard{min-height:68px}.card{padding:10px}.board{gap:6px}.hole{border-radius:18px}.controls{grid-template-columns:1fr 1fr}.controls .primary{grid-column:1/-1;grid-row:1}.controls select{width:100%;min-height:45px}.controls .btn:not(.primary){min-height:45px}}
+  @media(max-width:560px){body{align-items:start}.top{grid-template-columns:1fr}.brand{text-align:center}.brand h1{justify-content:center}.scoreboard{min-height:68px}.card{padding:10px}.board{gap:6px}.hole{border-radius:18px}.controls{grid-template-columns:1fr 1fr}.controls .primary{grid-column:1/-1;grid-row:1}.controls select{width:100%;min-height:45px}.controls .btn:not(.primary){min-height:45px}}
   @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
   /* v5 polar-bear + fox bottom alignment fix */
@@ -166,7 +166,17 @@
 <div class="snow-layer snow-front" aria-hidden="true"></div>
 <main class="game" aria-label="打企鵝與北極狐遊戲">
   <section class="top">
-    <div class="brand"><h1>🔨 雪地敲敲樂</h1><p>打企鵝、打北極狐；小心別敲到北極熊！</p></div>
+    <div class="brand"><h1><svg class="toy-mallet" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="可愛的粉紅玩具槌子">
+      <path d="M30 26 L47 52" stroke="#A96B41" stroke-width="12" stroke-linecap="round"/>
+      <path d="M35 33 L47 50" stroke="#EEC18C" stroke-width="4" stroke-linecap="round"/>
+      <g transform="rotate(-20 29 23)">
+        <rect x="10" y="11" width="38" height="23" rx="10" fill="#FFA7CA" stroke="#A85D85" stroke-width="2"/>
+        <rect x="6" y="13" width="12" height="19" rx="6" fill="#FFE5A2" stroke="#A85D85" stroke-width="2"/>
+        <rect x="40" y="13" width="12" height="19" rx="6" fill="#FFE5A2" stroke="#A85D85" stroke-width="2"/>
+        <path d="M23 17 Q31 13 39 18" fill="none" stroke="#FFF4F9" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="28" cy="25" r="2" fill="#FFF4F9"/>
+      </g>
+    </svg><span>雪地敲敲樂</span></h1><p>打企鵝、打北極狐；小心別敲到北極熊！</p></div>
     <div class="scoreboard" aria-live="polite">
       <div class="stat"><div class="label">分數</div><div class="value" id="score">0</div></div>
       <div class="stat"><div class="label">連擊</div><div class="value" id="combo">0</div></div>
@@ -195,12 +205,12 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny" style="text-align:center">最高分：<b id="best">0</b> · 版本 2026-10-23 v17 · GitHub Pages · 資產驗證版</div>
+  <div class="tiny" style="text-align:center">最高分：<b id="best">0</b> · 版本 2026-10-24 v18 · GitHub Pages · 可愛玩具槌子版</div>
 </main>
 <div class="toast" id="toast">+1</div>
 <script>(async () => {
   'use strict';
-  const VERSION = '20261023-v17';
+  const VERSION = '20261024-v18';
   const BEST_KEY = 'wam_best_20260904v7';
   const $ = id => document.getElementById(id);
   const board = $('board'), overlay = $('overlay');
@@ -270,7 +280,7 @@
   const timers=new Set(), activeAudio=new Set();
   try {best=Math.max(0,Number(localStorage.getItem(BEST_KEY))||0);} catch (_) {}
   $('best').textContent=best;
-  function beep(freq=440,dur=.06,type='sine',vol=.05){
+  function beep(freq=440,dur=.06,type='sine',vol=.12){
     if(!soundOn) return;
     try {
       audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();
@@ -361,7 +371,7 @@
     setState(a,'pain');
     let delta;
     if(a.type==='bad'){
-      delta=-2;combo=0;beep(120,.12,'sawtooth',.07);vibrate(55);showToast('誤敲北極熊 -2');
+      delta=-2;combo=0;beep(120,.12,'sawtooth',.16);vibrate(55);showToast('誤敲北極熊 -2');
     }else{
       delta=a.type==='bonus'?3:1;combo++;maxCombo=Math.max(maxCombo,combo);
       beep(a.type==='bonus'?760:420+Math.min(combo,12)*25,.07,a.type==='bonus'?'triangle':'sine');

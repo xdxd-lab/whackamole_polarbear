@@ -1,4 +1,4 @@
-/** V17 regression gate: actual repo bytes -> hash -> Chromium AVIF decode -> game smoke test. */
+/** V18 regression gate: actual repo bytes -> hash -> Chromium AVIF decode -> game smoke test. */
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { createServer } from 'node:http';
@@ -10,14 +10,18 @@ import { chromium } from 'playwright';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const states = ['peek', 'warning', 'sneaky', 'pain', 'sad'];
 const species = ['bear', 'fox', 'penguin'];
-const report = { version: 'v17-asset-audit', date: new Date().toISOString(), files: [], browser: {}, passed: false };
+const report = { version: 'v18-asset-audit', date: new Date().toISOString(), files: [], browser: {}, passed: false };
 let server;
 let browser;
 try {
   const manifest = JSON.parse(await readFile(path.join(root, 'deployment/v16-release.json'), 'utf8'));
   const html = await readFile(path.join(root, 'index.html'), 'utf8');
-  assert.match(html, /const VERSION\s*=\s*['"][^'"]*v1[67]['"]/, 'Unexpected game version');
+  assert.match(html, /const VERSION\s*=\s*['"][^'"]*v18['"]/, 'Unexpected game version');
   assert.equal(/assets\/(?:style\.css|app\.js|[^'"\s]*\.webp)/.test(html), false, 'Legacy CSS/JS/WebP referenced by game');
+  assert.match(html, /<svg[^>]*class="toy-mallet"/, 'Header must use cute toy mallet SVG');
+  assert.equal(html.includes('🔨'), false, 'Old steel-hammer emoji must be removed');
+  assert.match(html, /function beep\([^)]*vol=\.12\)/, 'Default sound must have higher gain');
+  assert.match(html, /beep\(120,\.12,'sawtooth',\.16\)/, 'Bear warning sound must have higher gain');
   assert.deepEqual(Object.keys(manifest.atlases).sort(), [...species].sort(), 'Expected exactly three official atlases');
 
   for (const name of species) {
@@ -51,7 +55,29 @@ try {
   const page = await browser.newPage({ viewport: { width: 900, height: 900 }, deviceScaleFactor: 1 });
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message));
+  await page.addInitScript(() => {
+    // Record the actual AudioParam gain at oscillator start, before envelope ramp.
+    window.__audioPeaks = [];
+    const Context = window.AudioContext || window.webkitAudioContext;
+    if (!Context || !window.OscillatorNode) return;
+    const createGain = Context.prototype.createGain;
+    Context.prototype.createGain = function(...args) {
+      const gainNode = createGain.apply(this, args);
+      window.__latestGainNode = gainNode;
+      return gainNode;
+    };
+    const startOscillator = OscillatorNode.prototype.start;
+    OscillatorNode.prototype.start = function(...args) {
+      if (window.__latestGainNode) window.__audioPeaks.push(window.__latestGainNode.gain.value);
+      return startOscillator.apply(this, args);
+    };
+  });
   await page.goto(origin + '/', { waitUntil: 'load' });
+  const mallet = page.locator('.brand h1 svg.toy-mallet');
+  assert.equal(await mallet.count(), 1, 'Expected exactly one cute mallet icon');
+  assert.equal(await mallet.isVisible(), true, 'Mallet should be visible');
+  const malletSize = await mallet.boundingBox();
+  assert.ok(malletSize?.width >= 24 && malletSize?.height >= 24, 'Mallet icon is too small');
 
   // Independently decode each served AVIF in a real browser and check all 5 visible tiles.
   report.browser.atlases = await page.evaluate(async (items) => {
@@ -97,11 +123,15 @@ try {
   }, null, { timeout: 8000 });
   assert.deepEqual(pageErrors, [], 'JavaScript runtime errors during game');
   assert.equal(await page.locator('.hole').count(), 9, 'Game board must have nine holes');
+  const audioPeaks = await page.evaluate(() => window.__audioPeaks || []);
+  assert.ok(audioPeaks.some(value => Math.abs(value - .12) < .00001), 'Expected a real oscillator using boosted 0.12 gain');
+  report.browser.audioStartGains = audioPeaks;
+  report.browser.toyMallet = { visible: true, width: malletSize.width, height: malletSize.height };
   await mkdir(path.join(root, 'test-results'), { recursive: true });
-  await page.screenshot({ path: path.join(root, 'test-results', 'v17-smoke.png'), animations: 'disabled' });
+  await page.screenshot({ path: path.join(root, 'test-results', 'v18-smoke.png'), animations: 'disabled' });
   report.browser.gameSmoke = 'pass: 9 holes, successfully decoded sprite visible after starting game';
   report.passed = true;
-  console.log('PASS Chromium decode: ' + species.length + ' atlases, ' + species.length * states.length + ' nonblank frames; V17 smoke test');
+  console.log('PASS Chromium decode: ' + species.length + ' atlases, ' + species.length * states.length + ' nonblank frames; V18 smoke test');
 } catch (error) {
   report.error = String(error?.stack ?? error);
   process.exitCode = 1;
