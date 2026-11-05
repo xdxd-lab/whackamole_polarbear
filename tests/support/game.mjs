@@ -1,0 +1,96 @@
+import assert from 'node:assert/strict';
+import path from 'node:path';
+import { chromium } from 'playwright';
+import { ROOT, startServer } from './server.mjs';
+
+const INIT_SCRIPT = path.join(ROOT, 'tests/support/page-init.js');
+
+/** Random values that make the game choose a given species. */
+export const SPECIES_ROLL = { bear: 0.05, fox: 0.2, penguin: 0.9 };
+/** Random value that makes the game choose a given hole. */
+export const holeRoll = index => (index + 0.5) / 9;
+
+export const DIFFICULTY = {
+  easy: { warning: 619, hide: 915, next: 1050 },
+  normal: { warning: 497, hide: 725, next: 850 },
+  hard: { warning: 381, hide: 560, next: 650 },
+};
+
+export async function startHarness(options) {
+  const server = await startServer(options);
+  const browser = await chromium.launch({ headless: true });
+  return { server, browser, close: async () => { await browser.close(); await server.close(); } };
+}
+
+export class Game {
+  static async open(harness, { viewport = { width: 900, height: 900 }, storage = {}, ready = true } = {}) {
+    const context = await harness.browser.newContext({ viewport, deviceScaleFactor: 1 });
+    await context.addInitScript({ path: INIT_SCRIPT });
+    await context.addInitScript(entries => {
+      for (const [key, value] of Object.entries(entries)) localStorage.setItem(key, value);
+    }, storage);
+    const page = await context.newPage();
+    const game = new Game(context, page);
+    page.on('pageerror', error => game.errors.push(error.message));
+    await page.goto(`${harness.server.origin}/`);
+    if (ready) await page.waitForFunction(() => document.getElementById('modalBtn')?.disabled === false && document.querySelectorAll('#board .hole').length === 9);
+    return game;
+  }
+
+  constructor(context, page) {
+    this.context = context;
+    this.page = page;
+    this.errors = [];
+  }
+
+  close() { return this.context.close(); }
+
+  /** Starts a round through the on-screen button and waits for play to begin. */
+  async start({ difficulty, random = [] } = {}) {
+    if (difficulty) await this.page.selectOption('#difficulty', difficulty);
+    await this.queueRandom(random);
+    await this.page.locator('#modalBtn').click();
+    await this.page.waitForFunction(() => !document.getElementById('overlay').classList.contains('show'));
+    await this.page.evaluate(() => window.__test.record());
+  }
+
+  /** Starts with a chosen first target. */
+  startWith(species, hole = 0, options = {}) {
+    return this.start({ ...options, random: [holeRoll(hole), SPECIES_ROLL[species]] });
+  }
+
+  queueRandom(values) { return this.page.evaluate(list => window.__test.queueRandom(list), values); }
+  /** Chooses the next spawn. */
+  nextSpawn(species, hole) { return this.queueRandom([holeRoll(hole), SPECIES_ROLL[species]]); }
+  advance(ms) { return this.page.evaluate(value => window.__test.advance(value), ms); }
+  /** Moves time without firing timers, simulating a main thread too busy to run them. */
+  jump(ms) { return this.page.evaluate(value => window.__test.jump(value), ms); }
+  hit(index) { return this.page.evaluate(value => window.__test.input(value), index); }
+  state() { return this.page.evaluate(() => window.__test.state()); }
+  species() { return this.page.evaluate(() => window.__test.species()); }
+  activeIndex() { return this.page.evaluate(() => window.__test.activeIndex()); }
+  now() { return this.page.evaluate(() => window.__test.now()); }
+  trace() { return this.page.evaluate(() => window.__test.trace()); }
+  resetTrace() { return this.page.evaluate(() => window.__test.resetTrace()); }
+  text(selector) { return this.page.locator(selector).innerText(); }
+  async number(selector) { return Number(await this.page.locator(selector).textContent()); }
+  overlayShown() { return this.page.evaluate(() => document.getElementById('overlay').classList.contains('show')); }
+
+  /** Hits the current target after `wait` virtual ms, then lets the next one appear. */
+  async hitCurrent(wait = 100) {
+    await this.advance(wait);
+    await this.hit(await this.activeIndex());
+  }
+
+  /** Finishes every animation that can finish, so sampled styles do not depend on real time. */
+  settle() {
+    return this.page.evaluate(() => {
+      for (const animation of document.getAnimations()) {
+        const timing = animation.effect?.getComputedTiming?.();
+        if (timing && timing.iterations !== Infinity) animation.finish();
+      }
+    });
+  }
+
+  assertNoErrors() { assert.deepEqual(this.errors, [], 'JavaScript errors while playing'); }
+}

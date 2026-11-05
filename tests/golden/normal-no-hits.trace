@@ -1,0 +1,138 @@
+     0 sound triangle 520Hz gain=0.12 dur=0.08
+     0 2:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=30 best=0 toast=+1 playing
+   497 2:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=30 best=0 toast=+1 playing
+   725 2:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=30 best=0 toast=+1 playing
+   850 0:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=30 best=0 toast=+1 playing
+  1000 0:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=29 best=0 toast=+1 playing
+  1347 0:fox:warning:-:北極狐，+3 分 score=0 combo=0 time=29 best=0 toast=+1 playing
+  1575 0:fox:sneaky:escape:北極狐，已離開可打擊階段 score=0 combo=0 time=29 best=0 toast=+1 playing
+  1700 1:bear:peek:-:北極熊，別打！ score=0 combo=0 time=29 best=0 toast=+1 playing
+  2000 1:bear:peek:-:北極熊，別打！ score=0 combo=0 time=28 best=0 toast=+1 playing
+  2197 1:bear:warning:-:北極熊，別打！ score=0 combo=0 time=28 best=0 toast=+1 playing
+  2425 1:bear:sneaky:escape:北極熊，已離開可打擊階段 score=0 combo=0 time=28 best=0 toast=+1 playing
+  2550 8:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=28 best=0 toast=+1 playing
+  3000 8:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=27 best=0 toast=+1 playing
+  3047 8:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=27 best=0 toast=+1 playing
+  3275 8:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=27 best=0 toast=+1 playing
+  3400 7:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=27 best=0 toast=+1 playing
+  3897 7:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=27 best=0 toast=+1 playing
+  4000 7:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=26 best=0 toast=+1 playing
+  4125 7:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=26 best=0 toast=+1 playing
+  4250 4:bear:peek:-:北極熊，別打！ score=0 combo=0 time=26 best=0 toast=+1 playing
+  4747 4:bear:warning:-:北極熊，別打！ score=0 combo=0 time=26 best=0 toast=+1 playing
+  4975 4:bear:sneaky:escape:北極熊，已離開可打擊階段 score=0 combo=0 time=26 best=0 toast=+1 playing
+  5000 4:bear:sneaky:escape:北極熊，已離開可打擊階段 score=0 combo=0 time=25 best=0 toast=+1 playing
+  5100 0:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=25 best=0 toast=+1 playing
+  5597 0:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=25 best=0 toast=+1 playing
+  5825 0:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=25 best=0 toast=+1 playing
+  5950 3:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=25 best=0 toast=+1 playing
+  6000 3:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=24 best=0 toast=+1 playing
+  6447 3:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=24 best=0 toast=+1 playing
+  6675 3:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=24 best=0 toast=+1 playing
+  6800 7:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=24 best=0 toast=+1 playing
+  7000 7:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=23 best=0 toast=+1 playing
+  7297 7:fox:warning:-:北極狐，+3 分 score=0 combo=0 time=23 best=0 toast=+1 playing
+  7525 7:fox:sneaky:escape:北極狐，已離開可打擊階段 score=0 combo=0 time=23 best=0 toast=+1 playing
+  7650 0:bear:peek:-:北極熊，別打！ score=0 combo=0 time=23 best=0 toast=+1 playing
+  8000 0:bear:peek:-:北極熊，別打！ score=0 combo=0 time=22 best=0 toast=+1 playing
+  8147 0:bear:warning:-:北極熊，別打！ score=0 combo=0 time=22 best=0 toast=+1 playing
+  8375 0:bear:sneaky:escape:北極熊，已離開可打擊階段 score=0 combo=0 time=22 best=0 toast=+1 playing
+  8500 1:bear:peek:-:北極熊，別打！ score=0 combo=0 time=22 best=0 toast=+1 playing
+  8997 1:bear:warning:-:北極熊，別打！ score=0 combo=0 time=22 best=0 toast=+1 playing
+  9000 1:bear:warning:-:北極熊，別打！ score=0 combo=0 time=21 best=0 toast=+1 playing
+  9225 1:bear:sneaky:escape:北極熊，已離開可打擊階段 score=0 combo=0 time=21 best=0 toast=+1 playing
+  9350 0:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=21 best=0 toast=+1 playing
+  9847 0:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=21 best=0 toast=+1 playing
+ 10000 0:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=20 best=0 toast=+1 playing
+ 10075 0:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=20 best=0 toast=+1 playing
+ 10200 6:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=20 best=0 toast=+1 playing
+ 10697 6:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=20 best=0 toast=+1 playing
+ 10925 6:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=20 best=0 toast=+1 playing
+ 11000 6:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=19 best=0 toast=+1 playing
+ 11050 7:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=19 best=0 toast=+1 playing
+ 11547 7:fox:warning:-:北極狐，+3 分 score=0 combo=0 time=19 best=0 toast=+1 playing
+ 11775 7:fox:sneaky:escape:北極狐，已離開可打擊階段 score=0 combo=0 time=19 best=0 toast=+1 playing
+ 11900 1:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=19 best=0 toast=+1 playing
+ 12000 1:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=18 best=0 toast=+1 playing
+ 12397 1:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=18 best=0 toast=+1 playing
+ 12625 1:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=18 best=0 toast=+1 playing
+ 12750 8:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=18 best=0 toast=+1 playing
+ 13000 8:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=17 best=0 toast=+1 playing
+ 13247 8:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=17 best=0 toast=+1 playing
+ 13475 8:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=17 best=0 toast=+1 playing
+ 13600 4:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=17 best=0 toast=+1 playing
+ 14000 4:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=16 best=0 toast=+1 playing
+ 14097 4:fox:warning:-:北極狐，+3 分 score=0 combo=0 time=16 best=0 toast=+1 playing
+ 14325 4:fox:sneaky:escape:北極狐，已離開可打擊階段 score=0 combo=0 time=16 best=0 toast=+1 playing
+ 14450 2:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=16 best=0 toast=+1 playing
+ 14947 2:fox:warning:-:北極狐，+3 分 score=0 combo=0 time=16 best=0 toast=+1 playing
+ 15000 2:fox:warning:-:北極狐，+3 分 score=0 combo=0 time=15 best=0 toast=+1 playing
+ 15175 2:fox:sneaky:escape:北極狐，已離開可打擊階段 score=0 combo=0 time=15 best=0 toast=+1 playing
+ 15300 0:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=15 best=0 toast=+1 playing
+ 15797 0:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=15 best=0 toast=+1 playing
+ 16000 0:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=14 best=0 toast=+1 playing
+ 16025 0:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=14 best=0 toast=+1 playing
+ 16150 5:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=14 best=0 toast=+1 playing
+ 16647 5:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=14 best=0 toast=+1 playing
+ 16875 5:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=14 best=0 toast=+1 playing
+ 17000 8:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=14 best=0 toast=+1 playing
+ 17000 8:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=13 best=0 toast=+1 playing
+ 17497 8:fox:warning:-:北極狐，+3 分 score=0 combo=0 time=13 best=0 toast=+1 playing
+ 17725 8:fox:sneaky:escape:北極狐，已離開可打擊階段 score=0 combo=0 time=13 best=0 toast=+1 playing
+ 17850 3:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=13 best=0 toast=+1 playing
+ 18000 3:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=12 best=0 toast=+1 playing
+ 18347 3:fox:warning:-:北極狐，+3 分 score=0 combo=0 time=12 best=0 toast=+1 playing
+ 18575 3:fox:sneaky:escape:北極狐，已離開可打擊階段 score=0 combo=0 time=12 best=0 toast=+1 playing
+ 18700 4:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=12 best=0 toast=+1 playing
+ 19000 4:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=11 best=0 toast=+1 playing
+ 19197 4:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=11 best=0 toast=+1 playing
+ 19425 4:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=11 best=0 toast=+1 playing
+ 19550 7:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=11 best=0 toast=+1 playing
+ 20000 7:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=10 best=0 toast=+1 playing
+ 20047 7:fox:warning:-:北極狐，+3 分 score=0 combo=0 time=10 best=0 toast=+1 playing
+ 20275 7:fox:sneaky:escape:北極狐，已離開可打擊階段 score=0 combo=0 time=10 best=0 toast=+1 playing
+ 20400 1:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=10 best=0 toast=+1 playing
+ 20897 1:fox:warning:-:北極狐，+3 分 score=0 combo=0 time=10 best=0 toast=+1 playing
+ 21000 1:fox:warning:-:北極狐，+3 分 score=0 combo=0 time=9 best=0 toast=+1 playing
+ 21125 1:fox:sneaky:escape:北極狐，已離開可打擊階段 score=0 combo=0 time=9 best=0 toast=+1 playing
+ 21250 2:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=9 best=0 toast=+1 playing
+ 21747 2:fox:warning:-:北極狐，+3 分 score=0 combo=0 time=9 best=0 toast=+1 playing
+ 21975 2:fox:sneaky:escape:北極狐，已離開可打擊階段 score=0 combo=0 time=9 best=0 toast=+1 playing
+ 22000 2:fox:sneaky:escape:北極狐，已離開可打擊階段 score=0 combo=0 time=8 best=0 toast=+1 playing
+ 22100 5:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=8 best=0 toast=+1 playing
+ 22597 5:fox:warning:-:北極狐，+3 分 score=0 combo=0 time=8 best=0 toast=+1 playing
+ 22825 5:fox:sneaky:escape:北極狐，已離開可打擊階段 score=0 combo=0 time=8 best=0 toast=+1 playing
+ 22950 3:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=8 best=0 toast=+1 playing
+ 23000 3:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=7 best=0 toast=+1 playing
+ 23447 3:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=7 best=0 toast=+1 playing
+ 23675 3:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=7 best=0 toast=+1 playing
+ 23800 1:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=7 best=0 toast=+1 playing
+ 24000 1:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=6 best=0 toast=+1 playing
+ 24297 1:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=6 best=0 toast=+1 playing
+ 24525 1:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=6 best=0 toast=+1 playing
+ 24650 0:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=6 best=0 toast=+1 playing
+ 25000 0:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=5 best=0 toast=+1 playing
+ 25147 0:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=5 best=0 toast=+1 playing
+ 25375 0:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=5 best=0 toast=+1 playing
+ 25500 3:fox:peek:-:北極狐，+3 分 score=0 combo=0 time=5 best=0 toast=+1 playing
+ 25997 3:fox:warning:-:北極狐，+3 分 score=0 combo=0 time=5 best=0 toast=+1 playing
+ 26000 3:fox:warning:-:北極狐，+3 分 score=0 combo=0 time=4 best=0 toast=+1 playing
+ 26225 3:fox:sneaky:escape:北極狐，已離開可打擊階段 score=0 combo=0 time=4 best=0 toast=+1 playing
+ 26350 4:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=4 best=0 toast=+1 playing
+ 26847 4:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=4 best=0 toast=+1 playing
+ 27000 4:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=3 best=0 toast=+1 playing
+ 27075 4:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=3 best=0 toast=+1 playing
+ 27200 8:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=3 best=0 toast=+1 playing
+ 27697 8:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=3 best=0 toast=+1 playing
+ 27925 8:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=3 best=0 toast=+1 playing
+ 28000 8:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=2 best=0 toast=+1 playing
+ 28050 7:bear:peek:-:北極熊，別打！ score=0 combo=0 time=2 best=0 toast=+1 playing
+ 28547 7:bear:warning:-:北極熊，別打！ score=0 combo=0 time=2 best=0 toast=+1 playing
+ 28775 7:bear:sneaky:escape:北極熊，已離開可打擊階段 score=0 combo=0 time=2 best=0 toast=+1 playing
+ 28900 6:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=2 best=0 toast=+1 playing
+ 29000 6:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=1 best=0 toast=+1 playing
+ 29397 6:penguin:warning:-:企鵝，+1 分 score=0 combo=0 time=1 best=0 toast=+1 playing
+ 29625 6:penguin:sneaky:escape:企鵝，已離開可打擊階段 score=0 combo=0 time=1 best=0 toast=+1 playing
+ 29750 0:penguin:peek:-:企鵝，+1 分 score=0 combo=0 time=1 best=0 toast=+1 playing
+ 30000 sound triangle 260Hz gain=0.12 dur=0.09
+ 30000 empty score=0 combo=0 time=0 best=0 toast=+1 overlay
