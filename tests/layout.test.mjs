@@ -56,6 +56,9 @@ for (const [width, height] of VIEWPORTS) {
         const board = boxes['#board'];
         assert.ok(board.inside, `${label}: board is cut off (${JSON.stringify(board)})`);
         assert.ok(Math.abs(board.width - board.height) <= 1, `${label}: board is not square`);
+        const card = boxes['.card'];
+        assert.ok(Math.abs((board.left - card.left) - (card.right - board.right)) <= 1, `${label}: board is not centred in its panel`);
+        assert.ok(Math.abs((board.top - card.top) - (card.bottom - board.bottom)) <= 1, `${label}: board is not centred in its panel`);
         const hole = await game.page.locator('#board .hole').first().boundingBox();
         assert.ok(hole.width >= MIN_TOUCH_TARGET && hole.height >= MIN_TOUCH_TARGET, `${label}: holes are too small (${hole.width}x${hole.height})`);
       } finally {
