@@ -55,6 +55,9 @@ const MUTANTS = {
   'landscape loses its two columns': replace('@media(orientation:landscape) and (max-height:560px){', '@media(orientation:landscape) and (max-height:1px){'),
   'panel blur restored': replace('.brand,.scoreboard,.controls,.card{background:var(--panel);', '.brand,.scoreboard,.controls,.card{background:var(--panel);backdrop-filter:blur(8px);'),
   'panels too transparent': replace('--panel:rgba(255,255,255,.9)', '--panel:rgba(255,255,255,.8)'),
+  'reduced motion snow keeps falling': replace('.snow-layer{animation:none!important;will-change:auto}', ''),
+  'reduced motion hides the toast': replace('.toast.show{animation:none!important;opacity:1;transform:translate(-50%,-8px)}', ''),
+  'toast never clears': replace("toastTimer=setTimeout(()=>el.classList.remove('show'),550);", ''),
   'bear warning stance lost': replace('.hole.bear-warning .mole{bottom:2%!important;left:2%!important}', ''),
 };
 

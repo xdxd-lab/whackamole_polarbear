@@ -104,7 +104,7 @@
   @media(orientation:landscape) and (max-height:340px){.brand{padding:4px 8px}.brand h1{font-size:18px;margin:0}.brand p{display:none}}
   @container (max-height:320px){.modal{padding:12px 16px;border-radius:18px}.modal h2{font-size:22px;margin:0 0 2px}.modal p{margin:4px 0 8px;line-height:1.35;font-size:14px}.modal .tiny{display:none}.bigscore{font-size:34px}.modal .btn{padding:9px 14px}}
   @media(max-width:560px) and (max-height:620px){.brand{padding:8px 12px}.brand h1{font-size:22px;margin:0}.brand p{display:none}.scoreboard{min-height:0}.stat{padding:5px 8px}.value{font-size:20px}.game{gap:8px}}
-  @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}.snow-layer{animation:none!important;will-change:auto}.toast.show{animation:none!important;opacity:1;transform:translate(-50%,-8px)}}
 
   /* v5 polar-bear + fox bottom alignment fix */
   .hole.penguin-active:before,
@@ -280,7 +280,7 @@
   let running=false, loading=false, ready=false, loadError=null;
   let score=0, combo=0, maxCombo=0, timeLeft=30, best=0;
   let actor=null, lastHole=-1, session=0, clockTimer=null, started=0;
-  let soundOn=true, audioCtx=null;
+  let soundOn=true, audioCtx=null, toastTimer=null;
   const timers=new Set(), activeAudio=new Set();
   try {best=Math.max(0,Number(localStorage.getItem(BEST_KEY))||0);} catch (_) {}
   $('best').textContent=best;
@@ -316,6 +316,7 @@
   function showToast(text){
     const el=$('toast');el.textContent=text;el.classList.remove('show');
     void el.offsetWidth;el.classList.add('show');
+    clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),550);
   }
   function resetHole(h){
     // Hide BEFORE cancelling animations or releasing position locks.

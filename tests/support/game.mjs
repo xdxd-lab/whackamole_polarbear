@@ -23,8 +23,8 @@ export async function startHarness(options) {
 }
 
 export class Game {
-  static async open(harness, { viewport = { width: 900, height: 900 }, storage = {}, ready = true } = {}) {
-    const context = await harness.browser.newContext({ viewport, deviceScaleFactor: 1 });
+  static async open(harness, { viewport = { width: 900, height: 900 }, storage = {}, ready = true, reducedMotion = 'no-preference' } = {}) {
+    const context = await harness.browser.newContext({ viewport, deviceScaleFactor: 1, reducedMotion });
     await context.addInitScript({ path: INIT_SCRIPT });
     await context.addInitScript(entries => {
       for (const [key, value] of Object.entries(entries)) localStorage.setItem(key, value);

@@ -28,3 +28,45 @@ test('panels stay opaque enough to read without the blur', async () => {
     await game.close();
   }
 });
+
+test('reduced motion: the snow stands still', async () => {
+  const game = await Game.open(harness, { reducedMotion: 'reduce' });
+  try {
+    const running = await game.page.$$eval('.snow-layer', layers => layers.flatMap(layer => layer.getAnimations()).length);
+    assert.equal(running, 0);
+  } finally {
+    await game.close();
+  }
+});
+
+test('reduced motion: hit feedback appears without animating, then clears', async () => {
+  const game = await Game.open(harness, { reducedMotion: 'reduce' });
+  const toast = async () => {
+    await game.settle();
+    return game.page.$eval('#toast', element => ({ opacity: getComputedStyle(element).opacity, animation: getComputedStyle(element).animationName }));
+  };
+  try {
+    await game.startWith('penguin');
+    await game.hitCurrent();
+    assert.deepEqual(await toast(), { opacity: '1', animation: 'none' });
+    await game.advance(549);
+    assert.equal((await toast()).opacity, '1');
+    await game.advance(1);
+    assert.equal((await toast()).opacity, '0');
+  } finally {
+    await game.close();
+  }
+});
+
+test('normal motion keeps the snow and the animated toast', async () => {
+  const game = await Game.open(harness);
+  try {
+    const running = await game.page.$$eval('.snow-layer', layers => layers.flatMap(layer => layer.getAnimations()).length);
+    assert.equal(running, 3);
+    await game.startWith('penguin');
+    await game.hitCurrent();
+    assert.equal(await game.page.$eval('#toast', element => getComputedStyle(element).animationName), 'pop');
+  } finally {
+    await game.close();
+  }
+});
