@@ -111,7 +111,10 @@ async function runCase(transform) {
       write: (name, value) => writeFile(path.join(dir, name), value),
     });
     if (!applied) return { result: 'stale' };
-    const { status, output } = await run(['scripts/verify-assets.mjs'], dir);
+    // The gate runs these same tests. Running them first keeps caught mutants cheap;
+    // only survivors pay for the full gate with its real-time browser smoke test.
+    let { status, output } = await run(['--test', '--test-reporter=spec', 'tests/**/*.test.mjs'], dir);
+    if (status === 0) ({ status, output } = await run(['scripts/verify-assets.mjs'], dir));
     if (status === 0) return { result: 'pass' };
     const reason = output.match(/^\s*✖ (.+?)(?: \(\d|$)/m)?.[1] ?? output.match(/FAIL .*/)?.[0] ?? 'failed';
     return { result: 'fail', reason: reason.slice(0, 100) };
