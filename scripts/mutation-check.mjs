@@ -50,6 +50,7 @@ const MUTANTS = {
   'scoreboard rewritten on every tick': replace('if(el.textContent!==text)el.textContent=text;', 'el.textContent=text;'),
   'images forced to revalidate': replace('fetch(cfg.url)', "fetch(cfg.url, {cache:'no-cache'})"),
   'image hash no longer checked': replace('if (digest !== cfg.sha256)', 'if (false)'),
+  'page may outgrow the screen': replace('.game{width:min(680px,100%);max-height:100%;', '.game{width:min(680px,100%);'),
   'bear warning stance lost': replace('.hole.bear-warning .mole{bottom:2%!important;left:2%!important}', ''),
 };
 
