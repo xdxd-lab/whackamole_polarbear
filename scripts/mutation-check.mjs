@@ -48,6 +48,8 @@ const MUTANTS = {
   'sprite frames swapped': replace("const ids = ['peek','warning','sneaky','pain','sad'];", "const ids = ['warning','peek','sneaky','pain','sad'];"),
   'sad frame no longer drops': replace("{duration:340,easing:'ease-in',fill:'forwards'}", "{duration:340,easing:'ease-in'}"),
   'scoreboard rewritten on every tick': replace('if(el.textContent!==text)el.textContent=text;', 'el.textContent=text;'),
+  'images forced to revalidate': replace('fetch(cfg.url)', "fetch(cfg.url, {cache:'no-cache'})"),
+  'image hash no longer checked': replace('if (digest !== cfg.sha256)', 'if (false)'),
   'bear warning stance lost': replace('.hole.bear-warning .mole{bottom:2%!important;left:2%!important}', ''),
 };
 

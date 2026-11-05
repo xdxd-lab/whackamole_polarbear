@@ -226,7 +226,7 @@
     const result = {};
     const ids = ['peek','warning','sneaky','pain','sad'];
     await Promise.all(Object.entries(config).map(async ([species,cfg]) => {
-      const response = await fetch(cfg.url, {cache:'no-cache'});
+      const response = await fetch(cfg.url);
       if (!response.ok) throw new Error(species + ': HTTP ' + response.status);
       const bytes = await response.arrayBuffer();
       const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');

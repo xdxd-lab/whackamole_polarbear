@@ -34,6 +34,21 @@ test('a missing image stops the game', () => failingLoad(
   /HTTP 404/,
 ));
 
+test('a repeat visit reuses cached images, as GitHub Pages allows for 10 minutes', async () => {
+  const harness = await startHarness({ cacheControl: 'max-age=600' });
+  const game = await Game.open(harness);
+  const images = () => harness.server.requests.filter(request => request.pathname.endsWith('.avif')).length;
+  try {
+    assert.equal(images(), 3);
+    await game.page.goto(`${harness.server.origin}/`);
+    await game.page.waitForFunction(() => document.getElementById('modalBtn')?.disabled === false && document.querySelectorAll('#board .hole').length === 9);
+    assert.equal(images(), 3);
+  } finally {
+    await game.close();
+    await harness.close();
+  }
+});
+
 test('loads exactly the three official images and no retired files', async () => {
   const harness = await startHarness();
   const game = await Game.open(harness);

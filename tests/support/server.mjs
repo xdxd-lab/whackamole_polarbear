@@ -18,7 +18,7 @@ const TYPES = {
  * Serves the working tree as GitHub Pages would. `override` can replace a
  * response by URL path, which lets tests simulate corrupted or missing files.
  */
-export async function startServer({ root = ROOT, override = () => null } = {}) {
+export async function startServer({ root = ROOT, override = () => null, cacheControl = 'no-store' } = {}) {
   const requests = [];
   const server = createServer(async (req, res) => {
     try {
@@ -31,7 +31,7 @@ export async function startServer({ root = ROOT, override = () => null } = {}) {
       const data = replaced?.body ?? await readFile(file);
       res.writeHead(200, {
         'Content-Type': TYPES[path.extname(file)] ?? 'application/octet-stream',
-        'Cache-Control': 'no-store',
+        'Cache-Control': cacheControl,
       });
       res.end(data);
     } catch {
