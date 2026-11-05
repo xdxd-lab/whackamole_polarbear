@@ -55,9 +55,11 @@ const MUTANTS = {
   'landscape loses its two columns': replace('@media(orientation:landscape) and (max-height:560px){', '@media(orientation:landscape) and (max-height:1px){'),
   'panel blur restored': replace('.brand,.scoreboard,.controls,.card{background:var(--panel);', '.brand,.scoreboard,.controls,.card{background:var(--panel);backdrop-filter:blur(8px);'),
   'panels too transparent': replace('--panel:rgba(255,255,255,.9)', '--panel:rgba(255,255,255,.8)'),
-  'reduced motion snow keeps falling': replace('.snow-layer{animation:none!important;will-change:auto}', ''),
-  'reduced motion hides the toast': replace('.toast.show{animation:none!important;opacity:1;transform:translate(-50%,-8px)}', ''),
+  'reduced motion snow keeps falling': replace('.snow-layer{animation:none;will-change:auto}', ''),
+  'reduced motion hides the toast': replace('.toast.show{animation:none;opacity:1;transform:translate(-50%,-8px)}', ''),
   'toast never clears': replace("toastTimer=setTimeout(()=>el.classList.remove('show'),550);", ''),
+  'hidden characters become visible': replace('.hole[data-state="hidden"] .mole{visibility:hidden}', ''),
+  'hit no longer locks the position': replace('a.m.style.bottom=cs.bottom;', ''),
   'bear warning stance lost': replace('.hole.bear-warning .mole{bottom:2%;left:2%}', ''),
 };
 

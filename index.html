@@ -78,6 +78,8 @@
   .hole{position:relative;overflow:hidden;border-radius:24px;cursor:pointer;touch-action:manipulation;isolation:isolate;background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(212,233,245,.38))}
   .hole:before{content:"";position:absolute;left:9%;right:9%;bottom:7%;height:31%;background:var(--hole);border-radius:50%;box-shadow:inset 0 8px 0 rgba(0,0,0,.2),0 5px 0 rgba(255,255,255,.16);z-index:1}
   .mole{position:absolute;left:4%;width:92%;height:92%;bottom:-70%;z-index:2;display:flex;align-items:flex-end;justify-content:center;transition:bottom .14s cubic-bezier(.2,.85,.3,1.18),transform .08s;filter:drop-shadow(0 5px 3px rgba(0,0,0,.08));pointer-events:none}
+  .hole.penguin-active:before,.hole.bear-active:before,.hole.fox-active:before{opacity:0}
+  .hole[data-state="hidden"] .mole{visibility:hidden}
   .hole.up .mole{bottom:8%}
   .penguin-img,.bear-img,.fox-img{display:none;position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:100%;height:100%;object-fit:contain;object-position:center bottom}.mole.normal .penguin-img,.mole.bad .bear-img,.mole.bonus .fox-img{display:block}
   .hole.bear-warning .mole,.hole.fox-warning .mole,.hole.penguin-warning .mole{animation:bearwarn .18s ease-in-out 2}
@@ -88,24 +90,14 @@
 
   .controls{display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:12px}.btn,select{border:0;border-radius:15px;font:inherit;font-weight:800}.btn{padding:13px 17px;background:#fff;box-shadow:inset 0 0 0 1px #dce7df;cursor:pointer}.btn.primary{background:var(--accent);box-shadow:none}.btn:active{transform:translateY(1px)}select{padding:0 34px 0 14px;background:#fff;min-width:118px}
   .progress{height:8px;background:rgba(255,255,255,.5);border-radius:999px;overflow:hidden}.bar{height:100%;width:100%;background:linear-gradient(90deg,var(--good),var(--accent),var(--danger));transform-origin:left;transition:transform .1s linear}
-  .overlay{position:absolute;inset:0;display:grid;place-items:center;background:rgba(34,49,40,.34);z-index:20;border-radius:22px;opacity:0;visibility:hidden;transition:.2s}.overlay.show{opacity:1;visibility:visible}.modal{width:min(410px,88%);background:#fff;border-radius:24px;padding:24px;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,.25)}.modal h2{font-size:31px;margin:0 0 8px}.modal p{margin:7px 0 18px;line-height:1.6}.bigscore{font-size:52px;font-weight:950;color:var(--good);line-height:1}.tiny{font-size:12px;opacity:.62}
+  .overlay{position:absolute;inset:0;display:grid;place-items:center;background:rgba(34,49,40,.34);z-index:20;border-radius:22px;opacity:0;visibility:hidden;pointer-events:none;transition:.2s}.overlay.show{opacity:1;visibility:visible;pointer-events:auto}.modal{width:min(410px,88%);background:#fff;border-radius:24px;padding:24px;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,.25)}.modal h2{font-size:31px;margin:0 0 8px}.modal p{margin:7px 0 18px;line-height:1.6}.bigscore{font-size:52px;font-weight:950;color:var(--good);line-height:1}.tiny{font-size:12px;opacity:.62}
   .toast{position:fixed;left:50%;top:18%;transform:translate(-50%,-8px);z-index:30;font-weight:900;font-size:24px;opacity:0;pointer-events:none;text-shadow:0 2px 0 #fff}.toast.show{animation:pop .55s ease-out}@keyframes pop{0%{opacity:0;transform:translate(-50%,4px) scale(.8)}25%{opacity:1;transform:translate(-50%,-8px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-28px) scale(1)}}
   @media(max-width:560px){body{align-items:start}.top{grid-template-columns:1fr}.brand{text-align:center}.brand h1{justify-content:center}.scoreboard{min-height:68px}.card{padding:10px}.board{gap:6px}.hole{border-radius:18px}.controls{grid-template-columns:1fr 1fr}.controls .primary{grid-column:1/-1;grid-row:1}.controls select{width:100%;min-height:45px}.controls .btn:not(.primary){min-height:45px}}
   @media(orientation:landscape) and (max-height:560px){.game{--side:calc(100dvh - max(14px,env(safe-area-inset-top)) - max(14px,env(safe-area-inset-bottom)));width:100%;max-width:1040px;grid-template-columns:auto minmax(0,1fr);grid-template-rows:repeat(4,auto);gap:8px 12px}.card{grid-column:1;grid-row:1/-1;width:var(--side);height:var(--side);aspect-ratio:auto;padding:10px}.board{gap:6px}.hole{border-radius:18px}.top{grid-template-columns:1fr;gap:8px}.brand{padding:8px 12px;text-align:center}.brand h1{justify-content:center;font-size:22px;margin:0 0 2px}.brand p{font-size:12px}.scoreboard{min-height:0}.stat{padding:5px 8px}.value{font-size:20px}.controls{grid-template-columns:1fr 1fr;gap:8px;padding:8px}.controls .primary{grid-column:1/-1;grid-row:1}.controls .btn{padding:9px 12px;min-height:44px}.controls select{width:100%;min-height:44px}}
   @media(orientation:landscape) and (max-height:340px){.brand{padding:4px 8px}.brand h1{font-size:18px;margin:0}.brand p{display:none}}
   @container (max-height:320px){.modal{padding:12px 16px;border-radius:18px}.modal h2{font-size:22px;margin:0 0 2px}.modal p{margin:4px 0 8px;line-height:1.35;font-size:14px}.modal .tiny{display:none}.bigscore{font-size:34px}.modal .btn{padding:9px 14px}}
   @media(max-width:560px) and (max-height:620px){.brand{padding:8px 12px}.brand h1{font-size:22px;margin:0}.brand p{display:none}.scoreboard{min-height:0}.stat{padding:5px 8px}.value{font-size:20px}.game{gap:8px}}
-  @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}.snow-layer{animation:none!important;will-change:auto}.toast.show{animation:none!important;opacity:1;transform:translate(-50%,-8px)}}
-
-  /* v5 polar-bear + fox bottom alignment fix */
-  .hole.penguin-active:before,
-  .hole.bear-active:before,
-  .hole.fox-active:before{opacity:0!important}
-
-
-/* v15: unify version labels; retain the snowy background, snowfall and gameplay fixes. */
-.overlay{pointer-events:none}.overlay.show{pointer-events:auto}
-.hole[data-state="hidden"] .mole{visibility:hidden!important}
+  @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}.snow-layer{animation:none;will-change:auto}.toast.show{animation:none;opacity:1;transform:translate(-50%,-8px)}}
 </style>
 </head>
 <body>
@@ -318,9 +310,9 @@
     // Lock the on-screen anchor before removing .up. The former code
     // fell to bottom:-70% here and then rose to -8% at the sad frame.
     const cs=getComputedStyle(a.m);
-    a.m.style.setProperty('bottom',cs.bottom,'important');
-    a.m.style.setProperty('left',cs.left,'important');
-    a.m.style.setProperty('transition','none','important');
+    a.m.style.bottom=cs.bottom;
+    a.m.style.left=cs.left;
+    a.m.style.transition='none';
     a.h.dataset.outcome='hit';a.h.classList.remove('up');
     setState(a,'pain');
     let delta;
