@@ -52,6 +52,7 @@ const MUTANTS = {
   'image hash no longer checked': replace('if (digest !== cfg.sha256)', 'if (false)'),
   'page may outgrow the screen': replace('.game{width:min(680px,100%);max-height:100%;', '.game{width:min(680px,100%);'),
   'board no longer centred': replace('height:min(100cqw,100cqh);margin:auto}', 'height:min(100cqw,100cqh)}'),
+  'landscape loses its two columns': replace('@media(orientation:landscape) and (max-height:560px){', '@media(orientation:landscape) and (max-height:1px){'),
   'bear warning stance lost': replace('.hole.bear-warning .mole{bottom:2%!important;left:2%!important}', ''),
 };
 
