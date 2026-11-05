@@ -34,6 +34,17 @@ test('a missing image stops the game', () => failingLoad(
   /HTTP 404/,
 ));
 
+test('declares a favicon, so browsers do not request a missing one', async () => {
+  const harness = await startHarness();
+  const game = await Game.open(harness);
+  try {
+    assert.equal(await game.page.locator('link[rel="icon"]').count(), 1);
+  } finally {
+    await game.close();
+    await harness.close();
+  }
+});
+
 test('a repeat visit reuses cached images, as GitHub Pages allows for 10 minutes', async () => {
   const harness = await startHarness({ cacheControl: 'max-age=600' });
   const game = await Game.open(harness);
