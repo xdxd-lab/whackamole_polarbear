@@ -286,6 +286,27 @@ describe('input', () => {
   }));
 });
 
+describe('scoreboard updates', () => {
+  test('a timer tick that changes nothing writes nothing', () => play(async game => {
+    await game.startWith('penguin');
+    await game.page.evaluate(() => {
+      window.__writes = 0;
+      new MutationObserver(list => { window.__writes += list.length; })
+        .observe(document.querySelector('.scoreboard'), { subtree: true, childList: true, characterData: true });
+    });
+    await game.advance(900);
+    assert.equal(await game.page.evaluate(() => window.__writes), 0);
+    await game.advance(4_100);
+    assert.equal(await game.number('#time'), 25);
+    assert.equal(await game.page.evaluate(() => window.__writes), 5);
+  }));
+
+  test('screen readers hear the result, not the countdown', () => play(async game => {
+    assert.equal(await game.page.locator('[aria-live] #time, #time[aria-live]').count(), 0);
+    assert.equal(await game.page.getAttribute('#modalText', 'aria-live'), 'polite');
+  }));
+});
+
 describe('best score', () => {
   const finishRound = async game => { await game.advance(30_000); };
 

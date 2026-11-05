@@ -177,7 +177,7 @@
         <circle cx="28" cy="25" r="2" fill="#FFF4F9"/>
       </g>
     </svg><span>雪地敲敲樂</span></h1><p>打企鵝、打北極狐；小心別敲到北極熊！</p></div>
-    <div class="scoreboard" aria-live="polite">
+    <div class="scoreboard">
       <div class="stat"><div class="label">分數</div><div class="value" id="score">0</div></div>
       <div class="stat"><div class="label">連擊</div><div class="value" id="combo">0</div></div>
       <div class="stat"><div class="label">時間</div><div class="value hot" id="time">30</div></div>
@@ -190,7 +190,7 @@
       <div class="modal">
         <h2 id="modalTitle">準備好了嗎？</h2>
         <div class="bigscore" id="finalScore" hidden>0</div>
-        <p id="modalText">企鵝 <b>+1</b>、北極狐 <b>+3</b>，誤敲北極熊會 <b>-2</b> 並中斷連擊。</p>
+        <p id="modalText" aria-live="polite">企鵝 <b>+1</b>、北極狐 <b>+3</b>，誤敲北極熊會 <b>-2</b> 並中斷連擊。</p>
         <button class="btn primary" id="modalBtn" style="width:100%">開始遊戲</button>
         <p class="tiny">支援手機觸控、滑鼠；最高分會儲存在這台裝置。</p>
       </div>
@@ -300,9 +300,13 @@
   }
   function cancel(id){if(id!=null){clearTimeout(id);timers.delete(id);}}
   function clearTimers(){timers.forEach(clearTimeout);timers.clear();}
+  function setText(id,value){
+    const el=$(id),text=String(value);
+    if(el.textContent!==text)el.textContent=text;
+  }
   function update(){
-    $('score').textContent=score;$('combo').textContent=combo;
-    $('time').textContent=Math.max(0,Math.ceil(timeLeft));
+    setText('score',score);setText('combo',combo);
+    setText('time',Math.max(0,Math.ceil(timeLeft)));
     $('bar').style.transform=`scaleX(${Math.max(0,timeLeft/30)})`;
   }
   function showToast(text){
