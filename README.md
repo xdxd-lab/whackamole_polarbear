@@ -17,10 +17,30 @@
 
 > **注意：** GitHub Pages 是線上遊玩網址。單獨下載 `index.html` 並非完整離線版，因為 V18 還需要同一 Repository 中的角色圖片素材。
 
-## 自動化驗證（V18）
+## 自動化驗證
 
-每次推送至 `main`、提出 Pull Request 或手動執行時，GitHub Actions 會核對三張正式 AVIF 的路徑、檔案大小及 SHA-256，並在 Chromium 檢查尺寸、15 個角色狀態的解碼及遊戲啟動顯示。失敗時測試工作會標示失敗，提供核對報告與截圖。舊 V15 未引用資源已在 V17 清理階段移除，正式素材維持不變。本版也核對可愛槌子的可見性與音效初始增益。
+每次推送至 `main`、提出 Pull Request 或手動執行時，GitHub Actions 會在 Chromium 跑完下列檢查。測試只觀察玩家看得到的結果（畫面、音效、震動、儲存的最高分），所以整理或搬動程式碼不會誤判。
 
-- [驗證工作流程](./.github/workflows/verify-v17-assets.yml)
-- [驗證程式](./scripts/verify-assets.mjs)
-- [GitHub Actions](https://github.com/xdxd-lab/whackamole_polarbear/actions/workflows/verify-v17-assets.yml)
+| 檢查 | 內容 |
+|---|---|
+| 素材核對 | 三張正式 AVIF 的路徑、大小、SHA-256、尺寸與 15 個角色狀態的解碼；真實計時下的啟動冒煙測試 |
+| 規則測試 | 分數、連擊、機率、三種難度的毫秒時序、30 秒、BEST_KEY、音效與輸入 |
+| 整局重播 | 固定時鐘與亂數重播五局，逐行比對 V18 的錄製結果 |
+| 畫面狀態 | 三種角色 × 五種狀態 × 三種視窗的計算後樣式與顯示影格 |
+| 突變檢查 | 故意改壞規則確認測試會失敗，並確認等價重構不會誤判 |
+
+本機執行（`node` 需為 22 以上）：
+
+```sh
+npm install --no-package-lock
+npx playwright install chromium
+npm test                # 等同 node scripts/verify-assets.mjs
+npm run test:mutation
+```
+
+確定要變更行為時，才用 `UPDATE_GOLDEN=1 node --test "tests/**/*.test.mjs"` 更新錄製檔。
+
+- [驗證工作流程](./.github/workflows/verify.yml)
+- [素材核對程式](./scripts/verify-assets.mjs)
+- [測試](./tests/)
+- [GitHub Actions](https://github.com/xdxd-lab/whackamole_polarbear/actions/workflows/verify.yml)
