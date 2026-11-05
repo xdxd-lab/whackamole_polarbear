@@ -58,7 +58,7 @@ const MUTANTS = {
   'reduced motion snow keeps falling': replace('.snow-layer{animation:none!important;will-change:auto}', ''),
   'reduced motion hides the toast': replace('.toast.show{animation:none!important;opacity:1;transform:translate(-50%,-8px)}', ''),
   'toast never clears': replace("toastTimer=setTimeout(()=>el.classList.remove('show'),550);", ''),
-  'bear warning stance lost': replace('.hole.bear-warning .mole{bottom:2%!important;left:2%!important}', ''),
+  'bear warning stance lost': replace('.hole.bear-warning .mole{bottom:2%;left:2%}', ''),
 };
 
 const EQUIVALENTS = {
