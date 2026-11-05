@@ -323,7 +323,7 @@
     m.className='mole';m.removeAttribute('style');
     h.setAttribute('aria-label',`洞 ${holes.indexOf(h)+1}`);
   }
-  function resetAll(){holes.forEach(resetHole);actor=null;}
+  function resetAll(){if(actor)resetHole(actor.h);actor=null;}
   function setState(a,state){
     a.phase=state;a.h.dataset.state=state;
     a.h.classList.remove(...states.map(s=>`${a.species}-${s}`));
