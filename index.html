@@ -78,22 +78,15 @@
   .hole{position:relative;overflow:hidden;border-radius:24px;cursor:pointer;touch-action:manipulation;isolation:isolate;background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(212,233,245,.38))}
   .hole:before{content:"";position:absolute;left:9%;right:9%;bottom:7%;height:31%;background:var(--hole);border-radius:50%;box-shadow:inset 0 8px 0 rgba(0,0,0,.2),0 5px 0 rgba(255,255,255,.16);z-index:1}
   .mole{position:absolute;left:13%;width:74%;height:80%;bottom:-70%;z-index:2;transition:bottom .14s cubic-bezier(.2,.85,.3,1.18),transform .08s;filter:drop-shadow(0 7px 4px rgba(0,0,0,.15));pointer-events:none}
-  .hole.up .mole{bottom:8%}.hole.hit .mole{transform:translateY(9%) scale(.94)}
+  .hole.up .mole{bottom:8%}
   .penguin-img,.bear-img,.fox-img{display:none;width:100%;height:100%;margin:0;object-fit:contain;object-position:center bottom;opacity:1;filter:none;mix-blend-mode:normal;background:transparent}.mole.normal .penguin-img,.mole.bad .bear-img,.mole.bonus .fox-img{display:block}
   .hole.bear-warning .mole{bottom:2%;left:2%;animation:bearwarn .18s ease-in-out 2}
   .hole.bear-sneaky .mole{bottom:-6%;left:6%;transition:bottom .18s ease-in}
-  .hole.bear-pain .mole{animation:bearshake .18s linear 2}
-  .hole.bear-sad .mole{bottom:-8%;transition:bottom .30s ease-in}
   .hole.fox-warning .mole{animation:bearwarn .18s ease-in-out 2}
   .hole.fox-sneaky .mole{bottom:0%;transition:bottom .18s ease-in}
-  .hole.fox-pain .mole{animation:bearshake .18s linear 2}
-  .hole.fox-sad .mole{bottom:-8%;transition:bottom .30s ease-in}
   .hole.penguin-warning .mole{animation:bearwarn .18s ease-in-out 2}
   .hole.penguin-sneaky .mole{bottom:0%;transition:bottom .18s ease-in}
-  .hole.penguin-pain .mole{animation:bearshake .18s linear 2}
-  .hole.penguin-sad .mole{bottom:-8%;transition:bottom .30s ease-in}
   @keyframes bearwarn{50%{transform:translateY(-3px) rotate(-1deg)}}
-  @keyframes bearshake{25%{transform:translateX(-4px) rotate(-1deg)}75%{transform:translateX(4px) rotate(1deg)}}
 
   .controls{display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:12px}.btn,select{border:0;border-radius:15px;font:inherit;font-weight:800}.btn{padding:13px 17px;background:#fff;box-shadow:inset 0 0 0 1px #dce7df;cursor:pointer}.btn.primary{background:var(--accent);box-shadow:none}.btn:active{transform:translateY(1px)}select{padding:0 34px 0 14px;background:#fff;min-width:118px}
   .progress{height:8px;background:rgba(255,255,255,.5);border-radius:999px;overflow:hidden}.bar{height:100%;width:100%;background:linear-gradient(90deg,var(--good),var(--accent),var(--danger));transform-origin:left;transition:transform .1s linear}
@@ -147,9 +140,6 @@
   .hole.fox-sneaky .mole{bottom:0%!important;transition:bottom .18s ease-in!important}
   .hole.bear-warning .mole{bottom:2%!important;left:2%!important}
   .hole.bear-sneaky .mole{bottom:-6%!important;left:6%!important;transition:bottom .18s ease-in!important}
-  .hole.penguin-sad .mole,
-  .hole.bear-sad .mole,
-  .hole.fox-sad .mole{bottom:-8%!important;transition:bottom .30s ease-in!important}
 
 
 /* v15: unify version labels; retain the snowy background, snowfall and gameplay fixes. */
@@ -376,7 +366,7 @@
     a.m.style.setProperty('bottom',cs.bottom,'important');
     a.m.style.setProperty('left',cs.left,'important');
     a.m.style.setProperty('transition','none','important');
-    a.h.dataset.outcome='hit';a.h.classList.remove('up');a.h.classList.add('hit');
+    a.h.dataset.outcome='hit';a.h.classList.remove('up');
     setState(a,'pain');
     let delta;
     if(a.type==='bad'){
@@ -391,7 +381,7 @@
     score=Math.max(0,score+delta);update();
     later(()=>{
       if(actor!==a||a.phase!=='pain')return;
-      a.h.classList.remove('hit');setState(a,'sad');
+      setState(a,'sad');
       // Anchor stays fixed. Only this animation moves the outgoing sprite,
       // in one direction: down. No peek/sneaky callbacks survive a hit.
       const distance=Math.max(0,a.h.clientHeight-a.m.offsetTop+2);
