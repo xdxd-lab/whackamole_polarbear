@@ -34,15 +34,20 @@ function capture(page, species) {
     const hole = document.querySelector(`#board .hole[data-character="${name}"]`);
     const mole = hole.querySelector('.mole');
     const style = getComputedStyle(mole);
-    const percent = (value, base) => Math.round(parseFloat(value) / base * 1000) / 10;
+    // clientWidth rounds to whole pixels, which would make these ratios drift with board size.
+    const holeStyle = getComputedStyle(hole);
+    const holeBox = hole.getBoundingClientRect();
+    const holeWidth = holeBox.width - parseFloat(holeStyle.borderLeftWidth) - parseFloat(holeStyle.borderRightWidth);
+    const holeHeight = holeBox.height - parseFloat(holeStyle.borderTopWidth) - parseFloat(holeStyle.borderBottomWidth);
+    const percent = (value, base) => Math.round(parseFloat(value) / base * 100);
     const visible = [...mole.querySelectorAll('img')].filter(img => getComputedStyle(img).display !== 'none');
     const image = visible[0];
     const imageStyle = getComputedStyle(image);
     return {
-      moleBottom: percent(style.bottom, hole.clientHeight),
-      moleLeft: percent(style.left, hole.clientWidth),
-      moleWidth: percent(style.width, hole.clientWidth),
-      moleHeight: percent(style.height, hole.clientHeight),
+      moleBottom: percent(style.bottom, holeHeight),
+      moleLeft: percent(style.left, holeWidth),
+      moleWidth: percent(style.width, holeWidth),
+      moleHeight: percent(style.height, holeHeight),
       moleTransform: style.transform === 'none' ? 'none' : 'moved',
       moleAnimation: style.animationName,
       moleFilter: style.filter,
@@ -54,8 +59,8 @@ function capture(page, species) {
       imageObjectFit: imageStyle.objectFit,
       imageObjectPosition: imageStyle.objectPosition,
       imageOpacity: imageStyle.opacity,
-      imageWidth: percent(imageStyle.width, mole.clientWidth),
-      imageHeight: percent(imageStyle.height, mole.clientHeight),
+      imageWidth: percent(imageStyle.width, parseFloat(style.width)),
+      imageHeight: percent(imageStyle.height, parseFloat(style.height)),
     };
   }, species);
 }

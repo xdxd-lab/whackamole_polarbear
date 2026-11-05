@@ -2,8 +2,8 @@
  "390x844 bear peek": {
   "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.3,
-  "moleHeight": 92.3,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -15,14 +15,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.9,
-  "imageHeight": 99.9
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "390x844 bear warning": {
   "moleBottom": 2,
   "moleLeft": 2,
-  "moleWidth": 92.3,
-  "moleHeight": 92.3,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "bearwarn",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -34,14 +34,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.9,
-  "imageHeight": 99.9
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "390x844 bear sneaky": {
   "moleBottom": -6,
   "moleLeft": 6,
-  "moleWidth": 92.3,
-  "moleHeight": 92.3,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -53,14 +53,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.9,
-  "imageHeight": 99.9
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "390x844 bear pain": {
   "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.3,
-  "moleHeight": 92.3,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -72,14 +72,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.9,
-  "imageHeight": 99.9
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "390x844 bear sad": {
   "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.3,
-  "moleHeight": 92.3,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "moved",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -91,14 +91,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.9,
-  "imageHeight": 99.9
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "390x844 fox peek": {
   "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.3,
-  "moleHeight": 92.3,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -110,14 +110,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.9,
-  "imageHeight": 99.9
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "390x844 fox warning": {
   "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.3,
-  "moleHeight": 92.3,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "bearwarn",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -129,14 +129,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.9,
-  "imageHeight": 99.9
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "390x844 fox sneaky": {
   "moleBottom": 0,
   "moleLeft": 4,
-  "moleWidth": 92.3,
-  "moleHeight": 92.3,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -148,14 +148,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.9,
-  "imageHeight": 99.9
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "390x844 fox pain": {
   "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.3,
-  "moleHeight": 92.3,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -167,14 +167,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.9,
-  "imageHeight": 99.9
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "390x844 fox sad": {
   "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.3,
-  "moleHeight": 92.3,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "moved",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -186,14 +186,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.9,
-  "imageHeight": 99.9
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "390x844 penguin peek": {
   "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.3,
-  "moleHeight": 92.3,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -205,14 +205,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.9,
-  "imageHeight": 99.9
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "390x844 penguin warning": {
   "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.3,
-  "moleHeight": 92.3,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "bearwarn",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -224,14 +224,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.9,
-  "imageHeight": 99.9
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "390x844 penguin sneaky": {
   "moleBottom": 0,
   "moleLeft": 4,
-  "moleWidth": 92.3,
-  "moleHeight": 92.3,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -243,14 +243,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.9,
-  "imageHeight": 99.9
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "390x844 penguin pain": {
   "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.3,
-  "moleHeight": 92.3,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -262,14 +262,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.9,
-  "imageHeight": 99.9
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "390x844 penguin sad": {
   "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.3,
-  "moleHeight": 92.3,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "moved",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -281,8 +281,8 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.9,
-  "imageHeight": 99.9
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "1280x720 bear peek": {
   "moleBottom": 8,
@@ -300,8 +300,8 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 100.3,
-  "imageHeight": 100.3
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "1280x720 bear warning": {
   "moleBottom": 2,
@@ -319,8 +319,8 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 100.3,
-  "imageHeight": 100.3
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "1280x720 bear sneaky": {
   "moleBottom": -6,
@@ -338,8 +338,8 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 100.3,
-  "imageHeight": 100.3
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "1280x720 bear pain": {
   "moleBottom": 8,
@@ -357,8 +357,8 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 100.3,
-  "imageHeight": 100.3
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "1280x720 bear sad": {
   "moleBottom": 8,
@@ -376,8 +376,8 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 100.3,
-  "imageHeight": 100.3
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "1280x720 fox peek": {
   "moleBottom": 8,
@@ -395,8 +395,8 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 100.3,
-  "imageHeight": 100.3
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "1280x720 fox warning": {
   "moleBottom": 8,
@@ -414,8 +414,8 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 100.3,
-  "imageHeight": 100.3
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "1280x720 fox sneaky": {
   "moleBottom": 0,
@@ -433,8 +433,8 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 100.3,
-  "imageHeight": 100.3
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "1280x720 fox pain": {
   "moleBottom": 8,
@@ -452,8 +452,8 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 100.3,
-  "imageHeight": 100.3
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "1280x720 fox sad": {
   "moleBottom": 8,
@@ -471,8 +471,8 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 100.3,
-  "imageHeight": 100.3
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "1280x720 penguin peek": {
   "moleBottom": 8,
@@ -490,8 +490,8 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 100.3,
-  "imageHeight": 100.3
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "1280x720 penguin warning": {
   "moleBottom": 8,
@@ -509,8 +509,8 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 100.3,
-  "imageHeight": 100.3
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "1280x720 penguin sneaky": {
   "moleBottom": 0,
@@ -528,8 +528,8 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 100.3,
-  "imageHeight": 100.3
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "1280x720 penguin pain": {
   "moleBottom": 8,
@@ -547,8 +547,8 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 100.3,
-  "imageHeight": 100.3
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "1280x720 penguin sad": {
   "moleBottom": 8,
@@ -566,14 +566,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 100.3,
-  "imageHeight": 100.3
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "844x390 bear peek": {
   "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.6,
-  "moleHeight": 92.6,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -585,14 +585,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.5,
-  "imageHeight": 99.5
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "844x390 bear warning": {
   "moleBottom": 2,
   "moleLeft": 2,
-  "moleWidth": 92.6,
-  "moleHeight": 92.6,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "bearwarn",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -604,14 +604,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.5,
-  "imageHeight": 99.5
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "844x390 bear sneaky": {
   "moleBottom": -6,
   "moleLeft": 6,
-  "moleWidth": 92.6,
-  "moleHeight": 92.6,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -623,14 +623,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.5,
-  "imageHeight": 99.5
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "844x390 bear pain": {
-  "moleBottom": 8.1,
+  "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.6,
-  "moleHeight": 92.6,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -642,14 +642,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.5,
-  "imageHeight": 99.5
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "844x390 bear sad": {
-  "moleBottom": 8.1,
+  "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.6,
-  "moleHeight": 92.6,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "moved",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -661,14 +661,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.5,
-  "imageHeight": 99.5
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "844x390 fox peek": {
-  "moleBottom": 8.1,
+  "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.6,
-  "moleHeight": 92.6,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -680,14 +680,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.5,
-  "imageHeight": 99.5
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "844x390 fox warning": {
-  "moleBottom": 8.1,
+  "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.6,
-  "moleHeight": 92.6,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "bearwarn",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -699,14 +699,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.5,
-  "imageHeight": 99.5
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "844x390 fox sneaky": {
   "moleBottom": 0,
   "moleLeft": 4,
-  "moleWidth": 92.6,
-  "moleHeight": 92.6,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -718,14 +718,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.5,
-  "imageHeight": 99.5
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "844x390 fox pain": {
   "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.6,
-  "moleHeight": 92.6,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -737,14 +737,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.5,
-  "imageHeight": 99.5
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "844x390 fox sad": {
   "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.6,
-  "moleHeight": 92.6,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "moved",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -756,14 +756,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.5,
-  "imageHeight": 99.5
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "844x390 penguin peek": {
   "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.6,
-  "moleHeight": 92.6,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -775,14 +775,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.5,
-  "imageHeight": 99.5
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "844x390 penguin warning": {
-  "moleBottom": 8.1,
+  "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.6,
-  "moleHeight": 92.6,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "bearwarn",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -794,14 +794,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.5,
-  "imageHeight": 99.5
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "844x390 penguin sneaky": {
   "moleBottom": 0,
   "moleLeft": 4,
-  "moleWidth": 92.6,
-  "moleHeight": 92.6,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -813,14 +813,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.5,
-  "imageHeight": 99.5
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "844x390 penguin pain": {
-  "moleBottom": 8.1,
+  "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.6,
-  "moleHeight": 92.6,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "none",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -832,14 +832,14 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.5,
-  "imageHeight": 99.5
+  "imageWidth": 100,
+  "imageHeight": 100
  },
  "844x390 penguin sad": {
-  "moleBottom": 8.1,
+  "moleBottom": 8,
   "moleLeft": 4,
-  "moleWidth": 92.6,
-  "moleHeight": 92.6,
+  "moleWidth": 92,
+  "moleHeight": 92,
   "moleTransform": "moved",
   "moleAnimation": "none",
   "moleFilter": "drop-shadow(rgba(0, 0, 0, 0.08) 0px 5px 3px)",
@@ -851,7 +851,7 @@
   "imageObjectFit": "contain",
   "imageObjectPosition": "50% 100%",
   "imageOpacity": "1",
-  "imageWidth": 99.5,
-  "imageHeight": 99.5
+  "imageWidth": 100,
+  "imageHeight": 100
  }
 }
