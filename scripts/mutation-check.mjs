@@ -58,7 +58,6 @@ const MUTANTS = {
   'reduced motion snow keeps falling': replace('.snow-layer{animation:none;will-change:auto}', ''),
   'reduced motion hides the toast': replace('.toast.show{animation:none;opacity:1;transform:translate(-50%,-8px)}', ''),
   'toast never clears': replace("toastTimer=setTimeout(()=>el.classList.remove('show'),550);", ''),
-  'hidden characters become visible': replace('.hole[data-state="hidden"] .mole{visibility:hidden}', ''),
   'hit no longer locks the position': replace('a.m.style.bottom=cs.bottom;', ''),
   'bear warning stance lost': replace('.hole.bear-warning .mole{bottom:2%;left:2%}', ''),
 };
@@ -74,6 +73,9 @@ const EQUIVALENTS = {
     return true;
   },
   'gain written as 0.12': replace('vol=.12', 'vol=0.12'),
+  // resetHole() also drops the type class, so every sprite is display:none while hidden;
+  // the visibility rule is a second guard and removing it is not visible to the player.
+  'redundant hidden-state visibility rule removed': replace('.hole[data-state="hidden"] .mole{visibility:hidden}', ''),
   'reformatted with spaces': async ({ html, setHtml }) => {
     const source = await html();
     const next = source.replace('vol=.12', 'vol = 0.12').replace("beep(120,.12,'sawtooth',.16)", "beep(120, 0.12, 'sawtooth', 0.16)");
