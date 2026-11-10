@@ -2,6 +2,12 @@
 
 這裡記錄玩家會感受到的變更，最新的在最上面。版號怎麼決定見 [docs/VERSIONING.md](./docs/VERSIONING.md)。
 
+## [19.1.1] - 2026-11-11
+
+### 修正
+
+- 開始遊戲前的準備更快、更省記憶體：角色圖片只解碼一次，直接從原圖顯示各個表情，不再另外切成 15 張小圖。畫面與玩法都沒有變。
+
 ## [19.1.0] - 2026-11-10
 
 ### 新增
@@ -57,5 +63,6 @@
 
 V15 以前沒有留下逐版紀錄，可以從 git 歷史查到。
 
+[19.1.1]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.1.1
 [19.1.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.1.0
 [19.0.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.0.0

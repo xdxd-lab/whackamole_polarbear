@@ -56,11 +56,16 @@ const MUTANTS = {
   'same hole may repeat': replace('while(i===lastHole)', 'while(false)'),
   'bear sound quieter': replace("beep(120,.12,'sawtooth',.16)", "beep(120,.12,'sawtooth',.08)"),
   'hidden page keeps playing': replace('if(document.hidden&&running)finish();', ''),
-  'sprite frames swapped': replace("const ids = ['peek','warning','sneaky','pain','sad'];", "const ids = ['warning','peek','sneaky','pain','sad'];"),
+  'sprite frames swapped': replace('.hole[data-state="warning"] .sprite{background-position-x:25%}', '.hole[data-state="warning"] .sprite{background-position-x:0%}'),
+  'sad frame shows pain': replace('.hole[data-state="sad"] .sprite{background-position-x:100%}', '.hole[data-state="sad"] .sprite{background-position-x:75%}'),
+  'expressions slide across the sheet under reduced motion': replace('transform-origin:50% 100%;transition:none!important}', 'transform-origin:50% 100%}'),
+  'sprite sheet tiles': replace('0 0/500% 100% no-repeat', '0 0/500% 100%'),
+  'penguin drawn square': replace('--sheet:var(--sheet-penguin);--ratio:1.5', '--sheet:var(--sheet-penguin);--ratio:1'),
+  'fox shown with the bear sheet': replace('--sheet:var(--sheet-fox)', '--sheet:var(--sheet-bear)'),
   'sad frame no longer drops': replace("{duration:340,easing:'ease-in',fill:'forwards'}", "{duration:340,easing:'ease-in'}"),
   'scoreboard rewritten on every tick': replace('if(el.textContent!==text)el.textContent=text;', 'el.textContent=text;'),
-  'images forced to revalidate': replace('fetch(cfg.url)', "fetch(cfg.url, {cache:'no-cache'})"),
-  'image hash no longer checked': replace('if (digest !== cfg.sha256)', 'if (false)'),
+  'images forced to revalidate': replace('fetch(file.url)', "fetch(file.url, {cache:'no-cache'})"),
+  'image hash no longer checked': replace('if (digest !== file.sha256)', 'if (false)'),
   'page may outgrow the screen': replace('.game{width:min(680px,100%);max-height:100%;', '.game{width:min(680px,100%);'),
   'board no longer centred': replace('height:min(100cqw,100cqh);margin:auto}', 'height:min(100cqw,100cqh)}'),
   'landscape loses its two columns': replace('@media(orientation:landscape) and (max-height:560px){', '@media(orientation:landscape) and (max-height:1px){'),
@@ -72,9 +77,9 @@ const MUTANTS = {
   'score message back in one fixed place': replace("el.style.top=Math.max(box.top-area.top+10,el.offsetHeight+2)+'px';", ''),
   'score message may cover the scoreboard': replace('Math.max(box.top-area.top+10,el.offsetHeight+2)', '(box.top-area.top+10)'),
   'score message may leave the board area': replace('area.width-half)', 'area.width+half)'),
-  'version changed in the script but not on the page': replace("const VERSION = '19.1.0';", "const VERSION = '19.1.1';"),
-  'version shown without its release date': replace('· 版本 19.1.0（2026-11-10）', '· 版本 19.1.0'),
-  'music starts with the page instead of the round': replace('assetsReady.then(()=>track(MUSIC_TRACKS.length-1));', 'assetsReady.then(()=>track(MUSIC_TRACKS.length-1));running=true;playMusic();running=false;'),
+  'version changed in the script but not on the page': replace("const VERSION = '19.1.1';", "const VERSION = '19.1.2';"),
+  'version shown without its release date': replace('· 版本 19.1.1（2026-11-11）', '· 版本 19.1.1'),
+  'music starts with the page instead of the round': replace('  track(MUSIC_TRACKS.length-1);\n', '  track(MUSIC_TRACKS.length-1);running=true;playMusic();running=false;\n'),
   'same track every round': replace('music.next=(i+1)%MUSIC_TRACKS.length;', 'music.next=0;'),
   'music ignores the sound switch': replace('if(music.gain)music.gain.gain.setTargetAtTime(soundOn?MUSIC_VOLUME:0,audioCtx.currentTime,.03);', ''),
   'music plays although sound is off': replace('music.gain.gain.value=soundOn?MUSIC_VOLUME:0;', 'music.gain.gain.value=MUSIC_VOLUME;'),
@@ -84,7 +89,13 @@ const MUTANTS = {
   'music louder than set': replace('const MUSIC_VOLUME=.35;', 'const MUSIC_VOLUME=.7;'),
   'music skips the start of its track': replace('source.start(0,Math.min(buffer.duration,Math.max(0,(performance.now()-started)/1000)));', 'source.start(0,5);'),
   'a late track starts from its beginning': replace('source.start(0,Math.min(buffer.duration,Math.max(0,(performance.now()-started)/1000)));', 'source.start(0,0);'),
-  'the round waits for its music': replace('overlay.classList.remove(\'show\');$(\'finalScore\').hidden=true;update();spawn();playMusic();', 'await track(music.next);overlay.classList.remove(\'show\');$(\'finalScore\').hidden=true;update();spawn();playMusic();'),
+  'the round waits for its music': async ({ html, setHtml }) => {
+    const source = await html();
+    const next = source.replace('  function start(){', '  async function start(){').replace("update();spawn();playMusic();", "await track(music.next);update();spawn();playMusic();");
+    if (next === source || !next.includes('await track(music.next)') || !next.includes('async function start(){')) return false;
+    await setHtml(next);
+    return true;
+  },
   'tap marks removed': replace("ripple(i,e,hit(i)||'miss');", 'hit(i);'),
   'tap marks ignore where the finger landed': replace('const pointed=e&&(e.clientX||e.clientY);', 'const pointed=false;'),
   'tap marks swallow taps': replace('.fx{position:absolute;inset:0;pointer-events:none;z-index:5}', '.fx{position:absolute;inset:0;z-index:5}'),
@@ -99,15 +110,7 @@ const MUTANTS = {
 };
 
 const EQUIVALENTS = {
-  'sprites use blob URLs': async ({ html, setHtml }) => {
-    const source = await html();
-    const next = source
-      .replace('ids.forEach((state,i)=>{', 'for(const [i,state] of ids.entries()){')
-      .replace("result[species][state]=canvas.toDataURL('image/png');\n        });", "result[species][state]=URL.createObjectURL(await new Promise(r=>canvas.toBlob(r,'image/png')));\n        }");
-    if (next === source || next.includes('toDataURL')) return false;
-    await setHtml(next);
-    return true;
-  },
+  'frame position written as a fraction': replace('background-position-x:25%}', 'background-position-x:calc(100% / 4)}'),
   'gain written as 0.12': replace('vol=.12', 'vol=0.12'),
   // resetHole() also drops the type class, so every sprite is display:none while hidden;
   // the visibility rule is a second guard and removing it is not visible to the player.
@@ -128,9 +131,9 @@ const EQUIVALENTS = {
   },
   // A release changes the number everywhere it is written, and nothing else.
   'version bumped': async ({ html, setHtml, read, write }) => {
-    const bump = text => text.replaceAll('19.1.0', '19.1.1').replaceAll('2026-11-10', '2026-12-01');
+    const bump = text => text.replaceAll('19.1.1', '19.1.2').replaceAll('2026-11-11', '2026-12-01');
     const source = await html();
-    if (!source.includes("const VERSION = '19.1.0';")) return false;
+    if (!source.includes("const VERSION = '19.1.1';")) return false;
     await setHtml(bump(source));
     await write('README.md', bump(await read('README.md')));
     await write('CHANGELOG.md', bump(await read('CHANGELOG.md')));
