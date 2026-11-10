@@ -40,6 +40,7 @@ try {
   report.music = [];
   for (const track of music.tracks) {
     assert.equal(track.license, 'CC0 1.0', track.id + ': music must be CC0');
+    assert.ok(track.gain > 0 && track.gain <= 2, track.id + ': playback gain must be between 0 and 2');
     for (const [format, { url, sha256, bytes }] of Object.entries(track.files)) {
       assert.match(url, new RegExp('^assets/music-\\d{8}/[a-z0-9-]+\\.' + format + '$'), track.id + ': wrong music path');
       const buf = await readFile(path.resolve(ROOT, url));

@@ -14,6 +14,8 @@ import { ROOT } from './support/server.mjs';
 const manifest = JSON.parse(await readFile(path.join(ROOT, 'deployment/music.json'), 'utf8'));
 const OPUS = manifest.tracks.map(track => `/${track.files.opus.url}`);
 const VOLUME = 0.35;
+/** What reaches the speakers while each track plays: the music volume times the track's own gain. */
+const LEVELS = manifest.tracks.map(track => VOLUME * track.gain);
 
 let harness;
 before(async () => { harness = await startHarness(); });
@@ -63,6 +65,8 @@ test('each round plays the next track from its start, and the music ends with th
       await playing(game);
       const latest = (await starts(game)).at(-1);
       heard.push(latest.track);
+      const { level } = await music(game);
+      assert.ok(Math.abs(level - LEVELS[round % LEVELS.length]) < 0.01, `Round ${round + 1} plays at ${level}, expected ${LEVELS[round % LEVELS.length]}`);
       assert.ok(latest.offset < 0.5, `Round ${round + 1} joined its track ${latest.offset}s in`);
       await game.advance(31_000);
       assert.equal(await game.overlayShown(), true);
@@ -80,11 +84,11 @@ test('the sound switch silences the music and brings it back without restarting 
   try {
     await game.start();
     await playing(game);
-    assert.ok(Math.abs((await music(game)).level - VOLUME) < 0.01, 'Music plays at its set volume');
+    assert.ok(Math.abs((await music(game)).level - LEVELS[0]) < 0.01, 'Music plays at its set volume');
     await game.page.locator('#soundBtn').click();
     await game.page.waitForFunction(() => window.__test.music().level < 0.001);
     await game.page.locator('#soundBtn').click();
-    await game.page.waitForFunction(volume => Math.abs(window.__test.music().level - volume) < 0.01, VOLUME);
+    await game.page.waitForFunction(volume => Math.abs(window.__test.music().level - volume) < 0.01, LEVELS[0]);
     assert.equal((await starts(game)).length, 1, 'Switching sound must not restart the track');
   } finally {
     await game.close();
@@ -186,4 +190,10 @@ test('every track lasts the whole round, fades out and is as loud as the others'
   } finally {
     await game.close();
   }
+});
+
+test('each track is played at the level chosen for it by ear', () => {
+  // Decided by listening on 2026-11-10: equal measured loudness left Happy too quiet and Winter too loud.
+  assert.deepEqual(manifest.tracks.map(track => [track.id, track.gain]), [['happy', 1.5], ['winter', 0.67]]);
+  for (const level of LEVELS) assert.ok(level < 0.9, 'A track must leave headroom below full scale');
 });

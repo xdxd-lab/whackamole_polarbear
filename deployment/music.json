@@ -1,5 +1,5 @@
 {
-  "note": "Background music, one track per round, taking turns. Each file is the first 31 s of the original with a 1 s fade-out, matched to -18 LUFS (ITU-R BS.1770). Opus (Ogg) for most browsers, AAC (MP4) for Safari before 18.4.",
+  "note": "Background music, one track per round, taking turns. Each file is the first 31 s of the original with a 1 s fade-out, matched to -18 LUFS (ITU-R BS.1770). Opus (Ogg) for most browsers, AAC (MP4) for Safari before 18.4. The files measure equally loud, but that measure counts deep bass that small speakers and quiet listening leave out, so each track also has a playback gain set by ear: the bass-heavy Happy is raised, the mid-heavy Winter lowered.",
   "tracks": [
     {
       "id": "happy",
@@ -18,7 +18,8 @@
           "sha256": "5e3a15364b4c9b5f589d113cc5552ca12bbc5b739385fc170a54c9cfeaf25a83",
           "bytes": 374857
         }
-      }
+      },
+      "gain": 1.5
     },
     {
       "id": "winter",
@@ -37,7 +38,8 @@
           "sha256": "97f374c4eb943d488bcad691927942d7659c8fd16fd6d37a9e89a33d3cf510b2",
           "bytes": 383241
         }
-      }
+      },
+      "gain": 0.67
     }
   ]
 }

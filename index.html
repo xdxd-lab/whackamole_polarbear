@@ -397,7 +397,7 @@
   // Background music: one track per round, taking turns. Fetched only after the game is
   // playable and decoded off-screen, so it never delays the first round; it starts only
   // from the player's tap, and a track that cannot load leaves the game silent, not broken.
-  const MUSIC_TRACKS=[{"opus":"assets/music-20261110/happy-fc436405b0a7.opus","m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a"},{"opus":"assets/music-20261110/winter-a62906d44807.opus","m4a":"assets/music-20261110/winter-97f374c4eb94.m4a"}];
+  const MUSIC_TRACKS=[{"opus":"assets/music-20261110/happy-fc436405b0a7.opus","m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a","gain":1.5},{"opus":"assets/music-20261110/winter-a62906d44807.opus","m4a":"assets/music-20261110/winter-97f374c4eb94.m4a","gain":0.67}];
   const MUSIC_VOLUME=.35;
   const musicFormats=new Audio().canPlayType('audio/ogg; codecs=opus')?['opus','m4a']:['m4a','opus'];
   const music={loads:[],next:0,playing:null,gain:null};
@@ -423,7 +423,8 @@
       if(!music.gain){music.gain=audioCtx.createGain();music.gain.connect(audioCtx.destination);}
       music.gain.gain.value=soundOn?MUSIC_VOLUME:0;
       const source=audioCtx.createBufferSource(),fade=audioCtx.createGain();
-      source.buffer=buffer;source.connect(fade);fade.connect(music.gain);
+      // Each track's own level: the files measure equally loud, but do not sound it.
+      source.buffer=buffer;fade.gain.value=MUSIC_TRACKS[i].gain;source.connect(fade);fade.connect(music.gain);
       // A track that arrives late joins the round where it is, so it still ends with it.
       source.start(0,Math.min(buffer.duration,Math.max(0,(performance.now()-started)/1000)));
       const playing={source,fade};music.playing=playing;
