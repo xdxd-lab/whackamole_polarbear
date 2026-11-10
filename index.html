@@ -97,6 +97,9 @@
   .ripple{border:4px solid var(--c)}.dot{background:var(--c)}
   .fx .normal{--c:#2a9d8f}.fx .bonus{--c:#ffb703}.fx .bad{--c:#ef476f}
 
+  /* Version and music credits: small and pale, in the corner, never competing with the game. */
+  .foot{text-align:center;line-height:1.5}.foot span{display:inline-block}.credits{font-size:11px;color:#6b7f8c;margin-left:.6em}.credits a{color:inherit;text-decoration:underline;text-decoration-color:rgba(107,127,140,.45);text-underline-offset:2px}.credits a:focus-visible{outline:2px solid #1769c4;outline-offset:2px}
+
   .controls{display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:12px}.btn,select{border:0;border-radius:15px;font:inherit;font-weight:800}.btn{padding:13px 17px;background:#fff;box-shadow:inset 0 0 0 1px #dce7df;cursor:pointer}.btn.primary{background:var(--accent);box-shadow:none}.btn:active{transform:translateY(1px)}select{padding:0 34px 0 14px;background:#fff;min-width:118px}
   .progress{height:8px;background:rgba(255,255,255,.5);border-radius:999px;overflow:hidden}.bar{height:100%;width:100%;background:linear-gradient(90deg,var(--good),var(--accent),var(--danger));transform-origin:left;transition:transform .1s linear}
   .overlay{position:absolute;inset:0;display:grid;place-items:center;background:rgba(226,240,250,.86);z-index:20;border-radius:22px;opacity:0;visibility:hidden;pointer-events:none;transition:.2s}.overlay.show{opacity:1;visibility:visible;pointer-events:auto}.modal{width:min(410px,88%);background:#fff;border-radius:24px;padding:24px;text-align:center;box-shadow:0 0 0 1px rgba(120,165,200,.28),0 18px 44px rgba(40,80,110,.22)}.modal h2{font-size:31px;margin:0 0 8px}.modal p{margin:7px 0 18px;line-height:1.6}.bigscore{font-size:52px;font-weight:950;color:var(--good);line-height:1}.tiny{font-size:12px;opacity:.62}
@@ -157,11 +160,11 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny" style="text-align:center">最高分：<b id="best">0</b> · 版本 19.1.1（2026-11-11）</div>
+  <div class="tiny foot"><span>最高分：<b id="best">0</b> · 版本 19.2.0（2026-11-11）</span> <span class="credits">音樂：<a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/short-loop-winter-theme" target="_blank" rel="noopener" title="Short Loop: winter theme">yd</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>（CC0）</span></div>
 </main>
 <script>(async () => {
   'use strict';
-  const VERSION = '19.1.1';
+  const VERSION = '19.2.0';
   const BEST_KEY = 'wam_best_20260904v7';
   const $ = id => document.getElementById(id);
   const board = $('board'), overlay = $('overlay');
@@ -383,7 +386,7 @@
   // Background music: one track per round, taking turns. Fetched only after the game is
   // playable and decoded off-screen, so it never delays the first round; it starts only
   // from the player's tap, and a track that cannot load leaves the game silent, not broken.
-  const MUSIC_TRACKS=[{"opus":"assets/music-20261110/happy-fc436405b0a7.opus","m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a","gain":1.5},{"opus":"assets/music-20261110/winter-a62906d44807.opus","m4a":"assets/music-20261110/winter-97f374c4eb94.m4a","gain":0.67}];
+  const MUSIC_TRACKS=[{"opus":"assets/music-20261110/happy-fc436405b0a7.opus","m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a","gain":1.5},{"opus":"assets/music-20261110/winter-a62906d44807.opus","m4a":"assets/music-20261110/winter-97f374c4eb94.m4a","gain":0.67},{"opus":"assets/music-20261111/clappy-a3e7848571dd.opus","m4a":"assets/music-20261111/clappy-2f3f07b7d1b2.m4a","gain":1.7}];
   const MUSIC_VOLUME=.35;
   const musicFormats=new Audio().canPlayType('audio/ogg; codecs=opus')?['opus','m4a']:['m4a','opus'];
   const music={loads:[],next:0,playing:null,gain:null};

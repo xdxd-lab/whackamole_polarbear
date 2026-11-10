@@ -60,7 +60,7 @@ test('each round plays the next track from its start, and the music ends with th
     const order = await tracks(game);
     assert.equal(new Set(order).size, order.length, 'Every track must sound different');
     const heard = [];
-    for (let round = 0; round < 3; round += 1) {
+    for (let round = 0; round < order.length + 1; round += 1) {
       await game.start();
       await playing(game);
       const latest = (await starts(game)).at(-1);
@@ -72,7 +72,7 @@ test('each round plays the next track from its start, and the music ends with th
       assert.equal(await game.overlayShown(), true);
       await silent(game);
     }
-    assert.deepEqual(heard, [order[0], order[1], order[0]]);
+    assert.deepEqual(heard, [...order, order[0]], 'Every track plays once, in order, before the first returns');
     game.assertNoErrors();
   } finally {
     await game.close();
@@ -193,7 +193,19 @@ test('every track lasts the whole round, fades out and is as loud as the others'
 });
 
 test('each track is played at the level chosen for it by ear', () => {
-  // Decided by listening on 2026-11-10: equal measured loudness left Happy too quiet and Winter too loud.
-  assert.deepEqual(manifest.tracks.map(track => [track.id, track.gain]), [['happy', 1.5], ['winter', 0.67]]);
+  // Happy and Winter were set by listening on 2026-11-10: equal measured loudness left Happy too quiet
+  // and Winter too loud. Clappy is bass-heavy like Happy and a little thinner above it.
+  assert.deepEqual(manifest.tracks.map(track => [track.id, track.gain]), [['happy', 1.5], ['winter', 0.67], ['clappy', 1.7]]);
   for (const level of LEVELS) assert.ok(level < 0.9, 'A track must leave headroom below full scale');
+});
+
+test('the page credits every composer, with a link to the source of each track', async () => {
+  const game = await Game.open(harness);
+  try {
+    const shown = await game.page.$$eval('.credits a', links => links.map(link => ({ author: link.textContent, source: link.href, title: link.title, newTab: link.target === '_blank' && link.rel.includes('noopener') })));
+    assert.deepEqual(shown, manifest.tracks.map(track => ({ author: track.author, source: track.source, title: track.title, newTab: true })));
+    assert.match(await game.page.textContent('.credits'), /CC0/);
+  } finally {
+    await game.close();
+  }
 });

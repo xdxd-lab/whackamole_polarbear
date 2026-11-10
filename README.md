@@ -6,11 +6,11 @@
 
 ## 目前版本
 
-- **V19（19.1.1，2026-11-11）**：加入背景音樂，兩首每局輪流；沿用 19.0.0 的雪磚棋盤與敲擊回饋；玩法與計分和 V18 相同。
+- **V19（19.2.0，2026-11-11）**：背景音樂增為三首，每局輪流；頁尾標示音樂作者；玩法與計分和 V18 相同。
 - 各版變更：[CHANGELOG.md](./CHANGELOG.md)　版號規則：[docs/VERSIONING.md](./docs/VERSIONING.md)
 - 遊戲入口：[index.html](./index.html)
 - 正式角色素材（沿用 V16，未更動圖片）：[assets/v16-20260909/](./assets/v16-20260909/)
-- 背景音樂（CC0）：[assets/music-20261110/](./assets/music-20261110/)，來源與作者見[音樂](#音樂)
+- 背景音樂（CC0）：[assets/music-20261110/](./assets/music-20261110/)、[assets/music-20261111/](./assets/music-20261111/)，來源與作者見[音樂來源](#音樂來源)與 [CREDITS.md](./CREDITS.md)
 - 原始碼 Repository：[xdxd-lab/whackamole_polarbear](https://github.com/xdxd-lab/whackamole_polarbear)
 
 ## 遊戲規則
@@ -19,14 +19,17 @@
 
 > **注意：** GitHub Pages 是線上遊玩網址。單獨下載 `index.html` 並非完整離線版，因為遊戲還需要同一 Repository 中的角色圖片素材。
 
-## 音樂
+## 音樂來源
 
-兩首背景音樂都以 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/deed.zh_TW) 釋出，取自 OpenGameArt.org，謝謝兩位作者：
+三首背景音樂都以 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/deed.zh_TW) 釋出，取自 OpenGameArt.org，謝謝三位作者：
 
-- [Happy synths loop with slight christmas feeling](https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling)，作者 3xBlast
-- [Short Loop: winter theme](https://opengameart.org/content/short-loop-winter-theme)，作者 yd
+| 曲目 | 作者 | 授權 |
+|---|---|---|
+| [Happy synths loop with slight christmas feeling](https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling) | 3xBlast | CC0 |
+| [Short Loop: winter theme](https://opengameart.org/content/short-loop-winter-theme) | yd | CC0 |
+| [Happy Clappy Loop](https://opengameart.org/content/happy-clappy-loop) | OwlishMedia | CC0 |
 
-遊戲用的是每首的前 31 秒，結尾淡出，並把兩首調到相同響度。檔案清單與雜湊在 [deployment/music.json](./deployment/music.json)，處理用的程式在 [scripts/music/](./scripts/music/)。
+每局輪流播放一首。各首在遊戲中的用途與處理方式見 [CREDITS.md](./CREDITS.md)；檔案清單與雜湊在 [deployment/music.json](./deployment/music.json)，處理用的程式在 [scripts/music/](./scripts/music/)。
 
 ## 自動化驗證
 

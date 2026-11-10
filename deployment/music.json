@@ -1,5 +1,5 @@
 {
-  "note": "Background music, one track per round, taking turns. Each file is the first 31 s of the original with a 1 s fade-out, matched to -18 LUFS (ITU-R BS.1770). Opus (Ogg) for most browsers, AAC (MP4) for Safari before 18.4. The files measure equally loud, but that measure counts deep bass that small speakers and quiet listening leave out, so each track also has a playback gain set by ear: the bass-heavy Happy is raised, the mid-heavy Winter lowered.",
+  "note": "Background music, one track per round, taking turns. Each file is 31 s long with a 1 s fade-out, matched to -18 LUFS (ITU-R BS.1770): the first 31 s of Happy and Winter, and the 17.4 s Clappy loop repeated, with the small jump where it wraps smoothed out. Opus (Ogg) for most browsers, AAC (MP4) for Safari before 18.4. The files measure equally loud, but that measure counts deep bass that small speakers and quiet listening leave out, so each track also has a playback gain: Happy raised and Winter lowered by ear, Clappy raised by estimate from its similar bass-heavy balance.",
   "tracks": [
     {
       "id": "happy",
@@ -40,6 +40,26 @@
         }
       },
       "gain": 0.67
+    },
+    {
+      "id": "clappy",
+      "title": "Happy Clappy Loop",
+      "author": "OwlishMedia",
+      "source": "https://opengameart.org/content/happy-clappy-loop",
+      "license": "CC0 1.0",
+      "files": {
+        "opus": {
+          "url": "assets/music-20261111/clappy-a3e7848571dd.opus",
+          "sha256": "a3e7848571dde02d2217d481c583034b34c571a49f9b55a6ef8a270fb2cda4a8",
+          "bytes": 283394
+        },
+        "m4a": {
+          "url": "assets/music-20261111/clappy-2f3f07b7d1b2.m4a",
+          "sha256": "2f3f07b7d1b2824d9b0c629c02114ba4f7002d5a3be27732c540800d257c0019",
+          "bytes": 385996
+        }
+      },
+      "gain": 1.7
     }
   ]
 }

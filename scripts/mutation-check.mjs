@@ -77,8 +77,8 @@ const MUTANTS = {
   'score message back in one fixed place': replace("el.style.top=Math.max(box.top-area.top+10,el.offsetHeight+2)+'px';", ''),
   'score message may cover the scoreboard': replace('Math.max(box.top-area.top+10,el.offsetHeight+2)', '(box.top-area.top+10)'),
   'score message may leave the board area': replace('area.width-half)', 'area.width+half)'),
-  'version changed in the script but not on the page': replace("const VERSION = '19.1.1';", "const VERSION = '19.1.2';"),
-  'version shown without its release date': replace('· 版本 19.1.1（2026-11-11）', '· 版本 19.1.1'),
+  'version changed in the script but not on the page': replace("const VERSION = '19.2.0';", "const VERSION = '19.2.1';"),
+  'version shown without its release date': replace('· 版本 19.2.0（2026-11-11）', '· 版本 19.2.0'),
   'music starts with the page instead of the round': replace('  track(MUSIC_TRACKS.length-1);\n', '  track(MUSIC_TRACKS.length-1);running=true;playMusic();running=false;\n'),
   'same track every round': replace('music.next=(i+1)%MUSIC_TRACKS.length;', 'music.next=0;'),
   'music ignores the sound switch': replace('if(music.gain)music.gain.gain.setTargetAtTime(soundOn?MUSIC_VOLUME:0,audioCtx.currentTime,.03);', ''),
@@ -96,6 +96,10 @@ const MUTANTS = {
     await setHtml(next);
     return true;
   },
+  'third track never plays': replace('music.next=(i+1)%MUSIC_TRACKS.length;', 'music.next=(i+1)%2;'),
+  'a composer is left out of the credits': replace('、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>', ''),
+  'a credit links to the wrong track': replace('<a href="https://opengameart.org/content/short-loop-winter-theme" target="_blank" rel="noopener" title="Short Loop: winter theme">yd</a>', '<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Short Loop: winter theme">yd</a>'),
+  'credits pushed off the screen': replace('.credits{font-size:11px;', '.credits{position:fixed;top:120vh;font-size:11px;'),
   'tap marks removed': replace("ripple(i,e,hit(i)||'miss');", 'hit(i);'),
   'tap marks ignore where the finger landed': replace('const pointed=e&&(e.clientX||e.clientY);', 'const pointed=false;'),
   'tap marks swallow taps': replace('.fx{position:absolute;inset:0;pointer-events:none;z-index:5}', '.fx{position:absolute;inset:0;z-index:5}'),
@@ -131,9 +135,9 @@ const EQUIVALENTS = {
   },
   // A release changes the number everywhere it is written, and nothing else.
   'version bumped': async ({ html, setHtml, read, write }) => {
-    const bump = text => text.replaceAll('19.1.1', '19.1.2').replaceAll('2026-11-11', '2026-12-01');
+    const bump = text => text.replaceAll('19.2.0', '19.2.1').replaceAll('2026-11-11', '2026-12-01');
     const source = await html();
-    if (!source.includes("const VERSION = '19.1.1';")) return false;
+    if (!source.includes("const VERSION = '19.2.0';")) return false;
     await setHtml(bump(source));
     await write('README.md', bump(await read('README.md')));
     await write('CHANGELOG.md', bump(await read('CHANGELOG.md')));

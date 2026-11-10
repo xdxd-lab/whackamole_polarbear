@@ -14,6 +14,14 @@ python3 scripts/music/caf2ogg.py happy.caf happy.opus 44100
 afconvert -f m4af -d aac -b 96000 happy-31.wav happy.m4a
 ```
 
-檔名要帶內容雜湊的前 12 碼，並把路徑、大小與 SHA-256 寫進 `deployment/music.json` 和 `index.html` 的 `MUSIC_TRACKS`；`npm test` 會核對。一局是 30 秒，所以每首只需要 31 秒，不需要循環。
+檔名要帶內容雜湊的前 12 碼，並把路徑、大小與 SHA-256 寫進 `deployment/music.json` 和 `index.html` 的 `MUSIC_TRACKS`；`npm test` 會核對。一局是 30 秒，所以每首只需要 31 秒，播放時不需要循環。
+
+原曲比 31 秒短的（例如 17.4 秒的 Happy Clappy Loop），在第 2 步之前先重複到夠長：
+
+```sh
+python3 scripts/music/loop.py clappy-src.wav clappy-loop.wav 31.5
+```
+
+節奏上無縫的循環，最後一個取樣和第一個取樣之間仍可能有落差，重複時會聽到喀一聲；`loop.py` 會在循環結尾的 20 毫秒補上平滑的過渡。
 
 響度相同不代表聽起來一樣大聲：量測會把重低音算進去，但小喇叭和小音量下幾乎聽不到重低音。所以每首另有一個用耳朵決定的播放音量（`deployment/music.json` 與 `MUSIC_TRACKS` 裡的 `gain`），新增曲目時要實際聽過再定。

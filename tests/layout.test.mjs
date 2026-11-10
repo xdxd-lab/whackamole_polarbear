@@ -43,7 +43,7 @@ for (const [width, height] of VIEWPORTS) {
       const game = await Game.open(harness, { viewport });
       try {
         await game.startWith('penguin');
-        assertInside(await inspect(game, ['#startBtn', '#difficulty', '#soundBtn', '#score', '#time', '#best']), label);
+        assertInside(await inspect(game, ['#startBtn', '#difficulty', '#soundBtn', '#score', '#time', '#best', '.credits', '.credits a:last-of-type']), label);
         assert.equal(await game.page.evaluate(() => document.scrollingElement.scrollHeight <= innerHeight), true, 'Page content is taller than the screen');
       } finally {
         await game.close();
