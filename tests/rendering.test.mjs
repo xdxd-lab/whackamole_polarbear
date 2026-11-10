@@ -174,7 +174,7 @@ test('reduced motion: a tap mark fades in place instead of spreading', async () 
       return [width(0), width(349)];
     });
     assert.equal(sizes[0], sizes[1]);
-    assert.equal(await game.page.$$eval('.mole img', images => images.flatMap(image => image.getAnimations()).length), 0, 'The character must not bounce');
+    assert.equal(await game.page.$$eval('.mole .sprite', sprites => sprites.flatMap(sprite => sprite.getAnimations()).filter(animation => !(animation instanceof CSSTransition)).length), 0, 'The character must not bounce');
   } finally {
     await game.close();
   }

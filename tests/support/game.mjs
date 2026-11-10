@@ -94,3 +94,41 @@ export class Game {
 
   assertNoErrors() { assert.deepEqual(this.errors, [], 'JavaScript errors while playing'); }
 }
+
+/**
+ * Mean per-channel difference between what a sprite element draws and frame
+ * `frame` of the reference atlas. It reads the element's computed background,
+ * so it checks the image, frame and scale the player actually sees.
+ */
+export function spriteFrameDifference(page, selector, atlas, frame) {
+  const { url, width, height } = atlas;
+  return page.evaluate(async ({ selector, url, width, height, frame }) => {
+    const element = document.querySelector(selector);
+    const style = getComputedStyle(element);
+    const source = style.backgroundImage.match(/^url\("?(.*?)"?\)$/)?.[1];
+    if (!source) throw new Error(`${selector} has no background image`);
+    const sheet = new Image();
+    sheet.src = source;
+    await sheet.decode();
+    const box = element.getBoundingClientRect();
+    const [sizeX, sizeY] = style.backgroundSize.split(' ').map(value => parseFloat(value) / 100);
+    const drawnWidth = box.width * sizeX;
+    const offset = parseFloat(style.backgroundPositionX) / 100 * (box.width - drawnWidth);
+    const scale = sheet.naturalWidth / drawnWidth;
+    const reference = new Image();
+    reference.src = `/${url}`;
+    await reference.decode();
+    const pixels = (image, sx, sw, sh) => {
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      const context = canvas.getContext('2d', { willReadFrequently: true });
+      context.drawImage(image, sx, 0, sw, sh, 0, 0, width, height);
+      return context.getImageData(0, 0, width, height).data;
+    };
+    const a = pixels(sheet, -offset * scale, box.width * scale, sheet.naturalHeight / sizeY);
+    const b = pixels(reference, frame * width, width, height);
+    let total = 0;
+    for (let i = 0; i < a.length; i += 1) total += Math.abs(a[i] - b[i]);
+    return total / a.length;
+  }, { selector, url, width, height, frame });
+}

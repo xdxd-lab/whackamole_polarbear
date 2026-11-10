@@ -79,7 +79,11 @@
   .hole.penguin-active:before,.hole.bear-active:before,.hole.fox-active:before{opacity:0}
   .hole[data-state="hidden"] .mole{visibility:hidden}
   .hole.up .mole{bottom:8%}
-  .penguin-img,.bear-img,.fox-img{display:none;position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:100%;height:100%;object-fit:contain;object-position:center bottom;transform-origin:50% 100%}.mole.normal .penguin-img,.mole.bad .bear-img,.mole.bonus .fox-img{display:block}
+  /* One verified sheet per species; a state only moves background-position, so no image is swapped or re-decoded. */
+  .mole{container-type:size}
+  .sprite{display:none;position:absolute;left:50%;bottom:0;transform:translateX(-50%);aspect-ratio:var(--ratio);width:min(100cqw,calc(100cqh * var(--ratio)));background:var(--sheet) 0 0/500% 100% no-repeat;transform-origin:50% 100%}
+  .mole.normal .sprite{display:block;--sheet:var(--sheet-penguin);--ratio:1.5}.mole.bad .sprite{display:block;--sheet:var(--sheet-bear);--ratio:1}.mole.bonus .sprite{display:block;--sheet:var(--sheet-fox);--ratio:1}
+  .hole[data-state="warning"] .sprite{background-position-x:25%}.hole[data-state="sneaky"] .sprite{background-position-x:50%}.hole[data-state="pain"] .sprite{background-position-x:75%}.hole[data-state="sad"] .sprite{background-position-x:100%}
   .hole.bear-warning .mole,.hole.fox-warning .mole,.hole.penguin-warning .mole{animation:bearwarn .18s ease-in-out 2}
   .hole.bear-warning .mole{bottom:2%;left:2%}
   .hole.bear-sneaky .mole,.hole.fox-sneaky .mole,.hole.penguin-sneaky .mole{bottom:0%;transition:bottom .18s ease-in}
@@ -152,11 +156,11 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny" style="text-align:center">最高分：<b id="best">0</b> · 版本 19.1.0（2026-11-10）</div>
+  <div class="tiny" style="text-align:center">最高分：<b id="best">0</b> · 版本 19.1.1（2026-11-10）</div>
 </main>
 <script>(async () => {
   'use strict';
-  const VERSION = '19.1.0';
+  const VERSION = '19.1.1';
   const BEST_KEY = 'wam_best_20260904v7';
   const $ = id => document.getElementById(id);
   const board = $('board'), overlay = $('overlay');
@@ -167,37 +171,29 @@
     hard: {spawn: 650, show: 470}
   };
   const states = ['peek','warning','sneaky','pain','sad'];
+  const sheets = [];
   async function loadPublishSprites() {
-    const config = {"bear":{"url":"assets/v16-20260909/bear-45461a4e9175.avif","sha256":"45461a4e9175a12a1a157d722123815190ba38adea450bce565a33fa22b834ac","width":192,"height":192},"fox":{"url":"assets/v16-20260909/fox-f19184045350.avif","sha256":"f191840453502462c830049c2b370ad217fb7435350b19d56bacc5f5a4201ae2","width":192,"height":192},"penguin":{"url":"assets/v16-20260909/penguin-9422776ebeb6.avif","sha256":"9422776ebeb668774e2032140128b06a3574f92c8ae840ac0c23648626598311","width":192,"height":128}};
-    const result = {};
-    const ids = ['peek','warning','sneaky','pain','sad'];
+    const config = {"bear":{"width":192,"height":192,"avif":{"url":"assets/v16-20260909/bear-45461a4e9175.avif","sha256":"45461a4e9175a12a1a157d722123815190ba38adea450bce565a33fa22b834ac"}},"fox":{"width":192,"height":192,"avif":{"url":"assets/v16-20260909/fox-f19184045350.avif","sha256":"f191840453502462c830049c2b370ad217fb7435350b19d56bacc5f5a4201ae2"}},"penguin":{"width":192,"height":128,"avif":{"url":"assets/v16-20260909/penguin-9422776ebeb6.avif","sha256":"9422776ebeb668774e2032140128b06a3574f92c8ae840ac0c23648626598311"}}};
+    const format = 'avif';
     await Promise.all(Object.entries(config).map(async ([species,cfg]) => {
-      const response = await fetch(cfg.url);
+      const file = cfg[format];
+      const response = await fetch(file.url);
       if (!response.ok) throw new Error(species + ': HTTP ' + response.status);
       const bytes = await response.arrayBuffer();
       const digest = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
-      if (digest !== cfg.sha256) throw new Error(species + ': 圖檔完整性驗證失敗');
-      const blobURL = URL.createObjectURL(new Blob([bytes], {type:'image/avif'}));
-      try {
-        const sheet = new Image();
-        sheet.src = blobURL;
-        await sheet.decode();
-        if(sheet.naturalWidth!==cfg.width*5 || sheet.naturalHeight!==cfg.height) throw new Error(species + ': 圖片尺寸不符');
-        const canvas = document.createElement('canvas'); canvas.width=cfg.width; canvas.height=cfg.height;
-        const ctx = canvas.getContext('2d');
-        if(!ctx) throw new Error('無法建立圖片畫布');
-        result[species] = {};
-        ids.forEach((state,i)=>{
-          ctx.clearRect(0,0,canvas.width,canvas.height);
-          ctx.drawImage(sheet,i*cfg.width,0,cfg.width,cfg.height,0,0,cfg.width,cfg.height);
-          result[species][state]=canvas.toDataURL('image/png');
-        });
-      } finally { URL.revokeObjectURL(blobURL); }
+      if (digest !== file.sha256) throw new Error(species + ': 圖檔完整性驗證失敗');
+      // Only these verified bytes are ever shown: the blob URL stays alive for the CSS background.
+      const blobURL = URL.createObjectURL(new Blob([bytes], {type:'image/'+format}));
+      const sheet = new Image();
+      sheet.src = blobURL;
+      try { await sheet.decode(); } catch (_) { throw new Error(species + ': 圖片解碼失敗，這台裝置可能不支援此圖片格式'); }
+      if(sheet.naturalWidth!==cfg.width*5 || sheet.naturalHeight!==cfg.height) throw new Error(species + ': 圖片尺寸不符');
+      sheets.push(sheet);
+      document.documentElement.style.setProperty('--sheet-'+species, `url("${blobURL}")`);
     }));
-    return result;
   }
   startBtn.disabled=true; modalBtn.disabled=true; modalBtn.textContent='驗證角色圖片中…';
-  const sprites = await loadPublishSprites().catch(error=>{
+  await loadPublishSprites().catch(error=>{
     $('modalTitle').textContent='角色圖片未載入';
     $('modalText').textContent=error.message+'。請重新整理；圖片未完整載入前不會開始計分。';
     modalBtn.textContent='請重新整理';
@@ -212,14 +208,14 @@
     const h = document.createElement('button');
     h.type = 'button'; h.className = 'hole'; h.dataset.state = 'hidden';
     h.setAttribute('aria-label', `洞 ${i+1}`);
-    h.innerHTML = '<div class="mole"><img class="penguin-img" alt="" aria-hidden="true"><img class="fox-img" alt="" aria-hidden="true"><img class="bear-img" alt="" aria-hidden="true"></div>';
+    h.innerHTML = '<div class="mole"><div class="sprite" aria-hidden="true"></div></div>';
     h.addEventListener('pointerdown', e => {e.preventDefault(); tap(i,e);});
     h.addEventListener('keydown', e => {
       if(e.key==='Enter'||e.key===' '){e.preventDefault();tap(i);}
     });
     board.appendChild(h); holes.push(h);
   }
-  let running=false, loading=false, ready=false, loadError=null;
+  let running=false;
   let score=0, combo=0, maxCombo=0, timeLeft=30, best=0;
   let actor=null, lastHole=-1, session=0, clockTimer=null, started=0;
   let soundOn=true, audioCtx=null, toastTimer=null;
@@ -288,9 +284,7 @@
     a.phase=state;a.h.dataset.state=state;
     a.h.classList.remove(...states.map(s=>`${a.species}-${s}`));
     if(state!=='peek') a.h.classList.add(`${a.species}-${state}`);
-    const img=a.m.querySelector(`.${a.species}-img`);
-    img.src=sprites[a.species][state];
-    // These are outcome branches, NOT an automatic five-frame slideshow.
+    // data-state picks the frame in CSS. These are outcome branches, NOT an automatic five-frame slideshow.
     a.h.setAttribute('aria-label',`${names[a.species]}，${state==='peek'||state==='warning'?(a.type==='bad'?'別打！':a.type==='bonus'?'+3 分':'+1 分'):'已離開可打擊階段'}`);
   }
   function spawn(){
@@ -380,20 +374,11 @@
   }
   function bonk(a){
     if(calm.matches)return;
-    const img=a.m.querySelector(`.${a.species}-img`),at='translateX(-50%) ';
+    const img=a.m.querySelector('.sprite'),at='translateX(-50%) ';
     img.animate(a.type==='bad'
       ?[0,-5,5,-3,3,0].map(x=>({transform:`${at}translateX(${x}%)`}))
       :[{transform:at+'scale(1)'},{transform:at+'scale(1.14,.84)',offset:.3},{transform:at+'scale(.96,1.05)',offset:.65},{transform:at+'scale(1)'}],{duration:200});
   }
-  const images=[];
-  const assetsReady=Promise.all(Object.values(sprites).flatMap(set=>Object.values(set)).map(url=>new Promise((resolve,reject)=>{
-    const img=new Image();images.push(img);
-    img.onload=()=>{
-      if(!img.naturalWidth){reject(new Error('空白圖片'));return;}
-      (typeof img.decode==='function'?img.decode():Promise.resolve()).then(resolve,reject);
-    };
-    img.onerror=()=>reject(new Error('角色圖片載入失敗'));img.src=url;
-  }))).then(()=>{ready=true;}).catch(e=>{loadError=e;});
   // Background music: one track per round, taking turns. Fetched only after the game is
   // playable and decoded off-screen, so it never delays the first round; it starts only
   // from the player's tap, and a track that cannot load leaves the game silent, not broken.
@@ -413,7 +398,8 @@
   }
   // One at a time, in the order they will play.
   function track(i){return music.loads[i] ||= (i?track(i-1):Promise.resolve()).then(()=>decodeTrack(i));}
-  assetsReady.then(()=>track(MUSIC_TRACKS.length-1));
+  // The sheets are verified and the buttons enabled by now, so the game is already playable.
+  track(MUSIC_TRACKS.length-1);
   function playMusic(){
     stopMusic();
     const i=music.next;music.next=(i+1)%MUSIC_TRACKS.length;
@@ -439,20 +425,10 @@
     playing.fade.gain.linearRampToValueAtTime(0,t+.25);
     playing.source.stop(t+.25);
   }
-  async function start(){
-    if(loading)return;
-    // Resume audio inside the user gesture, before waiting for images.
+  function start(){
+    // Sheets are verified and decoded before the buttons are enabled.
+    // Resume audio inside the user gesture.
     audio();beep(520,.08,'triangle');
-    if(!ready){
-      loading=true;startBtn.disabled=true;modalBtn.disabled=true;
-      const label=modalBtn.textContent;modalBtn.textContent='圖片載入中…';
-      await assetsReady;loading=false;startBtn.disabled=false;modalBtn.disabled=false;modalBtn.textContent=label;
-    }
-    if(loadError){
-      $('modalTitle').textContent='圖片未載入完成';
-      $('modalText').textContent='請重新開啟這份完整遊戲檔，或重新整理網頁。遊戲不會以舊圖代替缺少的圖片。';
-      overlay.classList.add('show');return;
-    }
     session++;clearTimers();clearInterval(clockTimer);resetAll();
     score=0;combo=0;maxCombo=0;timeLeft=30;running=true;started=performance.now();
     overlay.classList.remove('show');$('finalScore').hidden=true;update();spawn();playMusic();

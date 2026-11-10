@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { after, before, test } from 'node:test';
-import { DIFFICULTY, Game, holeRoll, SPECIES_ROLL, startHarness } from './support/game.mjs';
+import { DIFFICULTY, Game, holeRoll, SPECIES_ROLL, spriteFrameDifference, startHarness } from './support/game.mjs';
 import { ROOT } from './support/server.mjs';
 
 const manifest = JSON.parse(await readFile(path.join(ROOT, 'deployment/v16-release.json'), 'utf8'));
@@ -40,9 +40,11 @@ function capture(page, species) {
     const holeWidth = holeBox.width - parseFloat(holeStyle.borderLeftWidth) - parseFloat(holeStyle.borderRightWidth);
     const holeHeight = holeBox.height - parseFloat(holeStyle.borderTopWidth) - parseFloat(holeStyle.borderBottomWidth);
     const percent = (value, base) => Math.round(parseFloat(value) / base * 100);
-    const visible = [...mole.querySelectorAll('img')].filter(img => getComputedStyle(img).display !== 'none');
-    const image = visible[0];
-    const imageStyle = getComputedStyle(image);
+    const visible = [...mole.querySelectorAll('.sprite')].filter(sprite => getComputedStyle(sprite).display !== 'none');
+    const sprite = visible[0];
+    const spriteStyle = getComputedStyle(sprite);
+    const spriteBox = sprite.getBoundingClientRect();
+    const moleBox = mole.getBoundingClientRect();
     return {
       moleBottom: percent(style.bottom, holeHeight),
       moleLeft: percent(style.left, holeWidth),
@@ -55,37 +57,20 @@ function capture(page, species) {
       moleDisplay: style.display,
       moleTransition: `${style.transitionProperty} ${style.transitionDuration} ${style.transitionTimingFunction}`,
       holeShadeOpacity: getComputedStyle(hole, '::before').opacity,
-      visibleImages: visible.length,
-      imageObjectFit: imageStyle.objectFit,
-      imageObjectPosition: imageStyle.objectPosition,
-      imageOpacity: imageStyle.opacity,
-      imageWidth: percent(imageStyle.width, parseFloat(style.width)),
-      imageHeight: percent(imageStyle.height, parseFloat(style.height)),
+      visibleSprites: visible.length,
+      spriteOpacity: spriteStyle.opacity,
+      spriteRepeat: spriteStyle.backgroundRepeat,
+      // The drawn frame: contained in the mole box, centred, standing on its bottom edge.
+      spriteWidth: Math.round(spriteBox.width / moleBox.width * 100),
+      spriteHeight: Math.round(spriteBox.height / moleBox.height * 100),
+      spriteCentreOffset: 0 + Math.round(((spriteBox.left + spriteBox.right) / 2 - (moleBox.left + moleBox.right) / 2) / moleBox.width * 100),
+      spriteBottomGap: 0 + Math.round((moleBox.bottom - spriteBox.bottom) / moleBox.height * 100),
     };
   }, species);
 }
 
 function frameDifference(page, species, frame) {
-  const { url, width, height } = manifest.atlases[species];
-  return page.evaluate(async ({ name, url, width, height, frame }) => {
-    const hole = document.querySelector(`#board .hole[data-character="${name}"]`);
-    const shown = [...hole.querySelectorAll('img')].find(img => getComputedStyle(img).display !== 'none');
-    const atlas = new Image();
-    atlas.src = `/${url}`;
-    await atlas.decode();
-    const pixels = (source, sx) => {
-      const canvas = document.createElement('canvas');
-      canvas.width = width; canvas.height = height;
-      const context = canvas.getContext('2d', { willReadFrequently: true });
-      context.drawImage(source, sx, 0, width, height, 0, 0, width, height);
-      return context.getImageData(0, 0, width, height).data;
-    };
-    const a = pixels(shown, 0);
-    const b = pixels(atlas, frame * width);
-    let total = 0;
-    for (let i = 0; i < a.length; i += 1) total += Math.abs(a[i] - b[i]);
-    return total / a.length;
-  }, { name: species, url, width, height, frame });
+  return spriteFrameDifference(page, `#board .hole[data-character="${species}"] .sprite`, manifest.atlases[species], frame);
 }
 
 test('every species and state matches its recorded look, at every viewport', async () => {

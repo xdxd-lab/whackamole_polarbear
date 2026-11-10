@@ -122,8 +122,8 @@ try {
   await page.locator('#modalBtn').click();
   await page.waitForFunction(() => {
     const hole = document.querySelector('.hole.up .mole');
-    const img = [...(hole?.querySelectorAll('img') ?? [])].find(item => getComputedStyle(item).display !== 'none');
-    return Boolean(img && img.complete && img.naturalWidth > 0);
+    const sprite = [...(hole?.querySelectorAll('.sprite') ?? [])].find(item => getComputedStyle(item).display !== 'none');
+    return Boolean(sprite && /^url\("blob:/.test(getComputedStyle(sprite).backgroundImage) && sprite.getBoundingClientRect().width > 0);
   }, null, { timeout: 8000 });
   assert.deepEqual(pageErrors, [], 'JavaScript runtime errors during game');
   assert.equal(await page.locator('.hole').count(), 9, 'Game board must have nine holes');
