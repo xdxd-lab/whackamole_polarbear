@@ -174,7 +174,7 @@ test('reduced motion: a tap mark fades in place instead of spreading', async () 
       return [width(0), width(349)];
     });
     assert.equal(sizes[0], sizes[1]);
-    assert.equal(await game.page.$$eval('.mole .sprite', sprites => sprites.flatMap(sprite => sprite.getAnimations()).filter(animation => !(animation instanceof CSSTransition)).length), 0, 'The character must not bounce');
+    assert.equal(await game.page.$$eval('.mole .sprite', sprites => sprites.flatMap(sprite => sprite.getAnimations()).length), 0, 'The character must not bounce');
   } finally {
     await game.close();
   }
@@ -208,6 +208,26 @@ test('the score message appears by the hole that was hit and stays on screen', a
       } finally {
         await game.close();
       }
+    }
+  }
+});
+
+test('an expression changes in one step, never by sliding the sheet, with or without reduced motion', async () => {
+  for (const reducedMotion of ['reduce', 'no-preference']) {
+    const game = await Game.open(harness, { reducedMotion });
+    try {
+      await game.startWith('penguin', 4);
+      await game.settle();
+      // Read in the same task as the hit, before the browser can draw a frame.
+      const seen = await game.page.evaluate(() => {
+        const sprite = document.querySelectorAll('#board .hole')[4].querySelector('.sprite');
+        const before = getComputedStyle(sprite).backgroundPositionX;
+        window.__test.input(4);
+        return { before, after: getComputedStyle(sprite).backgroundPositionX, moving: sprite.getAnimations().filter(animation => animation instanceof CSSTransition).length };
+      });
+      assert.deepEqual({ ...seen, before: parseFloat(seen.before) }, { before: 0, after: '75%', moving: 0 }, `With ${reducedMotion}`);
+    } finally {
+      await game.close();
     }
   }
 });

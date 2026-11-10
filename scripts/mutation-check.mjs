@@ -58,6 +58,7 @@ const MUTANTS = {
   'hidden page keeps playing': replace('if(document.hidden&&running)finish();', ''),
   'sprite frames swapped': replace('.hole[data-state="warning"] .sprite{background-position-x:25%}', '.hole[data-state="warning"] .sprite{background-position-x:0%}'),
   'sad frame shows pain': replace('.hole[data-state="sad"] .sprite{background-position-x:100%}', '.hole[data-state="sad"] .sprite{background-position-x:75%}'),
+  'expressions slide across the sheet under reduced motion': replace('transform-origin:50% 100%;transition:none!important}', 'transform-origin:50% 100%}'),
   'sprite sheet tiles': replace('0 0/500% 100% no-repeat', '0 0/500% 100%'),
   'penguin drawn square': replace('--sheet:var(--sheet-penguin);--ratio:1.5', '--sheet:var(--sheet-penguin);--ratio:1'),
   'fox shown with the bear sheet': replace('--sheet:var(--sheet-fox)', '--sheet:var(--sheet-bear)'),

@@ -79,9 +79,10 @@
   .hole.penguin-active:before,.hole.bear-active:before,.hole.fox-active:before{opacity:0}
   .hole[data-state="hidden"] .mole{visibility:hidden}
   .hole.up .mole{bottom:8%}
-  /* One verified sheet per species; a state only moves background-position, so no image is swapped or re-decoded. */
+  /* One verified sheet per species; a state only moves background-position, so no image is swapped or re-decoded.
+     The move must be a cut, never a slide: reduced motion gives every property a (very short) transition, so the sprite opts out. */
   .mole{container-type:size}
-  .sprite{display:none;position:absolute;left:50%;bottom:0;transform:translateX(-50%);aspect-ratio:var(--ratio);width:min(100cqw,calc(100cqh * var(--ratio)));background:var(--sheet) 0 0/500% 100% no-repeat;transform-origin:50% 100%}
+  .sprite{display:none;position:absolute;left:50%;bottom:0;transform:translateX(-50%);aspect-ratio:var(--ratio);width:min(100cqw,calc(100cqh * var(--ratio)));background:var(--sheet) 0 0/500% 100% no-repeat;transform-origin:50% 100%;transition:none!important}
   .mole.normal .sprite{display:block;--sheet:var(--sheet-penguin);--ratio:1.5}.mole.bad .sprite{display:block;--sheet:var(--sheet-bear);--ratio:1}.mole.bonus .sprite{display:block;--sheet:var(--sheet-fox);--ratio:1}
   .hole[data-state="warning"] .sprite{background-position-x:25%}.hole[data-state="sneaky"] .sprite{background-position-x:50%}.hole[data-state="pain"] .sprite{background-position-x:75%}.hole[data-state="sad"] .sprite{background-position-x:100%}
   .hole.bear-warning .mole,.hole.fox-warning .mole,.hole.penguin-warning .mole{animation:bearwarn .18s ease-in-out 2}
