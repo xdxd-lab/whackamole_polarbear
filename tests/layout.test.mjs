@@ -67,6 +67,23 @@ for (const [width, height] of VIEWPORTS) {
       }
     });
 
+    test('the music credits take no room from the game', async () => {
+      const game = await Game.open(harness, { viewport });
+      try {
+        const boxes = () => inspect(game, ['#board', '#startBtn', '#best']);
+        const withCredits = await boxes();
+        await game.page.addStyleTag({ content: '.credits{display:none!important}' });
+        const without = await boxes();
+        for (const selector of Object.keys(without)) {
+          for (const side of ['top', 'bottom', 'width', 'height']) {
+            assert.ok(Math.abs(withCredits[selector][side] - without[selector][side]) < 0.5, `${label}: the credits move or resize ${selector} (${side} ${without[selector][side]} -> ${withCredits[selector][side]})`);
+          }
+        }
+      } finally {
+        await game.close();
+      }
+    });
+
     test('the start and result dialogs fit', async () => {
       const game = await Game.open(harness, { viewport });
       try {

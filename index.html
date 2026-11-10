@@ -98,7 +98,9 @@
   .fx .normal{--c:#2a9d8f}.fx .bonus{--c:#ffb703}.fx .bad{--c:#ef476f}
 
   /* Version and music credits: small and pale, in the corner, never competing with the game. */
-  .foot{text-align:center;line-height:1.5}.foot span{display:inline-block}.credits{font-size:11px;color:#6b7f8c;margin-left:.6em}.credits a{color:inherit;text-decoration:underline;text-decoration-color:rgba(107,127,140,.45);text-underline-offset:2px}.credits a:focus-visible{outline:2px solid #1769c4;outline-offset:2px}
+  .foot{text-align:center}.foot span{display:inline-block}.credits{font-size:11px;color:#6b7f8c;margin-left:.6em}.credits a{color:inherit;text-decoration:underline;text-decoration-color:rgba(107,127,140,.45);text-underline-offset:2px}.credits a:focus-visible{outline:2px solid #1769c4;outline-offset:2px}
+  /* Where the credits need a line of their own, that line sits in the page's bottom margin and takes no height from the game. */
+  @media(max-width:560px),(orientation:landscape) and (max-height:560px){.foot .credits{display:block;margin:0 0 -13px;font-size:10.5px;line-height:13px}}
 
   .controls{display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:12px}.btn,select{border:0;border-radius:15px;font:inherit;font-weight:800}.btn{padding:13px 17px;background:#fff;box-shadow:inset 0 0 0 1px #dce7df;cursor:pointer}.btn.primary{background:var(--accent);box-shadow:none}.btn:active{transform:translateY(1px)}select{padding:0 34px 0 14px;background:#fff;min-width:118px}
   .progress{height:8px;background:rgba(255,255,255,.5);border-radius:999px;overflow:hidden}.bar{height:100%;width:100%;background:linear-gradient(90deg,var(--good),var(--accent),var(--danger));transform-origin:left;transition:transform .1s linear}

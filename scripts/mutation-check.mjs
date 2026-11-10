@@ -99,6 +99,7 @@ const MUTANTS = {
   'third track never plays': replace('music.next=(i+1)%MUSIC_TRACKS.length;', 'music.next=(i+1)%2;'),
   'a composer is left out of the credits': replace('、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>', ''),
   'a credit links to the wrong track': replace('<a href="https://opengameart.org/content/short-loop-winter-theme" target="_blank" rel="noopener" title="Short Loop: winter theme">yd</a>', '<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Short Loop: winter theme">yd</a>'),
+  'credits take room from the board': replace('.foot .credits{display:block;margin:0 0 -13px;', '.foot .credits{display:block;'),
   'credits pushed off the screen': replace('.credits{font-size:11px;', '.credits{position:fixed;top:120vh;font-size:11px;'),
   'tap marks removed': replace("ripple(i,e,hit(i)||'miss');", 'hit(i);'),
   'tap marks ignore where the finger landed': replace('const pointed=e&&(e.clientX||e.clientY);', 'const pointed=false;'),
