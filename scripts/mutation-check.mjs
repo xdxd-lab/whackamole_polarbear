@@ -65,7 +65,21 @@ const MUTANTS = {
   'board no longer centred': replace('height:min(100cqw,100cqh);margin:auto}', 'height:min(100cqw,100cqh)}'),
   'landscape loses its two columns': replace('@media(orientation:landscape) and (max-height:560px){', '@media(orientation:landscape) and (max-height:1px){'),
   'panel blur restored': replace('.brand,.scoreboard,.controls,.card{background:var(--panel);', '.brand,.scoreboard,.controls,.card{background:var(--panel);backdrop-filter:blur(8px);'),
-  'panels too transparent': replace('--panel:rgba(255,255,255,.9)', '--panel:rgba(255,255,255,.8)'),
+  'panels too transparent': replace('--panel:rgba(255,255,255,.94)', '--panel:rgba(255,255,255,.8)'),
+  'snow loop no longer a whole tile': replace('@keyframes snowfall{to{transform:translateY(var(--tile))}}', '@keyframes snowfall{to{transform:translateY(calc(var(--tile) * 1.3))}}'),
+  'snow layer too short for its loop': replace('top:calc(-10vh - var(--tile));bottom:-10vh', 'top:0;bottom:0'),
+  'holes get the default button border back': replace('.hole{position:relative;overflow:hidden;border:0;padding:0;', '.hole{position:relative;overflow:hidden;'),
+  'score message back in one fixed place': replace("el.style.top=Math.max(box.top-area.top+10,el.offsetHeight+2)+'px';", ''),
+  'score message may cover the scoreboard': replace('Math.max(box.top-area.top+10,el.offsetHeight+2)', '(box.top-area.top+10)'),
+  'score message may leave the board area': replace('area.width-half)', 'area.width+half)'),
+  'version changed in the script but not on the page': replace("const VERSION = '19.0.0';", "const VERSION = '19.0.1';"),
+  'version shown without its release date': replace('· 版本 19.0.0（2026-11-10）', '· 版本 19.0.0'),
+  'tap marks removed': replace("ripple(i,e,hit(i)||'miss');", 'hit(i);'),
+  'tap marks ignore where the finger landed': replace('const pointed=e&&(e.clientX||e.clientY);', 'const pointed=false;'),
+  'tap marks swallow taps': replace('.fx{position:absolute;inset:0;pointer-events:none;z-index:5}', '.fx{position:absolute;inset:0;z-index:5}'),
+  'tap marks pile up': replace('.finished.then(remove,remove);', ';'),
+  'reduced motion still spreads the ring': replace('grow=calm.matches?.5:1.5', 'grow=1.5'),
+  'reduced motion still bounces the character': replace('if(calm.matches)return;', ''),
   'reduced motion snow keeps falling': replace('.snow-layer{animation:none;will-change:auto}', ''),
   'reduced motion hides the toast': replace('.toast.show{animation:none;opacity:1;transform:translate(-50%,-8px)}', ''),
   'toast never clears': replace("toastTimer=setTimeout(()=>el.classList.remove('show'),550);", ''),
@@ -101,7 +115,16 @@ const EQUIVALENTS = {
     await setHtml(next);
     return true;
   },
-  'version bumped': replace('20261024-v18', '20261201-v19'),
+  // A release changes the number everywhere it is written, and nothing else.
+  'version bumped': async ({ html, setHtml, read, write }) => {
+    const bump = text => text.replaceAll('19.0.0', '19.0.1').replaceAll('2026-11-10', '2026-12-01');
+    const source = await html();
+    if (!source.includes("const VERSION = '19.0.0';")) return false;
+    await setHtml(bump(source));
+    await write('README.md', bump(await read('README.md')));
+    await write('CHANGELOG.md', bump(await read('CHANGELOG.md')));
+    return true;
+  },
   'script moved to a module file': async ({ html, setHtml, write }) => {
     const source = await html();
     const match = source.match(/<script>([\s\S]*)<\/script>/);
@@ -139,7 +162,7 @@ const only = option('--only');
 const shardText = option('--shard');
 const workers = positiveInt(process.env.MUTATION_WORKERS || '1', 'MUTATION_WORKERS');
 const caseTimeout = positiveInt(process.env.MUTATION_CASE_TIMEOUT_MS || '180000', 'MUTATION_CASE_TIMEOUT_MS');
-const COPY = ['index.html', 'assets', 'deployment', 'scripts', 'tests', 'package.json'];
+const COPY = ['index.html', 'assets', 'deployment', 'scripts', 'tests', 'package.json', 'README.md', 'CHANGELOG.md'];
 const RESULTS = path.join(ROOT, 'test-results');
 const LOGS = path.join(RESULTS, 'mutation');
 
@@ -209,6 +232,7 @@ async function runCase({ transform, slug }) {
     const applied = await transform({
       html: () => readFile(htmlFile, 'utf8'),
       setHtml: value => writeFile(htmlFile, value),
+      read: name => readFile(path.join(dir, name), 'utf8'),
       write: (name, value) => writeFile(path.join(dir, name), value),
     });
     if (!applied) return { result: 'stale' };

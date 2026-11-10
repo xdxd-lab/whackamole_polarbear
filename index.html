@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#8fd8ff" />
 <link rel="icon" href="data:," />
-<title>打企鵝・北極狐｜V18 音效與玩具槌子版 2026-10-24</title>
+<title>雪地敲敲樂｜打企鵝・北極狐 V19</title>
 <style>
   :root{
     --sky-top:#8fd8ff; --sky-mid:#cfeeff; --sky-bottom:#eef9ff;
     --snow:#f8fdff; --snow-shadow:#d9ecf8;
-    --panel:rgba(255,255,255,.9); --ink:#23302a; --accent:#ffb703; --danger:#ef476f;
-    --good:#2a9d8f; --hole:#4b362f; --shadow:0 14px 36px rgba(28,58,42,.14);
+    --panel:rgba(255,255,255,.94); --ink:#23302a; --accent:#ffb703; --danger:#ef476f;
+    --good:#2a9d8f; --hole:#27414f; --shadow:0 14px 36px rgba(28,58,42,.14);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   html,body{margin:0;min-height:100%;font-family:system-ui,-apple-system,"Noto Sans TC","PingFang TC",sans-serif;color:var(--ink);overscroll-behavior:none}
@@ -37,61 +37,65 @@
     background:linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(248,252,255,.85) 16%, rgba(244,250,255,.96) 100%);
     box-shadow:0 -18px 50px rgba(255,255,255,.55) inset;
   }
-  .snow-layer{position:fixed;inset:-120vh 0 0 0;pointer-events:none;z-index:1;will-change:transform,opacity;background-repeat:repeat}
+  /* Each layer falls exactly one tile of its own pattern per loop, so the loop has no seam.
+     The slant comes from leaning the whole layer, which keeps that true. */
+  .snow-layer{position:fixed;left:-20vw;right:-20vw;top:calc(-10vh - var(--tile));bottom:-10vh;pointer-events:none;z-index:1;will-change:transform;background-repeat:repeat;background-size:var(--tile) var(--tile);rotate:var(--lean);animation:snowfall var(--fall) linear infinite}
   .snow-back{
-    opacity:.42;background-size:280px 280px;
+    --tile:280px;--fall:6s;--lean:2deg;opacity:.42;
     background-image:
       radial-gradient(circle, rgba(255,255,255,.95) 0 1.2px, transparent 1.6px),
       radial-gradient(circle, rgba(255,255,255,.85) 0 1.8px, transparent 2.2px),
       radial-gradient(circle, rgba(255,255,255,.75) 0 1px, transparent 1.4px);
     background-position: 0 0, 120px 40px, 40px 140px;
-    animation:snowfallA 20s linear infinite;
   }
   .snow-mid{
-    opacity:.58;background-size:220px 220px;
+    --tile:220px;--fall:3.2s;--lean:-3deg;opacity:.58;
     background-image:
       radial-gradient(circle, rgba(255,255,255,.96) 0 1.8px, transparent 2.4px),
       radial-gradient(circle, rgba(255,255,255,.88) 0 2.6px, transparent 3.1px),
       radial-gradient(circle, rgba(255,255,255,.8) 0 1.4px, transparent 1.9px);
     background-position: 24px 0, 138px 78px, 76px 150px;
-    animation:snowfallB 14s linear infinite;
   }
   .snow-front{
-    opacity:.72;background-size:170px 170px;
+    --tile:170px;--fall:1.8s;--lean:4deg;opacity:.72;
     background-image:
       radial-gradient(circle, rgba(255,255,255,.98) 0 2.2px, transparent 2.9px),
       radial-gradient(circle, rgba(255,255,255,.92) 0 3.2px, transparent 3.9px),
       radial-gradient(circle, rgba(255,255,255,.85) 0 1.6px, transparent 2.1px);
     background-position: 0 12px, 94px 70px, 30px 130px;
-    animation:snowfallC 10s linear infinite;
   }
-  @keyframes snowfallA{from{transform:translate3d(-1vw,-12vh,0)}to{transform:translate3d(2vw,112vh,0)}}
-  @keyframes snowfallB{from{transform:translate3d(1vw,-10vh,0)}to{transform:translate3d(-2vw,112vh,0)}}
-  @keyframes snowfallC{from{transform:translate3d(-2vw,-8vh,0)}to{transform:translate3d(3vw,112vh,0)}}
+  @keyframes snowfall{to{transform:translateY(var(--tile))}}
   .cloud,.cloud:before,.cloud:after{position:fixed;background:#fff;border-radius:999px;opacity:.8;pointer-events:none;z-index:1}.cloud{width:92px;height:30px;top:7%;left:7%;filter:blur(.2px)}.cloud:before{content:"";width:40px;height:40px;left:13px;top:-18px}.cloud:after{content:"";width:52px;height:52px;right:8px;top:-25px}.cloud.two{transform:scale(.75);left:auto;right:8%;top:15%}
   .game{width:min(680px,100%);max-height:100%;display:grid;grid-template-rows:auto minmax(0,auto) auto auto auto;gap:12px;position:relative;z-index:2}
   .top{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:stretch}
   .brand,.scoreboard,.controls,.card{background:var(--panel);border:1px solid rgba(255,255,255,.7);box-shadow:var(--shadow);border-radius:22px}
   .brand{padding:15px 18px}.brand h1{font-size:clamp(24px,5vw,36px);line-height:1;margin:0 0 5px;display:flex;align-items:center;gap:.2em}.toy-mallet{width:1.25em;height:1.25em;flex:none;filter:drop-shadow(0 2px 2px rgba(92,48,67,.2))}.brand p{margin:0;font-size:13px;opacity:.7}
-  .scoreboard{display:grid;grid-template-columns:repeat(3,minmax(64px,1fr));overflow:hidden}.stat{padding:10px 12px;text-align:center;min-width:72px}.stat+.stat{border-left:1px solid #dde7df}.label{font-size:11px;opacity:.58;font-weight:700;letter-spacing:.05em}.value{font-size:25px;font-weight:900;font-variant-numeric:tabular-nums}.value.hot{color:var(--danger)}
+  .scoreboard{display:grid;grid-template-columns:repeat(3,minmax(64px,1fr));overflow:hidden}.stat{padding:10px 12px;text-align:center;min-width:72px;display:flex;flex-direction:column;justify-content:center}.stat+.stat{border-left:1px solid #dde7df}.label{font-size:11px;opacity:.58;font-weight:700;letter-spacing:.05em}.value{font-size:25px;font-weight:900;font-variant-numeric:tabular-nums}.value.hot{color:var(--danger)}
   .card{padding:14px;aspect-ratio:1/1;min-height:0;place-self:stretch;container-type:size}.board{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:clamp(8px,2vw,14px);width:100%;aspect-ratio:1/1;width:min(100cqw,100cqh);height:min(100cqw,100cqh);margin:auto}
-  .hole{position:relative;overflow:hidden;border-radius:24px;cursor:pointer;touch-action:manipulation;isolation:isolate;background:linear-gradient(180deg,rgba(255,255,255,.34),rgba(212,233,245,.38))}
-  .hole:before{content:"";position:absolute;left:9%;right:9%;bottom:7%;height:31%;background:var(--hole);border-radius:50%;box-shadow:inset 0 8px 0 rgba(0,0,0,.2),0 5px 0 rgba(255,255,255,.16);z-index:1}
+  .hole{position:relative;overflow:hidden;border:0;padding:0;margin:0;font:inherit;color:inherit;appearance:none;border-radius:24px;cursor:pointer;touch-action:manipulation;isolation:isolate;background:linear-gradient(180deg,#fbfdff 0%,#e4f1fa 62%,#d3e7f4 100%);box-shadow:inset 0 2px 0 #fff,inset 0 -10px 16px rgba(110,160,198,.16),0 2px 0 rgba(126,170,204,.4)}
+  .hole:focus-visible{outline:3px solid #1769c4;outline-offset:2px}
+  .hole:before{content:"";position:absolute;left:11%;right:11%;bottom:9%;height:29%;background:radial-gradient(ellipse at 50% 30%,#172a35 0 45%,var(--hole) 100%);border-radius:50%;box-shadow:inset 0 6px 0 rgba(0,0,0,.22),0 0 0 4px #fff,0 5px 0 4px rgba(150,190,216,.5);z-index:1}
   .mole{position:absolute;left:4%;width:92%;height:92%;bottom:-70%;z-index:2;display:flex;align-items:flex-end;justify-content:center;transition:bottom .14s cubic-bezier(.2,.85,.3,1.18),transform .08s;filter:drop-shadow(0 5px 3px rgba(0,0,0,.08));pointer-events:none}
   .hole.penguin-active:before,.hole.bear-active:before,.hole.fox-active:before{opacity:0}
   .hole[data-state="hidden"] .mole{visibility:hidden}
   .hole.up .mole{bottom:8%}
-  .penguin-img,.bear-img,.fox-img{display:none;position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:100%;height:100%;object-fit:contain;object-position:center bottom}.mole.normal .penguin-img,.mole.bad .bear-img,.mole.bonus .fox-img{display:block}
+  .penguin-img,.bear-img,.fox-img{display:none;position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:100%;height:100%;object-fit:contain;object-position:center bottom;transform-origin:50% 100%}.mole.normal .penguin-img,.mole.bad .bear-img,.mole.bonus .fox-img{display:block}
   .hole.bear-warning .mole,.hole.fox-warning .mole,.hole.penguin-warning .mole{animation:bearwarn .18s ease-in-out 2}
   .hole.bear-warning .mole{bottom:2%;left:2%}
   .hole.bear-sneaky .mole,.hole.fox-sneaky .mole,.hole.penguin-sneaky .mole{bottom:0%;transition:bottom .18s ease-in}
   .hole.bear-sneaky .mole{bottom:-6%;left:6%}
   @keyframes bearwarn{50%{transform:translateY(-3px) rotate(-1deg)}}
 
+  /* Touch feedback: a dot where the tap landed and a ring that spreads from it. */
+  .fx{position:absolute;inset:0;pointer-events:none;z-index:5}
+  .ripple,.dot{position:absolute;border-radius:50%;transform:translate(-50%,-50%);opacity:0;--c:#6fa8d0}
+  .ripple{border:4px solid var(--c)}.dot{background:var(--c)}
+  .fx .normal{--c:#2a9d8f}.fx .bonus{--c:#ffb703}.fx .bad{--c:#ef476f}
+
   .controls{display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:12px}.btn,select{border:0;border-radius:15px;font:inherit;font-weight:800}.btn{padding:13px 17px;background:#fff;box-shadow:inset 0 0 0 1px #dce7df;cursor:pointer}.btn.primary{background:var(--accent);box-shadow:none}.btn:active{transform:translateY(1px)}select{padding:0 34px 0 14px;background:#fff;min-width:118px}
   .progress{height:8px;background:rgba(255,255,255,.5);border-radius:999px;overflow:hidden}.bar{height:100%;width:100%;background:linear-gradient(90deg,var(--good),var(--accent),var(--danger));transform-origin:left;transition:transform .1s linear}
-  .overlay{position:absolute;inset:0;display:grid;place-items:center;background:rgba(34,49,40,.34);z-index:20;border-radius:22px;opacity:0;visibility:hidden;pointer-events:none;transition:.2s}.overlay.show{opacity:1;visibility:visible;pointer-events:auto}.modal{width:min(410px,88%);background:#fff;border-radius:24px;padding:24px;text-align:center;box-shadow:0 25px 70px rgba(0,0,0,.25)}.modal h2{font-size:31px;margin:0 0 8px}.modal p{margin:7px 0 18px;line-height:1.6}.bigscore{font-size:52px;font-weight:950;color:var(--good);line-height:1}.tiny{font-size:12px;opacity:.62}
-  .toast{position:fixed;left:50%;top:18%;transform:translate(-50%,-8px);z-index:30;font-weight:900;font-size:24px;opacity:0;pointer-events:none;text-shadow:0 2px 0 #fff}.toast.show{animation:pop .55s ease-out}@keyframes pop{0%{opacity:0;transform:translate(-50%,4px) scale(.8)}25%{opacity:1;transform:translate(-50%,-8px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-28px) scale(1)}}
+  .overlay{position:absolute;inset:0;display:grid;place-items:center;background:rgba(226,240,250,.86);z-index:20;border-radius:22px;opacity:0;visibility:hidden;pointer-events:none;transition:.2s}.overlay.show{opacity:1;visibility:visible;pointer-events:auto}.modal{width:min(410px,88%);background:#fff;border-radius:24px;padding:24px;text-align:center;box-shadow:0 0 0 1px rgba(120,165,200,.28),0 18px 44px rgba(40,80,110,.22)}.modal h2{font-size:31px;margin:0 0 8px}.modal p{margin:7px 0 18px;line-height:1.6}.bigscore{font-size:52px;font-weight:950;color:var(--good);line-height:1}.tiny{font-size:12px;opacity:.62}
+  .toast{position:absolute;left:50%;top:14px;translate:0 -100%;white-space:nowrap;transform:translate(-50%,-8px);z-index:30;font-weight:900;font-size:clamp(17px,5cqw,24px);line-height:1.2;padding:2px 12px;border-radius:999px;background:rgba(255,255,255,.94);box-shadow:0 2px 8px rgba(40,80,110,.18);opacity:0;pointer-events:none}.toast.bad{color:var(--danger)}.toast.show{animation:pop .55s ease-out}@keyframes pop{0%{opacity:0;transform:translate(-50%,4px) scale(.8)}25%{opacity:1;transform:translate(-50%,-8px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-28px) scale(1)}}
   @media(max-width:560px){body{align-items:start}.top{grid-template-columns:1fr}.brand{text-align:center}.brand h1{justify-content:center}.scoreboard{min-height:68px}.card{padding:10px}.board{gap:6px}.hole{border-radius:18px}.controls{grid-template-columns:1fr 1fr}.controls .primary{grid-column:1/-1;grid-row:1}.controls select{width:100%;min-height:45px}.controls .btn:not(.primary){min-height:45px}}
   @media(orientation:landscape) and (max-height:560px){.game{--side:calc(100dvh - max(14px,env(safe-area-inset-top)) - max(14px,env(safe-area-inset-bottom)));width:100%;max-width:1040px;grid-template-columns:auto minmax(0,1fr);grid-template-rows:repeat(4,auto);gap:8px 12px}.card{grid-column:1;grid-row:1/-1;width:var(--side);height:var(--side);aspect-ratio:auto;padding:10px}.board{gap:6px}.hole{border-radius:18px}.top{grid-template-columns:1fr;gap:8px}.brand{padding:8px 12px;text-align:center}.brand h1{justify-content:center;font-size:22px;margin:0 0 2px}.brand p{font-size:12px}.scoreboard{min-height:0}.stat{padding:5px 8px}.value{font-size:20px}.controls{grid-template-columns:1fr 1fr;gap:8px;padding:8px}.controls .primary{grid-column:1/-1;grid-row:1}.controls .btn{padding:9px 12px;min-height:44px}.controls select{width:100%;min-height:44px}}
   @media(orientation:landscape) and (max-height:340px){.brand{padding:4px 8px}.brand h1{font-size:18px;margin:0}.brand p{display:none}}
@@ -127,6 +131,8 @@
 
   <section class="card" style="position:relative">
     <div class="board" id="board" aria-label="遊戲區"></div>
+    <div class="fx" id="fx" aria-hidden="true"></div>
+    <div class="toast" id="toast">+1</div>
     <div class="overlay show" id="overlay">
       <div class="modal">
         <h2 id="modalTitle">準備好了嗎？</h2>
@@ -146,12 +152,11 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny" style="text-align:center">最高分：<b id="best">0</b> · 版本 2026-10-24 v18 · GitHub Pages · 可愛玩具槌子版</div>
+  <div class="tiny" style="text-align:center">最高分：<b id="best">0</b> · 版本 19.0.0（2026-11-10）</div>
 </main>
-<div class="toast" id="toast">+1</div>
 <script>(async () => {
   'use strict';
-  const VERSION = '20261024-v18';
+  const VERSION = '19.0.0';
   const BEST_KEY = 'wam_best_20260904v7';
   const $ = id => document.getElementById(id);
   const board = $('board'), overlay = $('overlay');
@@ -208,9 +213,9 @@
     h.type = 'button'; h.className = 'hole'; h.dataset.state = 'hidden';
     h.setAttribute('aria-label', `洞 ${i+1}`);
     h.innerHTML = '<div class="mole"><img class="penguin-img" alt="" aria-hidden="true"><img class="fox-img" alt="" aria-hidden="true"><img class="bear-img" alt="" aria-hidden="true"></div>';
-    h.addEventListener('pointerdown', e => {e.preventDefault(); hit(i);});
+    h.addEventListener('pointerdown', e => {e.preventDefault(); tap(i,e);});
     h.addEventListener('keydown', e => {
-      if(e.key==='Enter'||e.key===' '){e.preventDefault();hit(i);}
+      if(e.key==='Enter'||e.key===' '){e.preventDefault();tap(i);}
     });
     board.appendChild(h); holes.push(h);
   }
@@ -219,6 +224,7 @@
   let actor=null, lastHole=-1, session=0, clockTimer=null, started=0;
   let soundOn=true, audioCtx=null, toastTimer=null;
   const timers=new Set(), activeAudio=new Set();
+  const fx=$('fx'),calm=matchMedia('(prefers-reduced-motion: reduce)');
   try {best=Math.max(0,Number(localStorage.getItem(BEST_KEY))||0);} catch (_) {}
   $('best').textContent=best;
   function beep(freq=440,dur=.06,type='sine',vol=.12){
@@ -250,8 +256,13 @@
     setText('time',Math.max(0,Math.ceil(timeLeft)));
     $('bar').style.transform=`scaleX(${Math.max(0,timeLeft/30)})`;
   }
-  function showToast(text){
+  // The message sits on the top edge of the hole that was hit, kept inside the board area.
+  function showToast(text,a){
     const el=$('toast');el.textContent=text;el.classList.remove('show');
+    el.classList.toggle('bad',a.type==='bad');
+    const area=fx.getBoundingClientRect(),box=a.h.getBoundingClientRect(),half=el.offsetWidth/2+4;
+    el.style.left=Math.min(Math.max(box.left+box.width/2-area.left,half),area.width-half)+'px';
+    el.style.top=Math.max(box.top-area.top+10,el.offsetHeight+2)+'px';
     void el.offsetWidth;el.classList.add('show');
     clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),550);
   }
@@ -260,7 +271,7 @@
     // A hidden outgoing sprite must never flash at its idle position.
     h.dataset.state='hidden';
     const m=h.querySelector('.mole');m.style.visibility='hidden';
-    m.getAnimations().forEach(a=>a.cancel());
+    m.getAnimations({subtree:true}).forEach(a=>a.cancel());
     h.className='hole';delete h.dataset.character;delete h.dataset.outcome;
     m.className='mole';m.removeAttribute('style');
     h.setAttribute('aria-label',`洞 ${holes.indexOf(h)+1}`);
@@ -314,16 +325,16 @@
     a.m.style.left=cs.left;
     a.m.style.transition='none';
     a.h.dataset.outcome='hit';a.h.classList.remove('up');
-    setState(a,'pain');
+    setState(a,'pain');bonk(a);
     let delta;
     if(a.type==='bad'){
-      delta=-2;combo=0;beep(120,.12,'sawtooth',.16);vibrate(55);showToast('誤敲北極熊 -2');
+      delta=-2;combo=0;beep(120,.12,'sawtooth',.16);vibrate(55);showToast('誤敲北極熊 -2',a);
     }else{
       delta=a.type==='bonus'?3:1;combo++;maxCombo=Math.max(maxCombo,combo);
       beep(a.type==='bonus'?760:420+Math.min(combo,12)*25,.07,a.type==='bonus'?'triangle':'sine');
       vibrate(a.type==='bonus'?18:10);
-      if(combo%5===0){delta++;showToast(`連擊獎勵 +${delta}`);}
-      else showToast(`${names[a.species]} +${delta}`);
+      if(combo%5===0){delta++;showToast(`連擊獎勵 +${delta}`,a);}
+      else showToast(`${names[a.species]} +${delta}`,a);
     }
     score=Math.max(0,score+delta);update();
     later(()=>{
@@ -339,6 +350,33 @@
         resetHole(a.h);actor=null;later(spawn,80);
       },340);
     },220);
+    return a.type;
+  }
+  // Feedback only. Nothing below reads or changes the score, the clock or the rules.
+  function tap(i,e){
+    if(!running)return;
+    ripple(i,e,hit(i)||'miss');
+  }
+  function ripple(i,e,kind){
+    const area=fx.getBoundingClientRect(),box=holes[i].getBoundingClientRect();
+    const pointed=e&&(e.clientX||e.clientY);
+    const x=(pointed?e.clientX:box.left+box.width/2)-area.left,y=(pointed?e.clientY:box.top+box.height/2)-area.top;
+    const size=box.width,grow=calm.matches?.5:1.5;
+    const draw=(className,from,to,opacity)=>{
+      const el=document.createElement('i');el.className=`${className} ${kind}`;el.style.left=x+'px';el.style.top=y+'px';
+      fx.appendChild(el);
+      const remove=()=>el.remove();
+      el.animate([{opacity,width:from+'px',height:from+'px'},{opacity:0,width:to+'px',height:to+'px'}],{duration:350,easing:'ease-out'}).finished.then(remove,remove);
+    };
+    draw('ripple',size*.5,size*grow,1);
+    if(kind!=='miss')draw('dot',size*.4,size*.4,.85);
+  }
+  function bonk(a){
+    if(calm.matches)return;
+    const img=a.m.querySelector(`.${a.species}-img`),at='translateX(-50%) ';
+    img.animate(a.type==='bad'
+      ?[0,-5,5,-3,3,0].map(x=>({transform:`${at}translateX(${x}%)`}))
+      :[{transform:at+'scale(1)'},{transform:at+'scale(1.14,.84)',offset:.3},{transform:at+'scale(.96,1.05)',offset:.65},{transform:at+'scale(1)'}],{duration:200});
   }
   const images=[];
   const assetsReady=Promise.all(Object.values(sprites).flatMap(set=>Object.values(set)).map(url=>new Promise((resolve,reject)=>{
