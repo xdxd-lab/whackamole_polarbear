@@ -48,19 +48,24 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
-  # The same gate in the other two engines. It reports what Firefox and WebKit do
-  # without deciding whether a change may merge: see the pull request that added it.
+  # The same gate in the other two engines, after it has passed in Chromium.
+  # WebKit must pass. Firefox reports without blocking until the known failures
+  # listed in tests/support/browser.mjs are fixed; then drop "experimental".
   browsers:
     name: Assets, rules and replays on ${{ matrix.browser }}
     needs: verify
     # Playwright 1.56 ships Firefox and WebKit builds for Ubuntu 24.04, not yet for the newer ubuntu-latest.
     runs-on: ubuntu-24.04
     timeout-minutes: 20
-    continue-on-error: true
+    continue-on-error: ${{ matrix.experimental }}
     strategy:
       fail-fast: false
       matrix:
-        browser: [firefox, webkit]
+        include:
+          - browser: webkit
+            experimental: false
+          - browser: firefox
+            experimental: true
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
