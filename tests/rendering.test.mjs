@@ -185,6 +185,9 @@ test('the score message appears by the hole that was hit and stays on screen', a
     for (const hole of [0, 2, 8]) {
       const game = await Game.open(harness, { viewport, reducedMotion: 'reduce' });
       try {
+        // A message as wide as a long translation would be, so that staying inside the board
+        // always takes the clamp, whatever font and width this machine gives the real text.
+        await game.page.addStyleTag({ content: '#toast{min-width:62%;box-sizing:border-box;text-align:center}' });
         await game.startWith('bear', hole);
         await game.settle();
         await game.hitCurrent();
