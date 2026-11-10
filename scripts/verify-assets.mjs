@@ -99,7 +99,7 @@ try {
   assert.match(label, /開始遊戲/, 'Game remained on asset-loading or error screen');
   assert.deepEqual(pageErrors, [], 'JavaScript runtime errors before game start');
   const gameVersion = await page.evaluate(() => document.documentElement.dataset.gameVersion);
-  assert.match(gameVersion ?? '', /^\d{8}-v\d+$/, 'Game must report its version');
+  assert.match(gameVersion ?? '', /^\d+\.\d+\.\d+$/, 'Game must report its version as MAJOR.MINOR.PATCH');
   await page.locator('#modalBtn').click();
   await page.waitForFunction(() => {
     const hole = document.querySelector('.hole.up .mole');
