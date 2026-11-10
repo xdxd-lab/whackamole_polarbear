@@ -6,10 +6,11 @@
 
 ## 目前版本
 
-- **V19（19.0.0，2026-11-10）**：棋盤改為雪磚與冰洞、敲擊處出現圓點與擴散環、雪花循環不再跳動；所有控制項在各種螢幕都按得到；玩法與計分和 V18 相同。
+- **V19（19.1.0，2026-11-10）**：加入背景音樂，兩首每局輪流；沿用 19.0.0 的雪磚棋盤與敲擊回饋；玩法與計分和 V18 相同。
 - 各版變更：[CHANGELOG.md](./CHANGELOG.md)　版號規則：[docs/VERSIONING.md](./docs/VERSIONING.md)
 - 遊戲入口：[index.html](./index.html)
 - 正式角色素材（沿用 V16，未更動圖片）：[assets/v16-20260909/](./assets/v16-20260909/)
+- 背景音樂（CC0）：[assets/music-20261110/](./assets/music-20261110/)，來源與作者見[音樂](#音樂)
 - 原始碼 Repository：[xdxd-lab/whackamole_polarbear](https://github.com/xdxd-lab/whackamole_polarbear)
 
 ## 遊戲規則
@@ -18,13 +19,23 @@
 
 > **注意：** GitHub Pages 是線上遊玩網址。單獨下載 `index.html` 並非完整離線版，因為遊戲還需要同一 Repository 中的角色圖片素材。
 
+## 音樂
+
+兩首背景音樂都以 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/deed.zh_TW) 釋出，取自 OpenGameArt.org，謝謝兩位作者：
+
+- [Happy synths loop with slight christmas feeling](https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling)，作者 3xBlast
+- [Short Loop: winter theme](https://opengameart.org/content/short-loop-winter-theme)，作者 yd
+
+遊戲用的是每首的前 31 秒，結尾淡出，並把兩首調到相同響度。檔案清單與雜湊在 [deployment/music.json](./deployment/music.json)，處理用的程式在 [scripts/music/](./scripts/music/)。
+
 ## 自動化驗證
 
 每次推送至 `main`、提出 Pull Request 或手動執行時，GitHub Actions 會在 Chromium 跑完下列檢查。測試只觀察玩家看得到的結果（畫面、音效、震動、儲存的最高分），所以整理或搬動程式碼不會誤判。
 
 | 檢查 | 內容 |
 |---|---|
-| 素材核對 | 三張正式 AVIF 的路徑、大小、SHA-256、尺寸與 15 個角色狀態的解碼；真實計時下的啟動冒煙測試 |
+| 素材核對 | 三張正式 AVIF 的路徑、大小、SHA-256、尺寸與 15 個角色狀態的解碼；音樂檔的路徑、大小與 SHA-256；真實計時下的啟動冒煙測試 |
+| 音樂 | 按開始才播放、每局換一首、跟著音效開關、隨回合結束，以及音樂載不到時遊戲照常 |
 | 規則測試 | 分數、連擊、機率、三種難度的毫秒時序、30 秒、BEST_KEY、音效與輸入 |
 | 整局重播 | 固定時鐘與亂數重播五局，逐行比對 V18 的錄製結果 |
 | 畫面狀態 | 三種角色 × 五種狀態 × 三種視窗的計算後樣式與顯示影格 |

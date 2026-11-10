@@ -8,6 +8,8 @@ import { ROOT } from './support/server.mjs';
 
 const manifest = JSON.parse(await readFile(path.join(ROOT, 'deployment/v16-release.json'), 'utf8'));
 const fox = `/${manifest.atlases.fox.url}`;
+const music = JSON.parse(await readFile(path.join(ROOT, 'deployment/music.json'), 'utf8'));
+const MUSIC = music.tracks.flatMap(track => Object.values(track.files).map(file => `/${file.url}`));
 
 async function failingLoad(override, expectedText) {
   const harness = await startHarness({ override });
@@ -60,7 +62,7 @@ test('a repeat visit reuses cached images, as GitHub Pages allows for 10 minutes
   }
 });
 
-test('loads exactly the three official images and no retired files', async () => {
+test('loads exactly the three official images, listed music and no retired files', async () => {
   const harness = await startHarness();
   const game = await Game.open(harness);
   try {
@@ -68,7 +70,7 @@ test('loads exactly the three official images and no retired files', async () =>
     const images = paths.filter(pathname => pathname.endsWith('.avif')).sort();
     assert.deepEqual(images, Object.values(manifest.atlases).map(atlas => `/${atlas.url}`).sort());
     assert.deepEqual(paths.filter(pathname => /\.webp$|assets\/(style\.css|app\.js)$/.test(pathname)), []);
-    assert.deepEqual(paths.filter(pathname => pathname !== '/' && !pathname.endsWith('.avif') && !/\.(js|css)$/.test(pathname)), []);
+    assert.deepEqual(paths.filter(pathname => pathname !== '/' && !pathname.endsWith('.avif') && !/\.(js|css)$/.test(pathname) && !MUSIC.includes(pathname)), []);
   } finally {
     await game.close();
     await harness.close();

@@ -1,0 +1,43 @@
+{
+  "note": "Background music, one track per round, taking turns. Each file is the first 31 s of the original with a 1 s fade-out, matched to -18 LUFS (ITU-R BS.1770). Opus (Ogg) for most browsers, AAC (MP4) for Safari before 18.4.",
+  "tracks": [
+    {
+      "id": "happy",
+      "title": "Happy synths loop with slight christmas feeling",
+      "author": "3xBlast",
+      "source": "https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling",
+      "license": "CC0 1.0",
+      "files": {
+        "opus": {
+          "url": "assets/music-20261110/happy-fc436405b0a7.opus",
+          "sha256": "fc436405b0a7f638e986ea739cb52bdb0e6a2a1f8848911b72142179b829fe20",
+          "bytes": 289779
+        },
+        "m4a": {
+          "url": "assets/music-20261110/happy-5e3a15364b4c.m4a",
+          "sha256": "5e3a15364b4c9b5f589d113cc5552ca12bbc5b739385fc170a54c9cfeaf25a83",
+          "bytes": 374857
+        }
+      }
+    },
+    {
+      "id": "winter",
+      "title": "Short Loop: winter theme",
+      "author": "yd",
+      "source": "https://opengameart.org/content/short-loop-winter-theme",
+      "license": "CC0 1.0",
+      "files": {
+        "opus": {
+          "url": "assets/music-20261110/winter-a62906d44807.opus",
+          "sha256": "a62906d4480736b780150ab8e564acb458033f0ca5b894444129fa915cf8596b",
+          "bytes": 288226
+        },
+        "m4a": {
+          "url": "assets/music-20261110/winter-97f374c4eb94.m4a",
+          "sha256": "97f374c4eb943d488bcad691927942d7659c8fd16fd6d37a9e89a33d3cf510b2",
+          "bytes": 383241
+        }
+      }
+    }
+  ]
+}

@@ -55,10 +55,37 @@
     },
   });
   let oscillators = new WeakMap();
+  // Every audio connection, so the level of a sound can be followed to the speakers.
+  const outputs = new WeakMap();
   const connect = AudioNode.prototype.connect;
   AudioNode.prototype.connect = function (target, ...rest) {
     if (this instanceof OscillatorNode && target instanceof GainNode) oscillators.set(this, { gainNode: target });
+    if (target instanceof AudioNode) outputs.set(this, [...(outputs.get(this) ?? []), target]);
     return connect.call(this, target, ...rest);
+  };
+  const disconnect = AudioNode.prototype.disconnect;
+  AudioNode.prototype.disconnect = function (...args) {
+    if (!args.length) outputs.delete(this);
+    return disconnect.apply(this, args);
+  };
+  const level = node => node instanceof AudioDestinationNode ? 1
+    : Math.max(0, ...(outputs.get(node) ?? []).map(next => (node instanceof GainNode ? node.gain.value : 1) * level(next)));
+
+  // Music is kept out of the trace: it is not part of the rules a round is replayed for.
+  const fingerprint = buffer => {
+    const data = buffer.getChannelData(0);
+    let sum = 0;
+    for (let i = 0; i < Math.min(data.length, 44100); i += 1) sum += Math.abs(data[i]);
+    return Math.round(sum);
+  };
+  const musicLog = [];
+  const musicPlaying = new Set();
+  const startBuffer = AudioBufferSourceNode.prototype.start;
+  AudioBufferSourceNode.prototype.start = function (when = 0, offset = 0, ...rest) {
+    musicLog.push({ event: 'start', t: now, offset, track: fingerprint(this.buffer) });
+    musicPlaying.add(this);
+    this.addEventListener('ended', () => { musicPlaying.delete(this); musicLog.push({ event: 'ended', t: now }); });
+    return startBuffer.call(this, when, offset, ...rest);
   };
   const start = OscillatorNode.prototype.start;
   OscillatorNode.prototype.start = function (...args) {
@@ -163,6 +190,8 @@
     resetTrace: () => { trace.length = 0; lastSample = ''; },
     setPolicy: value => { policy = value; lastTarget = -1; spawnsSeen = 0; },
     stats: () => ({ maxActive }),
+    fingerprint,
+    music: () => ({ log: [...musicLog], playing: musicPlaying.size, level: Math.max(0, ...[...musicPlaying].map(level)) }),
     trace: () => trace.map(entry => `${String(entry.t).padStart(6)} ${entry.text}`),
   };
 })();

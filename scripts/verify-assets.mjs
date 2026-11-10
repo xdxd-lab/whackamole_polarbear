@@ -35,6 +35,24 @@ try {
     console.log('PASS bytes/hash/path: ' + name + ' ' + buf.length + ' bytes SHA-256=' + actual);
   }
 
+  const music = JSON.parse(await readFile(path.join(ROOT, 'deployment/music.json'), 'utf8'));
+  assert.ok(music.tracks.length >= 2, 'Expected at least two music tracks to take turns');
+  report.music = [];
+  for (const track of music.tracks) {
+    assert.equal(track.license, 'CC0 1.0', track.id + ': music must be CC0');
+    for (const [format, { url, sha256, bytes }] of Object.entries(track.files)) {
+      assert.match(url, new RegExp('^assets/music-\\d{8}/[a-z0-9-]+\\.' + format + '$'), track.id + ': wrong music path');
+      const buf = await readFile(path.resolve(ROOT, url));
+      const actual = createHash('sha256').update(buf).digest('hex');
+      assert.equal(actual, sha256, url + ': SHA-256 mismatch');
+      assert.equal(buf.length, bytes, url + ': wrong file size');
+      assert.ok(url.includes('-' + sha256.slice(0, 12) + '.'), url + ': file name must carry its content hash');
+      assert.ok(bytes < 600_000, url + ': music file is larger than 600 kB');
+      report.music.push({ track: track.id, path: url, bytes, sha256: actual });
+    }
+    console.log('PASS music bytes/hash/path: ' + track.id);
+  }
+
   server = await startServer();
   browser = await chromium.launch({ headless: true });
   const page = await browser.newPage({ viewport: { width: 900, height: 900 }, deviceScaleFactor: 1 });

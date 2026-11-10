@@ -11,12 +11,14 @@ const TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
   '.json': 'application/json',
+  '.m4a': 'audio/mp4',
   '.mjs': 'text/javascript; charset=utf-8',
+  '.opus': 'audio/ogg',
 };
 
 /**
  * Serves the working tree as GitHub Pages would. `override` can replace a
- * response by URL path, which lets tests simulate corrupted or missing files.
+ * response by URL path, which lets tests simulate corrupted, missing or slow files.
  */
 export async function startServer({ root = ROOT, override = () => null, cacheControl = 'no-store' } = {}) {
   const requests = [];
@@ -27,6 +29,7 @@ export async function startServer({ root = ROOT, override = () => null, cacheCon
       const file = path.resolve(root, pathname === '/' ? 'index.html' : pathname.slice(1));
       if (!file.startsWith(root + path.sep)) { res.writeHead(403).end(); return; }
       const replaced = override(pathname);
+      if (replaced?.delay) await new Promise(resolve => setTimeout(resolve, replaced.delay));
       if (replaced?.status) { res.writeHead(replaced.status).end(); return; }
       const data = replaced?.body ?? await readFile(file);
       res.writeHead(200, {

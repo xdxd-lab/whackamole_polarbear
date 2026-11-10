@@ -152,11 +152,11 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny" style="text-align:center">最高分：<b id="best">0</b> · 版本 19.0.0（2026-11-10）</div>
+  <div class="tiny" style="text-align:center">最高分：<b id="best">0</b> · 版本 19.1.0（2026-11-10）</div>
 </main>
 <script>(async () => {
   'use strict';
-  const VERSION = '19.0.0';
+  const VERSION = '19.1.0';
   const BEST_KEY = 'wam_best_20260904v7';
   const $ = id => document.getElementById(id);
   const board = $('board'), overlay = $('overlay');
@@ -227,11 +227,18 @@
   const fx=$('fx'),calm=matchMedia('(prefers-reduced-motion: reduce)');
   try {best=Math.max(0,Number(localStorage.getItem(BEST_KEY))||0);} catch (_) {}
   $('best').textContent=best;
-  function beep(freq=440,dur=.06,type='sine',vol=.12){
-    if(!soundOn) return;
+  // Audio may only start from the player's tap; start() calls this first.
+  function audio(){
     try {
       audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();
       if(audioCtx.state==='suspended') audioCtx.resume().catch(()=>{});
+    } catch (_) {}
+    return audioCtx;
+  }
+  function beep(freq=440,dur=.06,type='sine',vol=.12){
+    if(!soundOn) return;
+    try {
+      audio();
       const o=audioCtx.createOscillator(),g=audioCtx.createGain();
       o.type=type;o.frequency.value=freq;g.gain.value=vol;
       o.connect(g);g.connect(audioCtx.destination);activeAudio.add(o);
@@ -387,10 +394,54 @@
     };
     img.onerror=()=>reject(new Error('角色圖片載入失敗'));img.src=url;
   }))).then(()=>{ready=true;}).catch(e=>{loadError=e;});
+  // Background music: one track per round, taking turns. Fetched only after the game is
+  // playable and decoded off-screen, so it never delays the first round; it starts only
+  // from the player's tap, and a track that cannot load leaves the game silent, not broken.
+  const MUSIC_TRACKS=[{"opus":"assets/music-20261110/happy-fc436405b0a7.opus","m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a"},{"opus":"assets/music-20261110/winter-a62906d44807.opus","m4a":"assets/music-20261110/winter-97f374c4eb94.m4a"}];
+  const MUSIC_VOLUME=.35;
+  const musicFormats=new Audio().canPlayType('audio/ogg; codecs=opus')?['opus','m4a']:['m4a','opus'];
+  const music={loads:[],next:0,playing:null,gain:null};
+  async function decodeTrack(i){
+    for(const format of musicFormats){
+      try {
+        const response=await fetch(MUSIC_TRACKS[i][format]);
+        if(!response.ok)continue;
+        return await new OfflineAudioContext(2,1,44100).decodeAudioData(await response.arrayBuffer());
+      } catch (_) {}
+    }
+    return null;
+  }
+  // One at a time, in the order they will play.
+  function track(i){return music.loads[i] ||= (i?track(i-1):Promise.resolve()).then(()=>decodeTrack(i));}
+  assetsReady.then(()=>track(MUSIC_TRACKS.length-1));
+  function playMusic(){
+    stopMusic();
+    const i=music.next;music.next=(i+1)%MUSIC_TRACKS.length;
+    const generation=session;
+    track(i).then(buffer=>{
+      if(!buffer||!running||generation!==session||!audio())return;
+      if(!music.gain){music.gain=audioCtx.createGain();music.gain.connect(audioCtx.destination);}
+      music.gain.gain.value=soundOn?MUSIC_VOLUME:0;
+      const source=audioCtx.createBufferSource(),fade=audioCtx.createGain();
+      source.buffer=buffer;source.connect(fade);fade.connect(music.gain);
+      // A track that arrives late joins the round where it is, so it still ends with it.
+      source.start(0,Math.min(buffer.duration,Math.max(0,(performance.now()-started)/1000)));
+      const playing={source,fade};music.playing=playing;
+      source.onended=()=>{source.disconnect();fade.disconnect();if(music.playing===playing)music.playing=null;};
+    });
+  }
+  function stopMusic(){
+    const playing=music.playing;music.playing=null;
+    if(!playing)return;
+    const t=audioCtx.currentTime;
+    playing.fade.gain.setValueAtTime(playing.fade.gain.value,t);
+    playing.fade.gain.linearRampToValueAtTime(0,t+.25);
+    playing.source.stop(t+.25);
+  }
   async function start(){
     if(loading)return;
     // Resume audio inside the user gesture, before waiting for images.
-    beep(520,.08,'triangle');
+    audio();beep(520,.08,'triangle');
     if(!ready){
       loading=true;startBtn.disabled=true;modalBtn.disabled=true;
       const label=modalBtn.textContent;modalBtn.textContent='圖片載入中…';
@@ -403,7 +454,7 @@
     }
     session++;clearTimers();clearInterval(clockTimer);resetAll();
     score=0;combo=0;maxCombo=0;timeLeft=30;running=true;started=performance.now();
-    overlay.classList.remove('show');$('finalScore').hidden=true;update();spawn();
+    overlay.classList.remove('show');$('finalScore').hidden=true;update();spawn();playMusic();
     clockTimer=setInterval(()=>{
       timeLeft=Math.max(0,30-(performance.now()-started)/1000);
       if(timeLeft===0)finish();update();
@@ -412,7 +463,7 @@
   function finish(){
     if(!running)return;
     running=false;session++;clearTimers();clearInterval(clockTimer);resetAll();
-    beep(260,.09,'triangle');
+    stopMusic();beep(260,.09,'triangle');
     if(score>best){
       best=score;try{localStorage.setItem(BEST_KEY,String(best));}catch(_){}
       $('best').textContent=best;$('modalTitle').textContent='🏆 新紀錄！';
@@ -426,6 +477,7 @@
     soundOn=!soundOn;$('soundBtn').textContent=soundOn?'🔊 音效':'🔇 靜音';
     $('soundBtn').setAttribute('aria-pressed',String(soundOn));
     if(soundOn)beep(520);else activeAudio.forEach(o=>{try{o.stop();}catch(_){}});
+    if(music.gain)music.gain.gain.setTargetAtTime(soundOn?MUSIC_VOLUME:0,audioCtx.currentTime,.03);
   });
   difficulty.addEventListener('change',()=>{if(running)start();});
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&running)finish();});
