@@ -179,3 +179,34 @@ test('reduced motion: a tap mark fades in place instead of spreading', async () 
     await game.close();
   }
 });
+
+test('the score message appears by the hole that was hit and stays on screen', async () => {
+  for (const viewport of [{ width: 320, height: 568 }, { width: 844, height: 390 }, { width: 1280, height: 720 }]) {
+    for (const hole of [0, 2, 8]) {
+      const game = await Game.open(harness, { viewport, reducedMotion: 'reduce' });
+      try {
+        await game.startWith('bear', hole);
+        await game.settle();
+        await game.hitCurrent();
+        await game.settle();
+        const { message, target, scoreboard } = await game.page.evaluate(index => {
+          const box = element => { const { left, top, right, bottom } = element.getBoundingClientRect(); return { left, top, right, bottom }; };
+          return {
+            message: box(document.getElementById('toast')),
+            target: box(document.querySelectorAll('#board .hole')[index]),
+            scoreboard: box(document.querySelector('.scoreboard')),
+          };
+        }, hole);
+        const label = `${viewport.width}x${viewport.height}, hole ${hole + 1}`;
+        assert.ok(message.left >= 0 && message.right <= viewport.width && message.top >= 0, `${label}: the message leaves the screen (${JSON.stringify(message)})`);
+        assert.ok(message.bottom <= target.top + (target.bottom - target.top) * 0.25, `${label}: the message covers the character`);
+        assert.ok(message.right > target.left && message.left < target.right, `${label}: the message is not above the hole that was hit`);
+        const overlapsScoreboard = message.left < scoreboard.right && message.right > scoreboard.left && message.top < scoreboard.bottom && message.bottom > scoreboard.top;
+        assert.ok(!overlapsScoreboard, `${label}: the message covers the scoreboard`);
+        game.assertNoErrors();
+      } finally {
+        await game.close();
+      }
+    }
+  }
+});

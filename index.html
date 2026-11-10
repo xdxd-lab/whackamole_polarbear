@@ -95,7 +95,7 @@
   .controls{display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:12px}.btn,select{border:0;border-radius:15px;font:inherit;font-weight:800}.btn{padding:13px 17px;background:#fff;box-shadow:inset 0 0 0 1px #dce7df;cursor:pointer}.btn.primary{background:var(--accent);box-shadow:none}.btn:active{transform:translateY(1px)}select{padding:0 34px 0 14px;background:#fff;min-width:118px}
   .progress{height:8px;background:rgba(255,255,255,.5);border-radius:999px;overflow:hidden}.bar{height:100%;width:100%;background:linear-gradient(90deg,var(--good),var(--accent),var(--danger));transform-origin:left;transition:transform .1s linear}
   .overlay{position:absolute;inset:0;display:grid;place-items:center;background:rgba(226,240,250,.86);z-index:20;border-radius:22px;opacity:0;visibility:hidden;pointer-events:none;transition:.2s}.overlay.show{opacity:1;visibility:visible;pointer-events:auto}.modal{width:min(410px,88%);background:#fff;border-radius:24px;padding:24px;text-align:center;box-shadow:0 0 0 1px rgba(120,165,200,.28),0 18px 44px rgba(40,80,110,.22)}.modal h2{font-size:31px;margin:0 0 8px}.modal p{margin:7px 0 18px;line-height:1.6}.bigscore{font-size:52px;font-weight:950;color:var(--good);line-height:1}.tiny{font-size:12px;opacity:.62}
-  .toast{position:absolute;left:50%;top:14px;white-space:nowrap;transform:translate(-50%,-8px);z-index:30;font-weight:900;font-size:24px;opacity:0;pointer-events:none;text-shadow:0 2px 0 #fff}.toast.show{animation:pop .55s ease-out}@keyframes pop{0%{opacity:0;transform:translate(-50%,4px) scale(.8)}25%{opacity:1;transform:translate(-50%,-8px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-28px) scale(1)}}
+  .toast{position:absolute;left:50%;top:14px;translate:0 -100%;white-space:nowrap;transform:translate(-50%,-8px);z-index:30;font-weight:900;font-size:clamp(17px,5cqw,24px);line-height:1.2;padding:2px 12px;border-radius:999px;background:rgba(255,255,255,.94);box-shadow:0 2px 8px rgba(40,80,110,.18);opacity:0;pointer-events:none}.toast.bad{color:var(--danger)}.toast.show{animation:pop .55s ease-out}@keyframes pop{0%{opacity:0;transform:translate(-50%,4px) scale(.8)}25%{opacity:1;transform:translate(-50%,-8px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-28px) scale(1)}}
   @media(max-width:560px){body{align-items:start}.top{grid-template-columns:1fr}.brand{text-align:center}.brand h1{justify-content:center}.scoreboard{min-height:68px}.card{padding:10px}.board{gap:6px}.hole{border-radius:18px}.controls{grid-template-columns:1fr 1fr}.controls .primary{grid-column:1/-1;grid-row:1}.controls select{width:100%;min-height:45px}.controls .btn:not(.primary){min-height:45px}}
   @media(orientation:landscape) and (max-height:560px){.game{--side:calc(100dvh - max(14px,env(safe-area-inset-top)) - max(14px,env(safe-area-inset-bottom)));width:100%;max-width:1040px;grid-template-columns:auto minmax(0,1fr);grid-template-rows:repeat(4,auto);gap:8px 12px}.card{grid-column:1;grid-row:1/-1;width:var(--side);height:var(--side);aspect-ratio:auto;padding:10px}.board{gap:6px}.hole{border-radius:18px}.top{grid-template-columns:1fr;gap:8px}.brand{padding:8px 12px;text-align:center}.brand h1{justify-content:center;font-size:22px;margin:0 0 2px}.brand p{font-size:12px}.scoreboard{min-height:0}.stat{padding:5px 8px}.value{font-size:20px}.controls{grid-template-columns:1fr 1fr;gap:8px;padding:8px}.controls .primary{grid-column:1/-1;grid-row:1}.controls .btn{padding:9px 12px;min-height:44px}.controls select{width:100%;min-height:44px}}
   @media(orientation:landscape) and (max-height:340px){.brand{padding:4px 8px}.brand h1{font-size:18px;margin:0}.brand p{display:none}}
@@ -224,6 +224,7 @@
   let actor=null, lastHole=-1, session=0, clockTimer=null, started=0;
   let soundOn=true, audioCtx=null, toastTimer=null;
   const timers=new Set(), activeAudio=new Set();
+  const fx=$('fx'),calm=matchMedia('(prefers-reduced-motion: reduce)');
   try {best=Math.max(0,Number(localStorage.getItem(BEST_KEY))||0);} catch (_) {}
   $('best').textContent=best;
   function beep(freq=440,dur=.06,type='sine',vol=.12){
@@ -255,8 +256,13 @@
     setText('time',Math.max(0,Math.ceil(timeLeft)));
     $('bar').style.transform=`scaleX(${Math.max(0,timeLeft/30)})`;
   }
-  function showToast(text){
+  // The message sits on the top edge of the hole that was hit, kept inside the board area.
+  function showToast(text,a){
     const el=$('toast');el.textContent=text;el.classList.remove('show');
+    el.classList.toggle('bad',a.type==='bad');
+    const area=fx.getBoundingClientRect(),box=a.h.getBoundingClientRect(),half=el.offsetWidth/2+4;
+    el.style.left=Math.min(Math.max(box.left+box.width/2-area.left,half),area.width-half)+'px';
+    el.style.top=Math.max(box.top-area.top+10,el.offsetHeight+2)+'px';
     void el.offsetWidth;el.classList.add('show');
     clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),550);
   }
@@ -322,13 +328,13 @@
     setState(a,'pain');bonk(a);
     let delta;
     if(a.type==='bad'){
-      delta=-2;combo=0;beep(120,.12,'sawtooth',.16);vibrate(55);showToast('誤敲北極熊 -2');
+      delta=-2;combo=0;beep(120,.12,'sawtooth',.16);vibrate(55);showToast('誤敲北極熊 -2',a);
     }else{
       delta=a.type==='bonus'?3:1;combo++;maxCombo=Math.max(maxCombo,combo);
       beep(a.type==='bonus'?760:420+Math.min(combo,12)*25,.07,a.type==='bonus'?'triangle':'sine');
       vibrate(a.type==='bonus'?18:10);
-      if(combo%5===0){delta++;showToast(`連擊獎勵 +${delta}`);}
-      else showToast(`${names[a.species]} +${delta}`);
+      if(combo%5===0){delta++;showToast(`連擊獎勵 +${delta}`,a);}
+      else showToast(`${names[a.species]} +${delta}`,a);
     }
     score=Math.max(0,score+delta);update();
     later(()=>{
@@ -347,7 +353,6 @@
     return a.type;
   }
   // Feedback only. Nothing below reads or changes the score, the clock or the rules.
-  const fx=$('fx'),calm=matchMedia('(prefers-reduced-motion: reduce)');
   function tap(i,e){
     if(!running)return;
     ripple(i,e,hit(i)||'miss');
