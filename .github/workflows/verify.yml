@@ -53,7 +53,8 @@ jobs:
   browsers:
     name: Assets, rules and replays on ${{ matrix.browser }}
     needs: verify
-    runs-on: ubuntu-latest
+    # Playwright 1.56 ships Firefox and WebKit builds for Ubuntu 24.04, not yet for the newer ubuntu-latest.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     continue-on-error: true
     strategy:
