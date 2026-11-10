@@ -41,6 +41,19 @@
   const round = (value, digits) => Number(value.toFixed(digits));
 
   // Sound: wraps the real Web Audio API so a real oscillator still runs.
+  // The audio clock is the one clock left running in real time, and it can move
+  // between two reads when the machine is busy. Durations are therefore measured
+  // from the value the game itself last read, not from a fresh reading.
+  const audioClock = Object.getOwnPropertyDescriptor(BaseAudioContext.prototype, 'currentTime');
+  const lastAudioTime = new WeakMap();
+  Object.defineProperty(BaseAudioContext.prototype, 'currentTime', {
+    ...audioClock,
+    get() {
+      const value = audioClock.get.call(this);
+      lastAudioTime.set(this, value);
+      return value;
+    },
+  });
   let oscillators = new WeakMap();
   const connect = AudioNode.prototype.connect;
   AudioNode.prototype.connect = function (target, ...rest) {
@@ -57,7 +70,7 @@
   OscillatorNode.prototype.stop = function (when, ...rest) {
     const info = oscillators.get(this);
     if (info && when !== undefined) {
-      log(`sound ${this.type} ${round(this.frequency.value, 1)}Hz gain=${round(info.gain, 3)} dur=${round(when - this.context.currentTime, 2)}`);
+      log(`sound ${this.type} ${round(this.frequency.value, 1)}Hz gain=${round(info.gain, 3)} dur=${round(when - (lastAudioTime.get(this.context) ?? audioClock.get.call(this.context)), 2)}`);
     }
     return when === undefined ? stop.call(this) : stop.call(this, when, ...rest);
   };
