@@ -53,6 +53,8 @@ test('a repeat visit reuses cached images, as GitHub Pages allows for 10 minutes
   const images = () => harness.server.requests.filter(request => request.pathname.endsWith('.avif')).length;
   try {
     assert.equal(images(), 3);
+    // Leave first: going to the address already shown is a reload, and WebKit fetches everything again on a reload.
+    await game.page.goto('about:blank');
     await game.page.goto(`${harness.server.origin}/`);
     await game.page.waitForFunction(() => document.getElementById('modalBtn')?.disabled === false && document.querySelectorAll('#board .hole').length === 9);
     assert.equal(images(), 3);
