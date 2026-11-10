@@ -12,9 +12,9 @@ permissions:
 
 jobs:
   verify:
-    name: Assets, rules, replays and mutation check
+    name: Assets, rules and replays
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
@@ -39,13 +39,57 @@ jobs:
         run: npx playwright install-deps chromium
       - name: Verify assets, rules and recorded behaviour
         run: npm test
-      - name: Check that the tests catch broken rules
-        run: npm run test:mutation
-      - name: Save audit, screenshot and mutation report
+      - name: Save audit and screenshot
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: verification-report
+          path: test-results/
+          if-no-files-found: warn
+          retention-days: 30
+
+  # Tests the tests. Every case runs the whole browser suite, so each runner takes
+  # one case at a time and the list is split across runners instead.
+  mutation:
+    name: Mutation check ${{ matrix.shard }}/3
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+      - name: Install test dependency
+        run: npm install --no-package-lock
+      - name: Read Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('./node_modules/playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Restore Chromium
+        id: browser-cache
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - name: Install Chromium
+        if: steps.browser-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      - name: Install Chromium system libraries
+        if: steps.browser-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+      - name: Check that the tests catch broken rules
+        run: npm run test:mutation -- --strict --shard ${{ matrix.shard }}/3
+        env:
+          MUTATION_WORKERS: '1'
+      - name: Save mutation report and failing output
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: mutation-report-${{ matrix.shard }}
           path: test-results/
           if-no-files-found: warn
           retention-days: 30

@@ -118,11 +118,17 @@ try {
   report.browser.gameSmoke = 'pass: 9 holes, successfully decoded sprite visible after starting game';
   console.log('PASS Chromium decode: ' + species.length + ' atlases, ' + species.length * states.length + ' nonblank frames; game smoke test');
 
-  const tests = spawnSync(process.execPath, ['--test', '--test-reporter=spec', 'tests/**/*.test.mjs'], { cwd: ROOT, stdio: 'inherit' });
-  report.gameplayTests = tests.status === 0 ? 'pass' : 'fail';
-  assert.equal(tests.status, 0, 'Gameplay tests failed');
+  // The mutation check runs tests/ itself, right before this script, on the same files.
+  if (process.argv.includes('--skip-tests')) {
+    report.gameplayTests = 'skipped';
+    console.log('SKIP gameplay tests, as asked by --skip-tests');
+  } else {
+    const tests = spawnSync(process.execPath, ['--test', '--test-reporter=spec', 'tests/**/*.test.mjs'], { cwd: ROOT, stdio: 'inherit' });
+    report.gameplayTests = tests.status === 0 ? 'pass' : 'fail';
+    assert.equal(tests.status, 0, 'Gameplay tests failed');
+    console.log('PASS gameplay rules, replays and visual states');
+  }
   report.passed = true;
-  console.log('PASS gameplay rules, replays and visual states');
 } catch (error) {
   report.error = String(error?.stack ?? error);
   process.exitCode = 1;

@@ -5,8 +5,19 @@
  *
  * A mutant whose search text no longer exists (because the source was
  * legitimately refactored) is reported as stale. That is a warning by default
- * and an error with --strict, so a refactor cannot fail CI by itself while the
- * list can still be kept honest.
+ * and an error with --strict, which CI uses so coverage cannot quietly shrink.
+ *
+ * This is heavy: every case runs the whole browser suite. It runs one case at a
+ * time unless told otherwise, and the full list belongs on CI, not a laptop.
+ *
+ *   --only <name>      run one case, by its exact name
+ *   --shard <i>/<n>    run every n-th case, for parallel CI jobs
+ *   --strict           stale cases fail the run
+ *   MUTATION_WORKERS   cases run at once (default 1)
+ *   MUTATION_CASE_TIMEOUT_MS   per test process (default 180000)
+ *
+ * Results: test-results/mutation-report*.json, and the full output of every
+ * failing case in test-results/mutation/<case>.log.
  */
 import { spawn } from 'node:child_process';
 import { cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile } from 'node:fs/promises';
@@ -101,20 +112,95 @@ const EQUIVALENTS = {
   },
 };
 
-const strict = process.argv.includes('--strict');
-const COPY = ['index.html', 'assets', 'deployment', 'scripts', 'tests', 'package.json'];
+const argv = process.argv.slice(2);
+function usage(message) {
+  console.error(`mutation-check: ${message}`);
+  process.exit(2);
+}
+function option(name) {
+  const at = argv.indexOf(name);
+  if (at === -1) return undefined;
+  const value = argv[at + 1];
+  if (value === undefined || value.startsWith('--')) usage(`${name} needs a value`);
+  return value;
+}
+function positiveInt(text, label) {
+  if (!/^[1-9]\d*$/.test(text)) usage(`${label} must be a whole number of at least 1, got "${text}"`);
+  return Number(text);
+}
 
-function run(args, cwd) {
-  return new Promise(resolve => {
-    const child = spawn(process.execPath, args, { cwd, timeout: 180_000 });
-    let output = '';
-    child.stdout.on('data', chunk => { output += chunk; });
-    child.stderr.on('data', chunk => { output += chunk; });
-    child.on('close', status => resolve({ status, output }));
+// An argument this script does not know must stop it: ignoring one would start the whole list.
+for (let at = 0; at < argv.length; at++) {
+  if (argv[at] === '--only' || argv[at] === '--shard') at++;
+  else if (argv[at] !== '--strict') usage(`unknown argument "${argv[at]}"`);
+}
+const strict = argv.includes('--strict');
+const only = option('--only');
+const shardText = option('--shard');
+const workers = positiveInt(process.env.MUTATION_WORKERS || '1', 'MUTATION_WORKERS');
+const caseTimeout = positiveInt(process.env.MUTATION_CASE_TIMEOUT_MS || '180000', 'MUTATION_CASE_TIMEOUT_MS');
+const COPY = ['index.html', 'assets', 'deployment', 'scripts', 'tests', 'package.json'];
+const RESULTS = path.join(ROOT, 'test-results');
+const LOGS = path.join(RESULTS, 'mutation');
+
+const all = [
+  ...Object.entries(MUTANTS).map(([name, transform]) => ({ name, transform, expected: 'fail' })),
+  ...Object.entries(EQUIVALENTS).map(([name, transform]) => ({ name, transform, expected: 'pass' })),
+].map((item, index) => ({
+  ...item,
+  slug: `${String(index + 1).padStart(2, '0')}-${item.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`,
+}));
+
+let queue = all;
+let reportName = 'mutation-report.json';
+if (only !== undefined) {
+  queue = all.filter(item => item.name === only);
+  if (!queue.length) usage(`no case is named "${only}"`);
+  reportName = 'mutation-report-only.json';
+}
+if (shardText !== undefined) {
+  const match = shardText.match(/^(\d+)\/(\d+)$/);
+  const index = Number(match?.[1]);
+  const total = Number(match?.[2]);
+  if (!match || index < 1 || index > total) usage(`--shard must look like 1/3, got "${shardText}"`);
+  // Every n-th case, so the slow equivalents at the end are spread across shards.
+  queue = queue.filter((_, position) => position % total === index - 1);
+  reportName = `mutation-report-${index}of${total}.json`;
+}
+queue = [...queue];
+
+// Each test process leads its own process group, so a timeout or an interrupt
+// can take its children down with it instead of leaving them to slow later cases.
+const running = new Set();
+const killGroup = child => { try { process.kill(-child.pid, 'SIGKILL'); } catch (_) {} };
+for (const signal of ['SIGINT', 'SIGTERM', 'SIGHUP']) {
+  process.on(signal, () => {
+    for (const child of running) killGroup(child);
+    process.exit(130);
   });
 }
 
-async function runCase(transform) {
+function run(args, cwd) {
+  return new Promise(resolve => {
+    const started = Date.now();
+    const child = spawn(process.execPath, args, { cwd, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
+    running.add(child);
+    let output = '';
+    let timedOut = false;
+    const timer = setTimeout(() => { timedOut = true; killGroup(child); }, caseTimeout);
+    child.stdout.on('data', chunk => { output += chunk; });
+    child.stderr.on('data', chunk => { output += chunk; });
+    child.on('error', error => { output += `\nspawn failed: ${error.message}\n`; });
+    child.on('exit', () => killGroup(child));
+    child.on('close', (status, signal) => {
+      clearTimeout(timer);
+      running.delete(child);
+      resolve({ status, signal, timedOut, ms: Date.now() - started, output });
+    });
+  });
+}
+
+async function runCase({ transform, slug }) {
   const dir = await mkdtemp(path.join(os.tmpdir(), 'mutation-'));
   try {
     for (const item of COPY) await cp(path.join(ROOT, item), path.join(dir, item), { recursive: true });
@@ -126,38 +212,53 @@ async function runCase(transform) {
       write: (name, value) => writeFile(path.join(dir, name), value),
     });
     if (!applied) return { result: 'stale' };
-    // The gate runs these same tests. Running them first keeps caught mutants cheap;
-    // only survivors pay for the full gate with its real-time browser smoke test.
-    let { status, output } = await run(['--test', '--test-reporter=spec', 'tests/**/*.test.mjs'], dir);
-    if (status === 0) ({ status, output } = await run(['scripts/verify-assets.mjs'], dir));
-    if (status === 0) return { result: 'pass' };
-    const reason = output.match(/^\s*✖ (.+?)(?: \(\d|$)/m)?.[1] ?? output.match(/FAIL .*/)?.[0] ?? 'failed';
-    return { result: 'fail', reason: reason.slice(0, 100) };
+    // Caught mutants stop after the tests. Survivors also go through the rest of the
+    // gate, with its real-time browser smoke test, but not through the same tests twice.
+    const stages = [];
+    let stage = 'tests';
+    let last = await run(['--test', '--test-reporter=spec', 'tests/**/*.test.mjs'], dir);
+    stages.push({ stage, status: last.status, signal: last.signal, timedOut: last.timedOut, ms: last.ms });
+    let output = last.output;
+    if (last.status === 0) {
+      stage = 'gate';
+      last = await run(['scripts/verify-assets.mjs', '--skip-tests'], dir);
+      stages.push({ stage, status: last.status, signal: last.signal, timedOut: last.timedOut, ms: last.ms });
+      output += `\n----- ${stage} -----\n${last.output}`;
+    }
+    if (last.status === 0) return { result: 'pass', stages };
+    await mkdir(LOGS, { recursive: true });
+    const log = path.join(LOGS, `${slug}.log`);
+    await writeFile(log, output.replaceAll(dir, '<case>'));
+    // A process killed for running too long says nothing about the rule under test,
+    // so it is never counted as a caught mutant.
+    if (last.timedOut) return { result: 'timeout', stages, reason: `${stage} killed after ${caseTimeout} ms`, log: path.relative(ROOT, log) };
+    const reason = last.output.match(/^\s*✖ (.+?)(?: \(\d|$)/m)?.[1] ?? last.output.match(/FAIL .*/)?.[0] ?? `${stage} exited with ${last.status ?? last.signal}`;
+    return { result: 'fail', stages, reason: reason.slice(0, 100), log: path.relative(ROOT, log) };
   } finally {
     await rm(dir, { recursive: true, force: true });
   }
 }
 
-const queue = [
-  ...Object.entries(MUTANTS).map(([name, transform]) => ({ name, transform, expected: 'fail' })),
-  ...Object.entries(EQUIVALENTS).map(([name, transform]) => ({ name, transform, expected: 'pass' })),
-];
+const total = queue.length;
 const results = [];
 const worker = async () => {
   for (let item = queue.shift(); item; item = queue.shift()) {
-    const { name, transform, expected } = item;
-    const { result, reason = '' } = await runCase(transform);
+    const { name, expected } = item;
+    const { result, reason = '', stages = [], log } = await runCase(item);
     const ok = result === expected;
-    results.push({ name, expected, result, ok, reason });
-    console.log(`${ok ? 'ok  ' : result === 'stale' ? 'STALE' : 'BAD '} expected ${expected.toUpperCase()}, got ${result.toUpperCase()}: ${name}${reason ? ` <- ${reason}` : ''}`);
+    const seconds = Math.round(stages.reduce((sum, entry) => sum + entry.ms, 0) / 1000);
+    results.push({ name, expected, result, ok, reason, seconds, stages, log });
+    console.log(`${ok ? 'ok  ' : result === 'stale' ? 'STALE' : 'BAD '} expected ${expected.toUpperCase()}, got ${result.toUpperCase()} in ${seconds}s: ${name}${reason ? ` <- ${reason}` : ''}`);
   }
 };
-await Promise.all(Array.from({ length: Math.max(2, Math.min(6, os.availableParallelism() >> 1)) }, worker));
+console.log(`${total} of ${all.length} cases, ${Math.min(workers, total)} at a time`);
+await Promise.all(Array.from({ length: Math.min(workers, total) }, worker));
 
 const stale = results.filter(entry => entry.result === 'stale');
 const wrong = results.filter(entry => !entry.ok && entry.result !== 'stale');
-await mkdir(path.join(ROOT, 'test-results'), { recursive: true });
-await writeFile(path.join(ROOT, 'test-results', 'mutation-report.json'), JSON.stringify(results, null, 2) + '\n');
+await mkdir(RESULTS, { recursive: true });
+await writeFile(path.join(RESULTS, reportName), JSON.stringify(results, null, 2) + '\n');
 console.log(`\n${results.filter(entry => entry.ok).length}/${results.length} as expected, ${wrong.length} wrong, ${stale.length} stale`);
-for (const entry of stale) console.log(`::warning::Mutation check is stale, update its search text: ${entry.name}`);
-if (wrong.length || (strict && stale.length)) process.exitCode = 1;
+for (const entry of wrong) console.log(`::error::Mutation check: expected ${entry.expected}, got ${entry.result}: ${entry.name}${entry.reason ? ` <- ${entry.reason}` : ''}`);
+for (const entry of stale) console.log(`::${strict ? 'error' : 'warning'}::Mutation check is stale, update its search text: ${entry.name}`);
+if (!results.length || wrong.length || (strict && stale.length)) process.exitCode = 1;
