@@ -44,7 +44,7 @@
 
 ## 版號寫在哪裡
 
-唯一的來源是 `index.html` 裡的 `const VERSION = '19.0.0';`。下列地方必須和它一致，`tests/version.test.mjs` 會自動檢查前四項：
+唯一的來源是遊戲程式裡的 `const VERSION = '19.0.0';`（目前在 `index.html`），頁面會把它放在 `<html data-game-version>`。下列地方必須和它一致，`tests/version.test.mjs` 會打開頁面自動檢查前五項：
 
 | 位置 | 寫法 |
 |---|---|

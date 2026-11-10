@@ -189,16 +189,17 @@ test('the score message appears by the hole that was hit and stays on screen', a
         await game.settle();
         await game.hitCurrent();
         await game.settle();
-        const { message, target, scoreboard } = await game.page.evaluate(index => {
+        const { message, target, scoreboard, area } = await game.page.evaluate(index => {
           const box = element => { const { left, top, right, bottom } = element.getBoundingClientRect(); return { left, top, right, bottom }; };
           return {
             message: box(document.getElementById('toast')),
             target: box(document.querySelectorAll('#board .hole')[index]),
             scoreboard: box(document.querySelector('.scoreboard')),
+            area: box(document.getElementById('fx')),
           };
         }, hole);
         const label = `${viewport.width}x${viewport.height}, hole ${hole + 1}`;
-        assert.ok(message.left >= 0 && message.right <= viewport.width && message.top >= 0, `${label}: the message leaves the screen (${JSON.stringify(message)})`);
+        assert.ok(message.left >= area.left && message.right <= area.right && message.top >= 0, `${label}: the message leaves the board area (${JSON.stringify({ message, area })})`);
         assert.ok(message.bottom <= target.top + (target.bottom - target.top) * 0.25, `${label}: the message covers the character`);
         assert.ok(message.right > target.left && message.left < target.right, `${label}: the message is not above the hole that was hit`);
         const overlapsScoreboard = message.left < scoreboard.right && message.right > scoreboard.left && message.top < scoreboard.bottom && message.bottom > scoreboard.top;
