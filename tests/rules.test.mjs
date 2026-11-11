@@ -43,6 +43,13 @@ describe('round setup', () => {
     assert.equal(await game.number('#combo'), 0);
   }));
 
+  test('the start screen states every scoring rule', () => play(async game => {
+    const text = await game.text('#modalText');
+    for (const rule of ['企鵝 +1', '北極狐 +3', '北極熊會 -2 並中斷連擊', '漏掉企鵝或北極狐也會中斷連擊', '每連擊 5 次多得 +1']) {
+      assert.ok(text.includes(rule), `The start screen must say "${rule}": ${text}`);
+    }
+  }));
+
   test('shows nine holes', () => play(async game => {
     assert.equal(await game.page.locator('#board .hole').count(), 9);
   }));
@@ -215,6 +222,22 @@ describe('timing', () => {
     assert.equal(await game.activeIndex(), -1);
     await game.advance(5_000);
     assert.equal(await game.activeIndex(), -1);
+  }));
+
+  test('a hit after 30 seconds scores nothing, even before the clock tick ends the round', () => play(async game => {
+    // The round clock ticks every 100 ms. A penguin that rose at 29.75 s is still up at 30.01 s,
+    // and a busy main thread can delay the 30.0 s tick that would end the round.
+    await game.startWith('penguin');
+    await game.advance(29_700);
+    await game.nextSpawn('penguin', 4);
+    await game.advance(250);
+    assert.equal(await game.activeIndex(), 4);
+    const before = await game.number('#score');
+    await game.jump(60);
+    await game.hit(4);
+    assert.equal(await game.number('#score'), before, 'A hit after time is up must not score');
+    assert.equal(await game.overlayShown(), true, 'The round must be over');
+    assert.equal(await game.number('#finalScore'), before);
   }));
 
   test('the time bar drains linearly', () => play(async game => {

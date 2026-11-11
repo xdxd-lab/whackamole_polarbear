@@ -40,7 +40,7 @@ const MUTANTS = {
   'bear chance .12 becomes .9': replace("r<.12?'bad'", "r<.9?'bad'"),
   'BEST_KEY renamed': replace('wam_best_20260904v7', 'wam_best_new'),
   'hard difficulty removed': replace('<option value="hard">高手</option>', ''),
-  'hits never land': replace('if(!running||!a||a.i!==i||', 'if(true||!running||!a||a.i!==i||'),
+  'hits never land': replace('if(!a||a.i!==i||', 'if(true||!a||a.i!==i||'),
   'fox +3 becomes +2': replace("delta=a.type==='bonus'?3:1", "delta=a.type==='bonus'?2:1"),
   'combo bonus removed': replace('if(combo%5===0){delta++;', 'if(false){delta++;'),
   'bear no longer breaks combo': replace('delta=-2;combo=0', 'delta=-2'),
@@ -62,6 +62,14 @@ const MUTANTS = {
   'sprite sheet tiles': replace('0 0/500% 100% no-repeat', '0 0/500% 100%'),
   'penguin drawn square': replace('--sheet:var(--sheet-penguin);--ratio:1.5', '--sheet:var(--sheet-penguin);--ratio:1'),
   'fox shown with the bear sheet': replace('--sheet:var(--sheet-fox)', '--sheet:var(--sheet-bear)'),
+  'AVIF assumed everywhere': replace("const format = await decodes(probes.avif) ? 'avif' : await decodes(probes.webp) ? 'webp' : 'png';", "const format = 'avif';"),
+  'WebP fallback skipped': replace("await decodes(probes.webp) ? 'webp' : 'png'", "await decodes(probes.webp) ? 'png' : 'png'"),
+  'PNG fallback missing': replace("await decodes(probes.webp) ? 'webp' : 'png'", "await decodes(probes.webp) ? 'webp' : 'webp'"),
+  'format probe ignores decode errors': replace('return probe.naturalWidth > 0; } catch (_) { return false; }', 'return probe.naturalWidth > 0; } catch (_) { return true; }'),
+  'decode failure gives no hint': replace("throw new Error(species + ': 圖片解碼失敗，這台裝置可能不支援此圖片格式');", "throw new Error(species + ': 錯誤');"),
+  'start screen hides how a combo breaks': replace('，漏掉企鵝或北極狐也會中斷連擊；每連擊 5 次多得 <b>+1</b>。</p>', '。</p>'),
+  'landscape side panels drift apart': replace('grid-template-rows:1fr auto auto auto 1fr auto;gap:8px 12px}.game>:not(.card){grid-column:2}.top{grid-row:2}.progress{grid-row:3}.controls{grid-row:4}.game>.foot{grid-row:6}', 'grid-template-rows:repeat(4,auto);gap:8px 12px}'),
+  'a hit after time is up still scores': replace('if(performance.now()-started>=30000){finish();return;}', ''),
   'sad frame no longer drops': replace("{duration:340,easing:'ease-in',fill:'forwards'}", "{duration:340,easing:'ease-in'}"),
   'scoreboard rewritten on every tick': replace('if(el.textContent!==text)el.textContent=text;', 'el.textContent=text;'),
   'images forced to revalidate': replace('fetch(file.url)', "fetch(file.url, {cache:'no-cache'})"),
@@ -77,8 +85,8 @@ const MUTANTS = {
   'score message back in one fixed place': replace("el.style.top=Math.max(box.top-area.top+10,el.offsetHeight+2)+'px';", ''),
   'score message may cover the scoreboard': replace('Math.max(box.top-area.top+10,el.offsetHeight+2)', '(box.top-area.top+10)'),
   'score message may leave the board area': replace('area.width-half)', 'area.width+half)'),
-  'version changed in the script but not on the page': replace("const VERSION = '19.2.0';", "const VERSION = '19.2.1';"),
-  'version shown without its release date': replace('· 版本 19.2.0（2026-11-11）', '· 版本 19.2.0'),
+  'version changed in the script but not on the page': replace("const VERSION = '19.2.1';", "const VERSION = '19.2.2';"),
+  'version shown without its release date': replace('· 版本 19.2.1（2026-11-11）', '· 版本 19.2.1'),
   'music starts with the page instead of the round': replace('  track(MUSIC_TRACKS.length-1);\n', '  track(MUSIC_TRACKS.length-1);running=true;playMusic();running=false;\n'),
   'same track every round': replace('music.next=(i+1)%MUSIC_TRACKS.length;', 'music.next=0;'),
   'music ignores the sound switch': replace('if(music.gain)music.gain.gain.setTargetAtTime(soundOn?MUSIC_VOLUME:0,audioCtx.currentTime,.03);', ''),
@@ -137,9 +145,9 @@ const EQUIVALENTS = {
   },
   // A release changes the number everywhere it is written, and nothing else.
   'version bumped': async ({ html, setHtml, read, write }) => {
-    const bump = text => text.replaceAll('19.2.0', '19.2.1').replaceAll('2026-11-11', '2026-12-01');
+    const bump = text => text.replaceAll('19.2.1', '19.2.2').replaceAll('2026-11-11', '2026-12-01');
     const source = await html();
-    if (!source.includes("const VERSION = '19.2.0';")) return false;
+    if (!source.includes("const VERSION = '19.2.1';")) return false;
     await setHtml(bump(source));
     await write('README.md', bump(await read('README.md')));
     await write('CHANGELOG.md', bump(await read('CHANGELOG.md')));

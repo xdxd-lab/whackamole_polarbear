@@ -79,6 +79,23 @@ for (const [width, height] of VIEWPORTS) {
       }
     });
 
+    test('the panels beside or below the board stay together, without gaps between them', async () => {
+      const game = await Game.open(harness, { viewport });
+      try {
+        const gaps = await game.page.evaluate(() => {
+          const box = selector => document.querySelector(selector).getBoundingClientRect();
+          const [top, card, progress, controls] = ['.top', '.card', '.progress', '.controls'].map(box);
+          // Side by side, the title sits right above the time bar; stacked, the board is between them.
+          const beside = card.right <= top.left;
+          return [...(beside ? [progress.top - top.bottom] : []), controls.top - progress.bottom];
+        });
+        const gap = parseFloat(await game.page.evaluate(() => getComputedStyle(document.querySelector('.game')).rowGap));
+        for (const between of gaps) assert.ok(between <= gap + 0.5, `${label}: ${between}px of empty space between the panels (gap ${gap}px)`);
+      } finally {
+        await game.close();
+      }
+    });
+
     test('the start and result dialogs fit', async () => {
       const game = await Game.open(harness, { viewport });
       try {
