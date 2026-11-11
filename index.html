@@ -66,7 +66,9 @@
   }
   @keyframes snowfall{to{transform:translateY(var(--tile))}}
   .cloud,.cloud:before,.cloud:after{position:fixed;background:#fff;border-radius:999px;opacity:.8;pointer-events:none;z-index:1}.cloud{width:92px;height:30px;top:7%;left:7%;filter:blur(.2px)}.cloud:before{content:"";width:40px;height:40px;left:13px;top:-18px}.cloud:after{content:"";width:52px;height:52px;right:8px;top:-25px}.cloud.two{transform:scale(.75);left:auto;right:8%;top:15%}
-  .game{width:min(680px,100%);max-height:100%;display:grid;grid-template-rows:auto minmax(0,auto) auto auto auto;gap:12px;position:relative;z-index:2}
+  /* A column that fits the screen: only the board gives up height. Flex, not grid, because
+     Firefox does not shrink a grid's auto row to the container's max-height. */
+  .game{width:min(680px,100%);max-height:100%;display:flex;flex-direction:column;gap:12px;position:relative;z-index:2}.game>*{flex:none}.game>.card{flex:0 1 auto}
   .top{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:stretch}
   .brand,.scoreboard,.controls,.card{background:var(--panel);border:1px solid rgba(255,255,255,.7);box-shadow:var(--shadow);border-radius:22px}
   .brand{padding:15px 18px}.brand h1{font-size:clamp(24px,5vw,36px);line-height:1;margin:0 0 5px;display:flex;align-items:center;gap:.2em}.toy-mallet{width:1.25em;height:1.25em;flex:none;filter:drop-shadow(0 2px 2px rgba(92,48,67,.2))}.brand p{margin:0;font-size:13px;opacity:.7}
@@ -102,7 +104,7 @@
   .overlay{position:absolute;inset:0;display:grid;place-items:center;background:rgba(226,240,250,.86);z-index:20;border-radius:22px;opacity:0;visibility:hidden;pointer-events:none;transition:.2s}.overlay.show{opacity:1;visibility:visible;pointer-events:auto}.modal{width:min(410px,88%);background:#fff;border-radius:24px;padding:24px;text-align:center;box-shadow:0 0 0 1px rgba(120,165,200,.28),0 18px 44px rgba(40,80,110,.22)}.modal h2{font-size:31px;margin:0 0 8px}.modal p{margin:7px 0 18px;line-height:1.6}.bigscore{font-size:52px;font-weight:950;color:var(--good);line-height:1}.tiny{font-size:12px;opacity:.62}
   .toast{position:absolute;left:50%;top:14px;translate:0 -100%;white-space:nowrap;transform:translate(-50%,-8px);z-index:30;font-weight:900;font-size:clamp(17px,5cqw,24px);line-height:1.2;padding:2px 12px;border-radius:999px;background:rgba(255,255,255,.94);box-shadow:0 2px 8px rgba(40,80,110,.18);opacity:0;pointer-events:none}.toast.bad{color:var(--danger)}.toast.show{animation:pop .55s ease-out}@keyframes pop{0%{opacity:0;transform:translate(-50%,4px) scale(.8)}25%{opacity:1;transform:translate(-50%,-8px) scale(1.15)}100%{opacity:0;transform:translate(-50%,-28px) scale(1)}}
   @media(max-width:560px){body{align-items:start}.top{grid-template-columns:1fr}.brand{text-align:center}.brand h1{justify-content:center}.scoreboard{min-height:68px}.card{padding:10px}.board{gap:6px}.hole{border-radius:18px}.controls{grid-template-columns:1fr 1fr}.controls .primary{grid-column:1/-1;grid-row:1}.controls select{width:100%;min-height:45px}.controls .btn:not(.primary){min-height:45px}}
-  @media(orientation:landscape) and (max-height:560px){.game{--side:calc(100dvh - max(14px,env(safe-area-inset-top)) - max(14px,env(safe-area-inset-bottom)));width:100%;max-width:1040px;grid-template-columns:auto minmax(0,1fr);grid-template-rows:repeat(4,auto);gap:8px 12px}.card{grid-column:1;grid-row:1/-1;width:var(--side);height:var(--side);aspect-ratio:auto;padding:10px}.board{gap:6px}.hole{border-radius:18px}.top{grid-template-columns:1fr;gap:8px}.brand{padding:8px 12px;text-align:center}.brand h1{justify-content:center;font-size:22px;margin:0 0 2px}.brand p{font-size:12px}.scoreboard{min-height:0}.stat{padding:5px 8px}.value{font-size:20px}.controls{grid-template-columns:1fr 1fr;gap:8px;padding:8px}.controls .primary{grid-column:1/-1;grid-row:1}.controls .btn{padding:9px 12px;min-height:44px}.controls select{width:100%;min-height:44px}}
+  @media(orientation:landscape) and (max-height:560px){.game{display:grid;--side:calc(100dvh - max(14px,env(safe-area-inset-top)) - max(14px,env(safe-area-inset-bottom)));width:100%;max-width:1040px;grid-template-columns:auto minmax(0,1fr);grid-template-rows:repeat(4,auto);gap:8px 12px}.card{grid-column:1;grid-row:1/-1;width:var(--side);height:var(--side);aspect-ratio:auto;padding:10px}.board{gap:6px}.hole{border-radius:18px}.top{grid-template-columns:1fr;gap:8px}.brand{padding:8px 12px;text-align:center}.brand h1{justify-content:center;font-size:22px;margin:0 0 2px}.brand p{font-size:12px}.scoreboard{min-height:0}.stat{padding:5px 8px}.value{font-size:20px}.controls{grid-template-columns:1fr 1fr;gap:8px;padding:8px}.controls .primary{grid-column:1/-1;grid-row:1}.controls .btn{padding:9px 12px;min-height:44px}.controls select{width:100%;min-height:44px}}
   @media(orientation:landscape) and (max-height:340px){.brand{padding:4px 8px}.brand h1{font-size:18px;margin:0}.brand p{display:none}}
   @container (max-height:320px){.modal{padding:12px 16px;border-radius:18px}.modal h2{font-size:22px;margin:0 0 2px}.modal p{margin:4px 0 8px;line-height:1.35;font-size:14px}.modal .tiny{display:none}.bigscore{font-size:34px}.modal .btn{padding:9px 14px}}
   @media(max-width:560px) and (max-height:620px){.brand{padding:8px 12px}.brand h1{font-size:22px;margin:0}.brand p{display:none}.scoreboard{min-height:0}.stat{padding:5px 8px}.value{font-size:20px}.game{gap:8px}}
@@ -157,11 +159,11 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny" style="text-align:center">最高分：<b id="best">0</b> · 版本 19.1.1（2026-11-11）</div>
+  <div class="tiny" style="text-align:center">最高分：<b id="best">0</b> · 版本 19.1.2（2026-11-11）</div>
 </main>
 <script>(async () => {
   'use strict';
-  const VERSION = '19.1.1';
+  const VERSION = '19.1.2';
   const BEST_KEY = 'wam_best_20260904v7';
   const $ = id => document.getElementById(id);
   const board = $('board'), overlay = $('overlay');
