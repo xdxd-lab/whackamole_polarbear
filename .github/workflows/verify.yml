@@ -24,19 +24,26 @@ jobs:
         run: npm install --no-package-lock
       - name: Read Playwright version
         id: playwright
-        run: echo "version=$(node -p "require('./node_modules/playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "version=$(node -p "require('./node_modules/playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+          echo "image=${ImageOS:-unknown}-${ImageVersion:-unknown}" >> "$GITHUB_OUTPUT"
       - name: Restore Chromium
         id: browser-cache
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      # Kept between runs, so that a package server outage cannot stop the job (see the script).
+      - name: Restore Chromium system libraries
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/system-libraries
+          key: system-libraries-${{ steps.playwright.outputs.image }}-chromium-${{ steps.playwright.outputs.version }}
+      - name: Install Chromium system libraries
+        run: scripts/ci/system-libraries.sh chromium
       - name: Install Chromium
         if: steps.browser-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
-      - name: Install Chromium system libraries
-        if: steps.browser-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
+        run: npx playwright install chromium
       - name: Verify assets, rules and recorded behaviour
         run: npm test
       # For people reviewing a layout change: every layout size, start screen and mid-round.
@@ -78,25 +85,32 @@ jobs:
         run: npm install --no-package-lock
       - name: Read Playwright version
         id: playwright
-        run: echo "version=$(node -p "require('./node_modules/playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "version=$(node -p "require('./node_modules/playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+          echo "image=${ImageOS:-unknown}-${ImageVersion:-unknown}" >> "$GITHUB_OUTPUT"
       - name: Restore ${{ matrix.browser }}
         id: browser-cache
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ matrix.browser }}-${{ steps.playwright.outputs.version }}
+      # Kept between runs, so that a package server outage cannot stop the job (see the script).
+      - name: Restore ${{ matrix.browser }} system libraries
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/system-libraries
+          key: system-libraries-${{ steps.playwright.outputs.image }}-${{ matrix.browser }}-${{ steps.playwright.outputs.version }}
+      - name: Install ${{ matrix.browser }} system libraries
+        run: scripts/ci/system-libraries.sh ${{ matrix.browser }}${{ matrix.browser == 'firefox' && ' pulseaudio' || '' }}
       - name: Install ${{ matrix.browser }}
         if: steps.browser-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps ${{ matrix.browser }}
-      - name: Install ${{ matrix.browser }} system libraries
-        if: steps.browser-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps ${{ matrix.browser }}
+        run: npx playwright install ${{ matrix.browser }}
       # Firefox on Linux plays Web Audio through PulseAudio. The runner has no sound server,
       # so audio time never moves: music starts but never fades or ends. A silent sink fixes it.
+      # PulseAudio itself is installed with the system libraries above.
       - name: Give Firefox a silent sound card
         if: matrix.browser == 'firefox'
         run: |
-          sudo apt-get install -y --no-install-recommends pulseaudio
           pulseaudio --start --exit-idle-time=-1
           pactl load-module module-null-sink sink_name=silent
           pactl set-default-sink silent
@@ -130,15 +144,17 @@ jobs:
   # Tests the tests. Every case runs the whole browser suite, so each runner takes
   # one case at a time and the list is split across runners instead.
   mutation:
-    name: Mutation check ${{ matrix.shard }}/3
+    name: Mutation check ${{ matrix.shard }}/5
     needs: verify
     runs-on: ubuntu-latest
-    # About 33 cases a runner at 50-55 s each: half an hour of work, so leave room.
-    timeout-minutes: 45
+    # About 20 cases a runner at 50-55 s each: under 20 minutes of work, so leave room.
+    # The shard count is also in the job name, which branch protection lists by name:
+    # change the count and the required checks on main together.
+    timeout-minutes: 35
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3]
+        shard: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
@@ -148,21 +164,28 @@ jobs:
         run: npm install --no-package-lock
       - name: Read Playwright version
         id: playwright
-        run: echo "version=$(node -p "require('./node_modules/playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "version=$(node -p "require('./node_modules/playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+          echo "image=${ImageOS:-unknown}-${ImageVersion:-unknown}" >> "$GITHUB_OUTPUT"
       - name: Restore Chromium
         id: browser-cache
         uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      # Kept between runs, so that a package server outage cannot stop the job (see the script).
+      - name: Restore Chromium system libraries
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/system-libraries
+          key: system-libraries-${{ steps.playwright.outputs.image }}-chromium-${{ steps.playwright.outputs.version }}
+      - name: Install Chromium system libraries
+        run: scripts/ci/system-libraries.sh chromium
       - name: Install Chromium
         if: steps.browser-cache.outputs.cache-hit != 'true'
-        run: npx playwright install --with-deps chromium
-      - name: Install Chromium system libraries
-        if: steps.browser-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
+        run: npx playwright install chromium
       - name: Check that the tests catch broken rules
-        run: npm run test:mutation -- --strict --shard ${{ matrix.shard }}/3
+        run: npm run test:mutation -- --strict --shard ${{ matrix.shard }}/5
         env:
           MUTATION_WORKERS: '1'
       - name: Save mutation report and failing output
