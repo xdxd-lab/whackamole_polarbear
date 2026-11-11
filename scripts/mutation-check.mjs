@@ -85,6 +85,7 @@ const MUTANTS = {
   'music plays although sound is off': replace('music.gain.gain.value=soundOn?MUSIC_VOLUME:0;', 'music.gain.gain.value=MUSIC_VOLUME;'),
   'music keeps playing after the round': replace("stopMusic();beep(260,.09,'triangle');", "beep(260,.09,'triangle');"),
   'tracks lose their own level': replace('fade.gain.value=MUSIC_TRACKS[i].gain;', ''),
+  'winter played as quietly as before': replace('"m4a":"assets/music-20261111/winter-e68eed06e5b5.m4a","gain":2.34}', '"m4a":"assets/music-20261111/winter-e68eed06e5b5.m4a","gain":0.67}'),
   'happy played as quietly as before': replace('"m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a","gain":1.5}', '"m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a","gain":1}'),
   'music louder than set': replace('const MUSIC_VOLUME=.35;', 'const MUSIC_VOLUME=.7;'),
   'music skips the start of its track': replace('source.start(0,Math.min(buffer.duration,Math.max(0,(performance.now()-started)/1000)));', 'source.start(0,5);'),

@@ -9,6 +9,10 @@
 - 第三首背景音樂 Happy Clappy Loop，一首輕柔俏皮的鋼琴小品。現在三首每局輪流：Happy → Winter → Clappy。
 - 頁尾以小字標示三首音樂的作者，點作者名稱可以開啟該曲在 OpenGameArt 的頁面。
 
+### 修正
+
+- Winter 在手機與筆電喇叭上幾乎聽不到：它的聲音大多是重低音，小喇叭發不出來。現在調小它的低音、調大其餘部分，三首在小喇叭上聽起來一樣大聲；Clappy 也稍微調大。
+
 ### 音樂來源
 
 三首都以 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/deed.zh_TW) 釋出，取自 OpenGameArt.org，詳見 [CREDITS.md](./CREDITS.md)：

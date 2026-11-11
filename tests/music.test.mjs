@@ -161,7 +161,7 @@ test('the game plays normally when its music cannot load', async () => {
   }
 });
 
-test('every track lasts the whole round, fades out and is as loud as the others', async () => {
+test('every track lasts the whole round, fades out and sounds as loud as the others on a small speaker', async () => {
   const game = await Game.open(harness);
   try {
     const shapes = await game.page.evaluate(async urls => {
@@ -176,7 +176,31 @@ test('every track lasts the whole round, fades out and is as loud as the others'
           }
           return { db: 10 * Math.log10(sum / count), peak };
         };
-        result.push({ url, duration: buffer.duration, body: rms(1, 27), tail: rms(buffer.duration - 0.2, buffer.duration) });
+        // What a phone or laptop speaker plays, almost nothing below about 300 Hz, weighted the
+        // way the ear hears it (the +4 dB high shelf of ITU-R BS.1770, as scripts/music/speaker.py).
+        const offline = new OfflineAudioContext(buffer.numberOfChannels, buffer.length, buffer.sampleRate);
+        const source = offline.createBufferSource();
+        let node = source;
+        for (const [type, frequency, gain] of [['highpass', 300], ['highpass', 300], ['highshelf', 1682, 4]]) {
+          const filter = offline.createBiquadFilter();
+          filter.type = type; filter.frequency.value = frequency;
+          if (gain) filter.gain.value = gain;
+          // Web Audio gives a high-pass Q in dB; -3.01 dB is Q 0.707, without a resonant bump.
+          if (type === 'highpass') filter.Q.value = -3.0103;
+          node.connect(filter); node = filter;
+        }
+        node.connect(offline.destination);
+        source.buffer = buffer; source.start();
+        const speaker = await offline.startRendering();
+        const level = (audio, from, to) => {
+          let sum = 0, count = 0;
+          for (let c = 0; c < audio.numberOfChannels; c += 1) {
+            const data = audio.getChannelData(c);
+            for (let i = Math.floor(from * audio.sampleRate); i < to * audio.sampleRate; i += 1) { sum += data[i] ** 2; count += 1; }
+          }
+          return 10 * Math.log10(sum / count);
+        };
+        result.push({ url, duration: buffer.duration, body: rms(1, 27), tail: rms(buffer.duration - 0.2, buffer.duration), speaker: level(speaker, 1, 27) });
       }
       return result;
     }, OPUS);
@@ -185,17 +209,18 @@ test('every track lasts the whole round, fades out and is as loud as the others'
       assert.ok(body.peak < 0.95, `${url} peaks at ${body.peak}, too close to clipping`);
       assert.ok(tail.db < body.db - 20, `${url} does not fade out (${tail.db} dB at the end, ${body.db} dB overall)`);
     }
-    const levels = shapes.map(shape => shape.body.db);
-    assert.ok(Math.max(...levels) - Math.min(...levels) < 4, `Tracks differ in loudness: ${levels.join(', ')} dB`);
+    // Played at their own gain, the tracks sound equally loud where small speakers can play.
+    const levels = shapes.map((shape, i) => shape.speaker + 20 * Math.log10(manifest.tracks[i].gain));
+    assert.ok(Math.max(...levels) - Math.min(...levels) < 2, `Tracks differ above 300 Hz: ${levels.map(db => db.toFixed(1)).join(', ')} dB`);
   } finally {
     await game.close();
   }
 });
 
 test('each track is played at the level chosen for it by ear', () => {
-  // Happy and Winter were set by listening on 2026-11-10: equal measured loudness left Happy too quiet
-  // and Winter too loud. Clappy is bass-heavy like Happy and a little thinner above it.
-  assert.deepEqual(manifest.tracks.map(track => [track.id, track.gain]), [['happy', 1.5], ['winter', 0.67], ['clappy', 1.7]]);
+  // Set on 2026-11-11 by listening to each track alone: Happy is the reference; Winter, its bass
+  // lowered, matches it above 300 Hz; Clappy matches it there and is then 1 dB louder, by ear.
+  assert.deepEqual(manifest.tracks.map(track => [track.id, track.gain]), [['happy', 1.5], ['winter', 2.34], ['clappy', 1.9]]);
   for (const level of LEVELS) assert.ok(level < 0.9, 'A track must leave headroom below full scale');
 });
 

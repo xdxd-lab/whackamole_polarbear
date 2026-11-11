@@ -29,17 +29,17 @@
       "license": "CC0 1.0",
       "files": {
         "opus": {
-          "url": "assets/music-20261110/winter-a62906d44807.opus",
-          "sha256": "a62906d4480736b780150ab8e564acb458033f0ca5b894444129fa915cf8596b",
-          "bytes": 288226
+          "url": "assets/music-20261111/winter-e9c2ce068a12.opus",
+          "sha256": "e9c2ce068a12787862250ad98bde93f55fda34b89a4ab459ed85d45921f6294b",
+          "bytes": 281258
         },
         "m4a": {
-          "url": "assets/music-20261110/winter-97f374c4eb94.m4a",
-          "sha256": "97f374c4eb943d488bcad691927942d7659c8fd16fd6d37a9e89a33d3cf510b2",
-          "bytes": 383241
+          "url": "assets/music-20261111/winter-e68eed06e5b5.m4a",
+          "sha256": "e68eed06e5b56c6df53237278a72b8cc95fd9371de9dc5cef918aeba2adc9931",
+          "bytes": 379034
         }
       },
-      "gain": 0.67
+      "gain": 2.34
     },
     {
       "id": "clappy",
@@ -59,7 +59,7 @@
           "bytes": 385996
         }
       },
-      "gain": 1.7
+      "gain": 1.9
     }
   ]
 }

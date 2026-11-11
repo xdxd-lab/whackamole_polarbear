@@ -388,7 +388,7 @@
   // Background music: one track per round, taking turns. Fetched only after the game is
   // playable and decoded off-screen, so it never delays the first round; it starts only
   // from the player's tap, and a track that cannot load leaves the game silent, not broken.
-  const MUSIC_TRACKS=[{"opus":"assets/music-20261110/happy-fc436405b0a7.opus","m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a","gain":1.5},{"opus":"assets/music-20261110/winter-a62906d44807.opus","m4a":"assets/music-20261110/winter-97f374c4eb94.m4a","gain":0.67},{"opus":"assets/music-20261111/clappy-a3e7848571dd.opus","m4a":"assets/music-20261111/clappy-2f3f07b7d1b2.m4a","gain":1.7}];
+  const MUSIC_TRACKS=[{"opus":"assets/music-20261110/happy-fc436405b0a7.opus","m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a","gain":1.5},{"opus":"assets/music-20261111/winter-e9c2ce068a12.opus","m4a":"assets/music-20261111/winter-e68eed06e5b5.m4a","gain":2.34},{"opus":"assets/music-20261111/clappy-a3e7848571dd.opus","m4a":"assets/music-20261111/clappy-2f3f07b7d1b2.m4a","gain":1.9}];
   const MUSIC_VOLUME=.35;
   const musicFormats=new Audio().canPlayType('audio/ogg; codecs=opus')?['opus','m4a']:['m4a','opus'];
   const music={loads:[],next:0,playing:null,gain:null};
