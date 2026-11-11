@@ -100,7 +100,7 @@
   .fx .normal{--c:#2a9d8f}.fx .bonus{--c:#ffb703}.fx .bad{--c:#ef476f}
 
   /* Version and music credits: small and pale, in the corner, never competing with the game. */
-  .foot{text-align:center}.foot span{display:inline-block}.foot span[hidden]{display:none}.credits{font-size:11px;color:#6b7f8c;margin-left:.6em}.credits a{color:inherit;text-decoration:underline;text-decoration-color:rgba(107,127,140,.45);text-underline-offset:2px}.credits a:focus-visible{outline:2px solid #1769c4;outline-offset:2px}
+  .foot{text-align:center}.foot span{display:inline-block}.foot span[hidden]{display:none}#bestSlot{position:relative}#practiceMark{position:absolute;left:50%;top:0;translate:-50% 0;white-space:nowrap}.credits{font-size:11px;color:#6b7f8c;margin-left:.6em}.credits a{color:inherit;text-decoration:underline;text-decoration-color:rgba(107,127,140,.45);text-underline-offset:2px}.credits a:focus-visible{outline:2px solid #1769c4;outline-offset:2px}
   /* Where the credits need a line of their own, that line sits in the page's bottom margin and takes no height from the game. */
   @media(max-width:560px),(orientation:landscape) and (max-height:560px){.foot .credits{display:block;margin:0 0 -13px;font-size:10.5px;line-height:13px}}
 
@@ -164,7 +164,7 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny foot"><span><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden>練習局・不計入紀錄</span> · 版本 21.0.0（2026-11-12）</span> <span class="credits">音樂：<a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>（CC0）</span></div>
+  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden>練習局・不計紀錄</span></span> · 版本 21.0.0（2026-11-12）</span> <span class="credits">音樂：<a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>（CC0）</span></div>
 </main>
 <script>(async () => {
   'use strict';
@@ -248,9 +248,10 @@
     const name=difficulty.selectedOptions[0]?.textContent||'普通';
     $('bestLevel').textContent=`（${name}）`;
     $('best').textContent=bests[level()];
-    // A practice round shows its mark in place of the record it cannot change.
+    // A practice round shows its mark over the record it cannot change. The record keeps
+    // its room, so the footer is the same size either way.
     const mark=running&&practice;
-    $('bestLine').hidden=mark;$('practiceMark').hidden=!mark;
+    $('bestLine').style.visibility=mark?'hidden':'';$('practiceMark').hidden=!mark;
   }
   showBest();
   // Audio may only start from the player's tap; start() calls this first.

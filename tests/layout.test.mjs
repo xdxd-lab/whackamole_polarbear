@@ -68,9 +68,10 @@ for (const [width, height] of VIEWPORTS) {
         await game.startWith('penguin');
         const boxes = () => inspect(game, ['#board', '#startBtn', '.foot', '.credits']);
         const before = await boxes();
-        await game.page.selectOption('#difficulty', 'hard');
+        await game.choose('easy');
         const marked = await boxes();
         assertInside(await inspect(game, ['#practiceMark', '#startBtn', '.credits a:last-of-type']), label);
+        for (const side of ['left', 'width']) assert.ok(Math.abs(marked['.foot'][side] - before['.foot'][side]) < 0.5, `${label}: the practice mark changes the footer's ${side}`);
         for (const selector of Object.keys(marked)) {
           for (const side of ['top', 'bottom', 'height']) {
             assert.ok(Math.abs(marked[selector][side] - before[selector][side]) < 0.5, `${label}: the practice mark moves or resizes ${selector} (${side} ${before[selector][side]} -> ${marked[selector][side]})`);

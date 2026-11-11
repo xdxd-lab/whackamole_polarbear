@@ -48,12 +48,15 @@ export class Game {
 
   /** Starts a round through the on-screen button and waits for play to begin. */
   async start({ difficulty, random = [] } = {}) {
-    if (difficulty) await this.page.selectOption('#difficulty', difficulty);
+    if (difficulty) await this.choose(difficulty);
     await this.queueRandom(random);
     await this.page.locator('#modalBtn').click();
     await this.page.waitForFunction(() => !document.getElementById('overlay').classList.contains('show'));
     await this.page.evaluate(() => window.__test.record());
   }
+
+  /** Picks a difficulty in the menu. A missing option fails at once instead of waiting half a minute. */
+  choose(difficulty) { return this.page.selectOption('#difficulty', difficulty, { timeout: 2_000 }); }
 
   /** Starts with a chosen first target. */
   startWith(species, hole = 0, options = {}) {

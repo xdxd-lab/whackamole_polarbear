@@ -11,7 +11,7 @@ const BEST_KEY = 'wam_best_20260904v7';
 const BEST_KEYS = { easy: BEST_KEY + '_easy', normal: BEST_KEY, hard: BEST_KEY + '_hard' };
 /** What the footer shows: the best score line, or the practice mark in its place. */
 const footer = game => game.page.evaluate(() => {
-  const shown = id => getComputedStyle(document.getElementById(id)).display !== 'none';
+  const shown = id => { const style = getComputedStyle(document.getElementById(id)); return style.display !== 'none' && style.visibility !== 'hidden'; };
   return { best: shown('bestLine'), practice: shown('practiceMark') ? document.getElementById('practiceMark').textContent : null };
 });
 const savedBests = game => game.page.evaluate(
@@ -359,10 +359,10 @@ describe('input', () => {
   test('changing difficulty mid-round takes over at once and makes it a practice round', () => play(async game => {
     await game.startWith('fox');
     await game.hitCurrent();
-    await game.page.selectOption('#difficulty', 'hard');
+    await game.choose('hard');
     assert.equal(await game.number('#score'), 3, 'The round goes on with its score');
     assert.equal(await game.overlayShown(), false);
-    assert.deepEqual(await footer(game), { best: false, practice: '練習局・不計入紀錄' });
+    assert.deepEqual(await footer(game), { best: false, practice: '練習局・不計紀錄' });
     // The next target already keeps the hard window.
     // After a hit the next target rises 640 ms later (pain 220 + sad 340 + 80).
     await game.nextSpawn('penguin', 4);
@@ -390,8 +390,8 @@ describe('input', () => {
 
   test('changing difficulty and back again is still a practice round', () => play(async game => {
     await game.startWith('fox');
-    await game.page.selectOption('#difficulty', 'easy');
-    await game.page.selectOption('#difficulty', 'normal');
+    await game.choose('easy');
+    await game.choose('normal');
     await game.hitCurrent();
     await game.advance(30_000);
     assert.equal(await game.page.textContent('#modalTitle'), '練習局結束');
@@ -400,7 +400,7 @@ describe('input', () => {
 
   test('the restart button turns a practice round into a real one', () => play(async game => {
     await game.startWith('fox');
-    await game.page.selectOption('#difficulty', 'easy');
+    await game.choose('easy');
     await game.queueRandom([holeRoll(0), SPECIES_ROLL.fox]);
     await game.page.locator('#startBtn').click();
     assert.equal(await game.page.textContent('#bestLevel'), '（悠閒）');
@@ -452,9 +452,9 @@ describe('best score', () => {
   test('each difficulty shows its own record', () => play(async game => {
     const shown = async () => [await game.page.textContent('#bestLevel'), await game.number('#best')];
     assert.deepEqual(await shown(), ['（普通）', 12]);
-    await game.page.selectOption('#difficulty', 'easy');
+    await game.choose('easy');
     assert.deepEqual(await shown(), ['（悠閒）', 5]);
-    await game.page.selectOption('#difficulty', 'hard');
+    await game.choose('hard');
     assert.deepEqual(await shown(), ['（高手）', 0]);
   }, { storage: { [BEST_KEY]: '12', [BEST_KEYS.easy]: '5' } }));
 
@@ -474,7 +474,7 @@ describe('best score', () => {
     assert.equal(await game.page.textContent('#modalTitle'), '🏆 新紀錄！', 'Chosen before the round, so it counts');
     assert.deepEqual(await savedBests(game), { easy: null, normal: '50', hard: '3' });
     assert.equal(await game.number('#best'), 3);
-    await game.page.selectOption('#difficulty', 'normal');
+    await game.choose('normal');
     assert.equal(await game.number('#best'), 50);
   }, { storage: { [BEST_KEY]: '50' } }));
 
