@@ -52,7 +52,15 @@ for attempt in 1 2; do
   fi
   echo "::warning title=System libraries did not install::Attempt $attempt of 2 for $browser failed."
   sudo dpkg --configure -a || true
-  [ "$attempt" -eq 2 ] || sleep 30
+  [ "$attempt" -eq 2 ] && break
+  # The runner asks Azure's copy of the Ubuntu archive first. When that name does not
+  # resolve, apt gives up without trying the others in its list, so take it off the list
+  # and let the second attempt go to archive.ubuntu.com itself.
+  if [ -f /etc/apt/apt-mirrors.txt ] && grep -q -v 'azure\.archive' /etc/apt/apt-mirrors.txt; then
+    sudo sed -i '/azure\.archive/d' /etc/apt/apt-mirrors.txt
+    echo "Second attempt without Azure's mirror: $(tr '\n' ' ' < /etc/apt/apt-mirrors.txt)"
+  fi
+  sleep 15
 done
 
 echo "::error title=System libraries did not install::The package servers could not be reached and no kept copy exists for this runner image. This is the runner's network, not the game: run the job again later."
