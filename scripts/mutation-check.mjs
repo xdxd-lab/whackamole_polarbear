@@ -40,7 +40,7 @@ const MUTANTS = {
   'bear chance .12 becomes .9': replace("r<.12?'bad'", "r<.9?'bad'"),
   'BEST_KEY renamed': replace('wam_best_20260904v7', 'wam_best_new'),
   'hard difficulty removed': replace('<option value="hard">高手</option>', ''),
-  'hits never land': replace('if(!running||!a||a.i!==i||', 'if(true||!running||!a||a.i!==i||'),
+  'hits never land': replace('if(!a||a.i!==i||', 'if(true||!a||a.i!==i||'),
   'fox +3 becomes +2': replace("delta=a.type==='bonus'?3:1", "delta=a.type==='bonus'?2:1"),
   'combo bonus removed': replace('if(combo%5===0){delta++;', 'if(false){delta++;'),
   'bear no longer breaks combo': replace('delta=-2;combo=0', 'delta=-2'),
