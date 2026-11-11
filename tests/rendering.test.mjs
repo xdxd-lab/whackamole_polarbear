@@ -147,7 +147,8 @@ test('a tap mark appears where the finger landed and never blocks the next tap',
   try {
     await game.startWith('penguin', 4);
     const box = await game.page.locator('#board .hole').nth(4).boundingBox();
-    const point = { x: box.x + box.width * 0.25, y: box.y + box.height * 0.7 };
+    // Whole pixels: WebKit reports a pointer's position without the fraction.
+    const point = { x: Math.round(box.x + box.width * 0.25), y: Math.round(box.y + box.height * 0.7) };
     await game.page.mouse.click(point.x, point.y);
     const centre = await game.page.$eval('#fx .ripple', element => {
       for (const animation of element.getAnimations()) animation.pause();

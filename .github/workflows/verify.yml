@@ -48,6 +48,68 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+  # The same gate in the other two engines, after it has passed in Chromium.
+  # WebKit must pass. Firefox reports without blocking: its job stays green and carries a
+  # warning until the known failures listed in tests/support/browser.mjs are fixed; then
+  # set "experimental" to false.
+  browsers:
+    name: Assets, rules and replays on ${{ matrix.browser }}
+    needs: verify
+    # Playwright 1.56 ships Firefox and WebKit builds for Ubuntu 24.04, not yet for the newer ubuntu-latest.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - browser: webkit
+            experimental: false
+          - browser: firefox
+            experimental: true
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+      - name: Install test dependency
+        run: npm install --no-package-lock
+      - name: Read Playwright version
+        id: playwright
+        run: echo "version=$(node -p "require('./node_modules/playwright/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Restore ${{ matrix.browser }}
+        id: browser-cache
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ matrix.browser }}-${{ steps.playwright.outputs.version }}
+      - name: Install ${{ matrix.browser }}
+        if: steps.browser-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Install ${{ matrix.browser }} system libraries
+        if: steps.browser-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps ${{ matrix.browser }}
+      - name: Verify assets, rules and recorded behaviour
+        id: gate
+        # An experimental engine may fail here without failing the job; the next step says so out loud.
+        continue-on-error: ${{ matrix.experimental }}
+        run: npm test
+        env:
+          WAM_BROWSER: ${{ matrix.browser }}
+      - name: Report a failure that does not block
+        if: steps.gate.outcome == 'failure'
+        run: |
+          echo "::warning title=${{ matrix.browser }} gate failed (not blocking)::The gate fails in ${{ matrix.browser }}. Known failures are listed in tests/support/browser.mjs; anything beyond them is new."
+          echo "### The gate failed in ${{ matrix.browser }} (not blocking)" >> "$GITHUB_STEP_SUMMARY"
+          echo "Known failures are listed in \`tests/support/browser.mjs\`. The full output is in this job's log and in the \`verification-report-${{ matrix.browser }}\` artifact." >> "$GITHUB_STEP_SUMMARY"
+      - name: Save audit and screenshot
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: verification-report-${{ matrix.browser }}
+          path: test-results/
+          if-no-files-found: warn
+          retention-days: 30
+
   # Tests the tests. Every case runs the whole browser suite, so each runner takes
   # one case at a time and the list is split across runners instead.
   mutation:
