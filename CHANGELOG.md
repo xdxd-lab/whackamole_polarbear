@@ -20,6 +20,12 @@
 - [Happy synths loop with slight christmas feeling](https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling)，作者 3xBlast
 - [Happy Clappy Loop](https://opengameart.org/content/happy-clappy-loop)，作者 OwlishMedia
 
+## [19.1.2] - 2026-11-11
+
+### 修正
+
+- 用 Firefox 玩時，棋盤會跟著視窗高度縮小，開始鍵、難度和最高分都留在畫面內；之前在較矮的螢幕上棋盤維持原尺寸，開始鍵會被擠到畫面外。其他瀏覽器的畫面沒有變。
+
 ## [19.1.1] - 2026-11-11
 
 ### 修正
@@ -82,6 +88,7 @@
 V15 以前沒有留下逐版紀錄，可以從 git 歷史查到。
 
 [19.2.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.2.0
+[19.1.2]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.1.2
 [19.1.1]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.1.1
 [19.1.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.1.0
 [19.0.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.0.0
