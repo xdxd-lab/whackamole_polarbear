@@ -62,6 +62,26 @@ for (const [width, height] of VIEWPORTS) {
       }
     });
 
+    test('the practice round mark takes no room from the game', async () => {
+      const game = await Game.open(harness, { viewport });
+      try {
+        await game.startWith('penguin');
+        const boxes = () => inspect(game, ['#board', '#startBtn', '.foot', '.credits']);
+        const before = await boxes();
+        await game.page.selectOption('#difficulty', 'hard');
+        const marked = await boxes();
+        assertInside(await inspect(game, ['#practiceMark', '#startBtn', '.credits a:last-of-type']), label);
+        for (const selector of Object.keys(marked)) {
+          for (const side of ['top', 'bottom', 'height']) {
+            assert.ok(Math.abs(marked[selector][side] - before[selector][side]) < 0.5, `${label}: the practice mark moves or resizes ${selector} (${side} ${before[selector][side]} -> ${marked[selector][side]})`);
+          }
+        }
+        assert.equal(await game.page.evaluate(() => document.scrollingElement.scrollHeight <= innerHeight), true, 'Page content is taller than the screen');
+      } finally {
+        await game.close();
+      }
+    });
+
     test('the music credits take no room from the game', async () => {
       const game = await Game.open(harness, { viewport });
       try {
