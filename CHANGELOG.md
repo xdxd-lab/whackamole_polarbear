@@ -2,6 +2,12 @@
 
 這裡記錄玩家會感受到的變更，最新的在最上面。版號怎麼決定見 [docs/VERSIONING.md](./docs/VERSIONING.md)。
 
+## [19.1.2] - 2026-11-11
+
+### 修正
+
+- 用 Firefox 玩時，棋盤會跟著視窗高度縮小，開始鍵、難度和最高分都留在畫面內；之前在較矮的螢幕上棋盤維持原尺寸，開始鍵會被擠到畫面外。其他瀏覽器的畫面沒有變。
+
 ## [19.1.1] - 2026-11-11
 
 ### 修正
@@ -63,6 +69,7 @@
 
 V15 以前沒有留下逐版紀錄，可以從 git 歷史查到。
 
+[19.1.2]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.1.2
 [19.1.1]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.1.1
 [19.1.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.1.0
 [19.0.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.0.0

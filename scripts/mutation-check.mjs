@@ -77,8 +77,8 @@ const MUTANTS = {
   'score message back in one fixed place': replace("el.style.top=Math.max(box.top-area.top+10,el.offsetHeight+2)+'px';", ''),
   'score message may cover the scoreboard': replace('Math.max(box.top-area.top+10,el.offsetHeight+2)', '(box.top-area.top+10)'),
   'score message may leave the board area': replace('area.width-half)', 'area.width+half)'),
-  'version changed in the script but not on the page': replace("const VERSION = '19.1.1';", "const VERSION = '19.1.2';"),
-  'version shown without its release date': replace('· 版本 19.1.1（2026-11-11）', '· 版本 19.1.1'),
+  'version changed in the script but not on the page': replace("const VERSION = '19.1.2';", "const VERSION = '19.1.3';"),
+  'version shown without its release date': replace('· 版本 19.1.2（2026-11-11）', '· 版本 19.1.2'),
   'music starts with the page instead of the round': replace('  track(MUSIC_TRACKS.length-1);\n', '  track(MUSIC_TRACKS.length-1);running=true;playMusic();running=false;\n'),
   'same track every round': replace('music.next=(i+1)%MUSIC_TRACKS.length;', 'music.next=0;'),
   'music ignores the sound switch': replace('if(music.gain)music.gain.gain.setTargetAtTime(soundOn?MUSIC_VOLUME:0,audioCtx.currentTime,.03);', ''),
@@ -131,9 +131,9 @@ const EQUIVALENTS = {
   },
   // A release changes the number everywhere it is written, and nothing else.
   'version bumped': async ({ html, setHtml, read, write }) => {
-    const bump = text => text.replaceAll('19.1.1', '19.1.2').replaceAll('2026-11-11', '2026-12-01');
+    const bump = text => text.replaceAll('19.1.2', '19.1.3').replaceAll('2026-11-11', '2026-12-01');
     const source = await html();
-    if (!source.includes("const VERSION = '19.1.1';")) return false;
+    if (!source.includes("const VERSION = '19.1.2';")) return false;
     await setHtml(bump(source));
     await write('README.md', bump(await read('README.md')));
     await write('CHANGELOG.md', bump(await read('CHANGELOG.md')));

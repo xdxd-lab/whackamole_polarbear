@@ -39,6 +39,10 @@ jobs:
         run: npx playwright install-deps chromium
       - name: Verify assets, rules and recorded behaviour
         run: npm test
+      # For people reviewing a layout change: every layout size, start screen and mid-round.
+      - name: Take review screenshots
+        if: always()
+        run: node scripts/screenshots.mjs
       - name: Save audit and screenshot
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -49,9 +53,8 @@ jobs:
           retention-days: 30
 
   # The same gate in the other two engines, after it has passed in Chromium.
-  # WebKit must pass. Firefox reports without blocking: its job stays green and carries a
-  # warning until the known failures listed in tests/support/browser.mjs are fixed; then
-  # set "experimental" to false.
+  # Both must pass. An engine marked "experimental" would report without blocking: its job
+  # stays green and carries a warning (none is marked now).
   browsers:
     name: Assets, rules and replays on ${{ matrix.browser }}
     needs: verify
@@ -65,7 +68,7 @@ jobs:
           - browser: webkit
             experimental: false
           - browser: firefox
-            experimental: true
+            experimental: false
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
@@ -88,11 +91,25 @@ jobs:
       - name: Install ${{ matrix.browser }} system libraries
         if: steps.browser-cache.outputs.cache-hit == 'true'
         run: npx playwright install-deps ${{ matrix.browser }}
+      # Firefox on Linux plays Web Audio through PulseAudio. The runner has no sound server,
+      # so audio time never moves: music starts but never fades or ends. A silent sink fixes it.
+      - name: Give Firefox a silent sound card
+        if: matrix.browser == 'firefox'
+        run: |
+          sudo apt-get install -y --no-install-recommends pulseaudio
+          pulseaudio --start --exit-idle-time=-1
+          pactl load-module module-null-sink sink_name=silent
+          pactl set-default-sink silent
       - name: Verify assets, rules and recorded behaviour
         id: gate
         # An experimental engine may fail here without failing the job; the next step says so out loud.
         continue-on-error: ${{ matrix.experimental }}
         run: npm test
+        env:
+          WAM_BROWSER: ${{ matrix.browser }}
+      - name: Take review screenshots
+        if: always()
+        run: node scripts/screenshots.mjs
         env:
           WAM_BROWSER: ${{ matrix.browser }}
       - name: Report a failure that does not block
