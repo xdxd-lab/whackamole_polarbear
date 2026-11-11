@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { test } from 'node:test';
+import { BROWSER_NAME } from './support/browser.mjs';
 import { Game, startHarness } from './support/game.mjs';
 import { ROOT } from './support/server.mjs';
 
@@ -47,12 +48,18 @@ test('declares a favicon, so browsers do not request a missing one', async () =>
   }
 });
 
-test('a repeat visit reuses cached images, as GitHub Pages allows for 10 minutes', async () => {
+// On CI, Playwright's WebKit fetched the images again on a second visit even after leaving the page
+// first, so it seems to keep no HTTP cache between page loads and this cannot be observed there.
+const NO_HTTP_CACHE = BROWSER_NAME === 'webkit' && 'the test WebKit does not reuse cached images between page loads';
+
+test('a repeat visit reuses cached images, as GitHub Pages allows for 10 minutes', { skip: NO_HTTP_CACHE }, async () => {
   const harness = await startHarness({ cacheControl: 'max-age=600' });
   const game = await Game.open(harness);
   const images = () => harness.server.requests.filter(request => request.pathname.endsWith('.avif')).length;
   try {
     assert.equal(images(), 3);
+    // Leave first: going to the address already shown is a reload, and WebKit fetches everything again on a reload.
+    await game.page.goto('about:blank');
     await game.page.goto(`${harness.server.origin}/`);
     await game.page.waitForFunction(() => document.getElementById('modalBtn')?.disabled === false && document.querySelectorAll('#board .hole').length === 9);
     assert.equal(images(), 3);

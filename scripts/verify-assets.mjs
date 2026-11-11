@@ -1,6 +1,7 @@
 /**
  * Release gate, and the one command to run before shipping:
- * repository bytes -> hash -> Chromium AVIF decode -> real-time game smoke test -> tests/.
+ * repository bytes -> hash -> AVIF decode in the browser -> real-time game smoke test -> tests/.
+ * WAM_BROWSER chooses the browser (see tests/support/browser.mjs).
  * Everything checked is observable behaviour, so reformatting or moving source code
  * cannot fail it. Gameplay rules live in tests/ and run from here.
  */
@@ -9,7 +10,7 @@ import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { chromium } from 'playwright';
+import { BROWSER_NAME, launchBrowser } from '../tests/support/browser.mjs';
 import { ROOT, startServer } from '../tests/support/server.mjs';
 
 const states = ['peek', 'warning', 'sneaky', 'pain', 'sad'];
@@ -55,7 +56,7 @@ try {
   }
 
   server = await startServer();
-  browser = await chromium.launch({ headless: true });
+  browser = await launchBrowser();
   const page = await browser.newPage({ viewport: { width: 900, height: 900 }, deviceScaleFactor: 1 });
   const pageErrors = [];
   page.on('pageerror', error => pageErrors.push(error.message));
@@ -89,7 +90,7 @@ try {
       img.src = '/' + item.path;
       await img.decode();
       if (img.naturalWidth !== item.expectedDimensions[0] || img.naturalHeight !== item.expectedDimensions[1]) {
-        throw new Error(item.species + ': Chromium decoded ' + img.naturalWidth + 'x' + img.naturalHeight + ', expected ' + item.expectedDimensions.join('x'));
+        throw new Error(item.species + ': the browser decoded ' + img.naturalWidth + 'x' + img.naturalHeight + ', expected ' + item.expectedDimensions.join('x'));
       }
       const frameW = item.expectedDimensions[0] / 5;
       const frameH = item.expectedDimensions[1];
@@ -135,7 +136,8 @@ try {
   await mkdir(path.join(ROOT, 'test-results'), { recursive: true });
   await page.screenshot({ path: path.join(ROOT, 'test-results', 'smoke.png'), animations: 'disabled' });
   report.browser.gameSmoke = 'pass: 9 holes, successfully decoded sprite visible after starting game';
-  console.log('PASS Chromium decode: ' + species.length + ' atlases, ' + species.length * states.length + ' nonblank frames; game smoke test');
+  report.browser.name = BROWSER_NAME;
+  console.log('PASS ' + BROWSER_NAME + ' decode: ' + species.length + ' atlases, ' + species.length * states.length + ' nonblank frames; game smoke test');
 
   // The mutation check runs tests/ itself, right before this script, on the same files.
   if (process.argv.includes('--skip-tests')) {

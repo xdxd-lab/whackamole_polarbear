@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import path from 'node:path';
-import { chromium } from 'playwright';
+import { launchBrowser } from './browser.mjs';
 import { ROOT, startServer } from './server.mjs';
 
 const INIT_SCRIPT = path.join(ROOT, 'tests/support/page-init.js');
@@ -18,7 +18,7 @@ export const DIFFICULTY = {
 
 export async function startHarness(options) {
   const server = await startServer(options);
-  const browser = await chromium.launch({ headless: true });
+  const browser = await launchBrowser();
   return { server, browser, close: async () => { await browser.close(); await server.close(); } };
 }
 
