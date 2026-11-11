@@ -68,6 +68,7 @@ const MUTANTS = {
   'format probe ignores decode errors': replace('return probe.naturalWidth > 0; } catch (_) { return false; }', 'return probe.naturalWidth > 0; } catch (_) { return true; }'),
   'decode failure gives no hint': replace("throw new Error(species + ': 圖片解碼失敗，這台裝置可能不支援此圖片格式');", "throw new Error(species + ': 錯誤');"),
   'start screen hides how a combo breaks': replace('，漏掉企鵝或北極狐也會中斷連擊；每連擊 5 次多得 <b>+1</b>。</p>', '。</p>'),
+  'landscape side panels drift apart': replace('grid-template-rows:1fr auto auto auto 1fr auto;gap:8px 12px}.game>:not(.card){grid-column:2}.top{grid-row:2}.progress{grid-row:3}.controls{grid-row:4}.game>.foot{grid-row:6}', 'grid-template-rows:repeat(4,auto);gap:8px 12px}'),
   'a hit after time is up still scores': replace('if(performance.now()-started>=30000){finish();return;}', ''),
   'sad frame no longer drops': replace("{duration:340,easing:'ease-in',fill:'forwards'}", "{duration:340,easing:'ease-in'}"),
   'scoreboard rewritten on every tick': replace('if(el.textContent!==text)el.textContent=text;', 'el.textContent=text;'),
