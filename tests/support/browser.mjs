@@ -9,10 +9,9 @@ import { chromium, firefox, webkit } from 'playwright';
  * - chromium: everything passes. The mutation check runs here only.
  * - webkit: everything passes except the repeat-visit cache test, which is skipped
  *   because Playwright's WebKit fetched the images again on every visit, cache or not.
- * - firefox: the gate runs but does not block a merge yet. Ten layout tests fail
- *   because the board does not shrink to the height of the screen in Firefox, a
- *   real fault in the game; three music tests time out waiting for audio to stop
- *   or fade, most likely because headless Firefox has no audio clock on CI.
+ * - firefox: everything passes. The board once kept its full size on short screens
+ *   (fixed in 19.1.2). On Linux it needs a sound server for Web Audio time to move,
+ *   so CI starts a silent PulseAudio sink before the gate.
  */
 const ENGINES = { chromium, firefox, webkit };
 
