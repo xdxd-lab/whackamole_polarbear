@@ -2,6 +2,14 @@
 
 這裡記錄玩家會感受到的變更，最新的在最上面。版號怎麼決定見 [docs/VERSIONING.md](./docs/VERSIONING.md)。
 
+## [21.1.0] - 2026-11-12
+
+### 新增
+
+- 背景音樂從兩首增加到**四首**，每局換一首，順序是 Happy → **Snowfall**（Kistol）→ Clappy → **Snow Theme**（Cleyton Kauffman）。兩首新曲都是 CC0，取自 OpenGameArt.org，來源與處理方式見 [CREDITS.md](./CREDITS.md)。
+- 新曲的音量已和原有兩首對齊（以手機、筆電小喇叭聽得到的 300 Hz 以上為準）。Snow Theme 的原檔很小聲，檔案響度提高了 14.7 dB。
+- 頁尾的音樂署名加上兩位新作者。
+
 ## [21.0.0] - 2026-11-12
 
 V21 把最高分依難度分開，並改了遊戲中換難度的規則；計分方式、每局 30 秒與各難度的節奏都沒變。

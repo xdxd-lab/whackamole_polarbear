@@ -1,5 +1,5 @@
 {
-  "note": "Background music, one track per round, taking turns. Each file is 31 s long with a 1 s fade-out, matched to -18 LUFS (ITU-R BS.1770): the first 31 s of Happy, and the 17.4 s Clappy loop repeated, with the small jump where it wraps smoothed out. Opus (Ogg) for most browsers, AAC (MP4) for Safari before 18.4. That measure counts deep bass that phone and laptop speakers cannot play, so each track also has a playback gain that matches the tracks above 300 Hz (scripts/music/speaker.py), then checked by ear.",
+  "note": "Background music, one track per round, taking turns. Each file is 31 s long with a 1 s fade-out, matched to -18 LUFS (ITU-R BS.1770): the first 31 s of Happy, Snowfall and Snow Theme, and the 17.4 s Clappy loop repeated, with the small jump where it wraps smoothed out. Opus (Ogg) for most browsers, AAC (MP4) for Safari before 18.4. That measure counts deep bass that phone and laptop speakers cannot play, so each track also has a playback gain that matches the tracks above 300 Hz (scripts/music/speaker.py); Happy and Clappy were then checked by ear.",
   "tracks": [
     {
       "id": "happy",
@@ -22,6 +22,26 @@
       "gain": 1.5
     },
     {
+      "id": "snowfall",
+      "title": "Snowfall",
+      "author": "Kistol",
+      "source": "https://opengameart.org/content/snowfall",
+      "license": "CC0 1.0",
+      "files": {
+        "opus": {
+          "url": "assets/music-20261112/snowfall-9677861f979a.opus",
+          "sha256": "9677861f979ae51742320d41b5b93c2c8405e682c449ef01b9e3c63ef0e372ca",
+          "bytes": 293986
+        },
+        "m4a": {
+          "url": "assets/music-20261112/snowfall-952e89bb8711.m4a",
+          "sha256": "952e89bb8711f687944a38595b7e59e96d125cdc180c1983093422fa80e687da",
+          "bytes": 387040
+        }
+      },
+      "gain": 1
+    },
+    {
       "id": "clappy",
       "title": "Happy Clappy Loop",
       "author": "OwlishMedia",
@@ -40,6 +60,26 @@
         }
       },
       "gain": 1.9
+    },
+    {
+      "id": "snowtheme",
+      "title": "Snow Theme",
+      "author": "Cleyton Kauffman",
+      "source": "https://opengameart.org/content/snow-theme",
+      "license": "CC0 1.0",
+      "files": {
+        "opus": {
+          "url": "assets/music-20261112/snowtheme-693ed710814a.opus",
+          "sha256": "693ed710814aff0d3f82f0caaf2b6f970fafd107bbcd4d503e623b39e2f55ffd",
+          "bytes": 271541
+        },
+        "m4a": {
+          "url": "assets/music-20261112/snowtheme-f01fd70c7265.m4a",
+          "sha256": "f01fd70c7265abe4197ac2bc03fcf9178be8a1196a48b06d0348fb507dd20da5",
+          "bytes": 389476
+        }
+      },
+      "gain": 1.1
     }
   ]
 }

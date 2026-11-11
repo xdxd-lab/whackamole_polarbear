@@ -224,9 +224,9 @@ test('every track lasts the whole round, fades out and sounds as loud as the oth
 });
 
 test('each track is played at the level chosen for it by ear', () => {
-  // Set on 2026-11-11 by listening to each track alone: Happy is the reference; Clappy matches it
-  // above 300 Hz and is then 1 dB louder, by ear.
-  assert.deepEqual(manifest.tracks.map(track => [track.id, track.gain]), [['happy', 1.5], ['clappy', 1.9]]);
+  // Happy is the reference. Clappy matches it above 300 Hz and is then 1 dB louder, by ear
+  // (2026-11-11, each track heard alone). Snowfall and Snow Theme match it above 300 Hz, as measured.
+  assert.deepEqual(manifest.tracks.map(track => [track.id, track.gain]), [['happy', 1.5], ['snowfall', 1], ['clappy', 1.9], ['snowtheme', 1.1]]);
   for (const level of LEVELS) assert.ok(level < 0.9, 'A track must leave headroom below full scale');
 });
 
