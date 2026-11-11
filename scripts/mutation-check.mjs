@@ -55,7 +55,15 @@ const MUTANTS = {
   'next spawn 80 ms becomes 200 ms': replace('later(spawn,80)', 'later(spawn,200)'),
   'same hole may repeat': replace('while(i===lastHole)', 'while(false)'),
   'bear sound quieter': replace("beep(120,.12,'sawtooth',.16)", "beep(120,.12,'sawtooth',.08)"),
-  'hidden page keeps playing': replace('if(document.hidden&&running)finish();', ''),
+  'hidden page keeps playing': replace("document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});", ''),
+  'hidden page ends the round instead of pausing': replace('if(document.hidden)pause();', 'if(document.hidden&&running)finish();'),
+  'coming back continues without a tap': replace('if(document.hidden)pause();', 'if(document.hidden)pause();else resume();'),
+  'the clock runs on through a pause': replace('paused=false;started+=away;', 'paused=false;'),
+  'a pause eats the target window': replace('if(actor)actor.deadline+=away;', ''),
+  'targets move on while paused': replace('timers.forEach(t=>{clearTimeout(t.id);t.left=Math.max(0,t.due-pausedAt);});', 'timers.forEach(t=>{t.left=Math.max(0,t.due-pausedAt);});'),
+  'hits land while paused': replace('if(!running||paused)return;\n    // The clock ticks', 'if(!running)return;\n    // The clock ticks'),
+  'music plays on while paused': replace("if(audioCtx&&audioCtx.state==='running')audioCtx.suspend().catch(()=>{});", ''),
+  'a new difficulty takes over mid-round': replace('const cfg=roundCfg;', 'const cfg=settings[difficulty.value]||settings.normal;'),
   'sprite frames swapped': replace('.hole[data-state="warning"] .sprite{background-position-x:25%}', '.hole[data-state="warning"] .sprite{background-position-x:0%}'),
   'sad frame shows pain': replace('.hole[data-state="sad"] .sprite{background-position-x:100%}', '.hole[data-state="sad"] .sprite{background-position-x:75%}'),
   'expressions slide across the sheet under reduced motion': replace('transform-origin:50% 100%;transition:none!important}', 'transform-origin:50% 100%}'),
@@ -85,8 +93,8 @@ const MUTANTS = {
   'score message back in one fixed place': replace("el.style.top=Math.max(box.top-area.top+10,el.offsetHeight+2)+'px';", ''),
   'score message may cover the scoreboard': replace('Math.max(box.top-area.top+10,el.offsetHeight+2)', '(box.top-area.top+10)'),
   'score message may leave the board area': replace('area.width-half)', 'area.width+half)'),
-  'version changed in the script but not on the page': replace("const VERSION = '19.2.1';", "const VERSION = '19.2.2';"),
-  'version shown without its release date': replace('· 版本 19.2.1（2026-11-11）', '· 版本 19.2.1'),
+  'version changed in the script but not on the page': replace("const VERSION = '20.0.0';", "const VERSION = '20.0.1';"),
+  'version shown without its release date': replace('· 版本 20.0.0（2026-11-11）', '· 版本 20.0.0'),
   'music starts with the page instead of the round': replace('  track(MUSIC_TRACKS.length-1);\n', '  track(MUSIC_TRACKS.length-1);running=true;playMusic();running=false;\n'),
   'same track every round': replace('music.next=(i+1)%MUSIC_TRACKS.length;', 'music.next=0;'),
   'music ignores the sound switch': replace('if(music.gain)music.gain.gain.setTargetAtTime(soundOn?MUSIC_VOLUME:0,audioCtx.currentTime,.03);', ''),
@@ -96,8 +104,8 @@ const MUTANTS = {
   'clappy played as quietly as happy': replace('"m4a":"assets/music-20261111/clappy-2f3f07b7d1b2.m4a","gain":1.9}', '"m4a":"assets/music-20261111/clappy-2f3f07b7d1b2.m4a","gain":1}'),
   'happy played as quietly as before': replace('"m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a","gain":1.5}', '"m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a","gain":1}'),
   'music louder than set': replace('const MUSIC_VOLUME=.35;', 'const MUSIC_VOLUME=.7;'),
-  'music skips the start of its track': replace('source.start(0,Math.min(buffer.duration,Math.max(0,(performance.now()-started)/1000)));', 'source.start(0,5);'),
-  'a late track starts from its beginning': replace('source.start(0,Math.min(buffer.duration,Math.max(0,(performance.now()-started)/1000)));', 'source.start(0,0);'),
+  'music skips the start of its track': replace('source.start(0,Math.min(buffer.duration,Math.max(0,((paused?pausedAt:performance.now())-started)/1000)));', 'source.start(0,5);'),
+  'a late track starts from its beginning': replace('source.start(0,Math.min(buffer.duration,Math.max(0,((paused?pausedAt:performance.now())-started)/1000)));', 'source.start(0,0);'),
   'the round waits for its music': async ({ html, setHtml }) => {
     const source = await html();
     const next = source.replace('  function start(){', '  async function start(){').replace("update();spawn();playMusic();", "await track(music.next);update();spawn();playMusic();");
@@ -145,9 +153,9 @@ const EQUIVALENTS = {
   },
   // A release changes the number everywhere it is written, and nothing else.
   'version bumped': async ({ html, setHtml, read, write }) => {
-    const bump = text => text.replaceAll('19.2.1', '19.2.2').replaceAll('2026-11-11', '2026-12-01');
+    const bump = text => text.replaceAll('20.0.0', '20.0.1').replaceAll('2026-11-11', '2026-12-01');
     const source = await html();
-    if (!source.includes("const VERSION = '19.2.1';")) return false;
+    if (!source.includes("const VERSION = '20.0.0';")) return false;
     await setHtml(bump(source));
     await write('README.md', bump(await read('README.md')));
     await write('CHANGELOG.md', bump(await read('CHANGELOG.md')));

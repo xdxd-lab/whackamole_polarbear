@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#8fd8ff" />
 <link rel="icon" href="data:," />
-<title>雪地敲敲樂｜打企鵝・北極狐 V19</title>
+<title>雪地敲敲樂｜打企鵝・北極狐 V20</title>
 <style>
   :root{
     --sky-top:#8fd8ff; --sky-mid:#cfeeff; --sky-bottom:#eef9ff;
@@ -164,11 +164,11 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny foot"><span>最高分：<b id="best">0</b> · 版本 19.2.1（2026-11-11）</span> <span class="credits">音樂：<a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>（CC0）</span></div>
+  <div class="tiny foot"><span>最高分：<b id="best">0</b> · 版本 20.0.0（2026-11-11）</span> <span class="credits">音樂：<a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>（CC0）</span></div>
 </main>
 <script>(async () => {
   'use strict';
-  const VERSION = '19.2.1';
+  const VERSION = '20.0.0';
   const BEST_KEY = 'wam_best_20260904v7';
   const $ = id => document.getElementById(id);
   const board = $('board'), overlay = $('overlay');
@@ -230,8 +230,12 @@
   let running=false;
   let score=0, combo=0, maxCombo=0, timeLeft=30, best=0;
   let actor=null, lastHole=-1, session=0, clockTimer=null, started=0;
+  // A hidden page pauses the round; the player continues it with a tap.
+  let paused=false, pausedAt=0, frozen=[];
+  // The difficulty a round started with; changing the menu mid-round affects the next one.
+  let roundCfg=settings.normal;
   let soundOn=true, audioCtx=null, toastTimer=null;
-  const timers=new Set(), activeAudio=new Set();
+  const timers=new Map(), activeAudio=new Set();
   const fx=$('fx'),calm=matchMedia('(prefers-reduced-motion: reduce)');
   try {best=Math.max(0,Number(localStorage.getItem(BEST_KEY))||0);} catch (_) {}
   $('best').textContent=best;
@@ -255,13 +259,16 @@
     } catch (_) {}
   }
   function vibrate(ms){try{if(navigator.vibrate)navigator.vibrate(ms);}catch(_){} }
-  function later(fn,ms){
-    const generation=session;
-    const id=setTimeout(()=>{timers.delete(id);if(running&&generation===session)fn();},ms);
-    timers.add(id);return id;
+  // Round timers are kept by token, so a pause can stop them and a resume restart each
+  // with the time it had left, and cancel() still finds them afterwards.
+  let tokens=0;
+  function arm(token,t,ms){
+    t.due=performance.now()+ms;
+    t.id=setTimeout(()=>{timers.delete(token);if(running&&!paused&&t.generation===session)t.fn();},ms);
   }
-  function cancel(id){if(id!=null){clearTimeout(id);timers.delete(id);}}
-  function clearTimers(){timers.forEach(clearTimeout);timers.clear();}
+  function later(fn,ms){const token=++tokens,t={fn,generation:session};timers.set(token,t);arm(token,t,ms);return token;}
+  function cancel(token){const t=timers.get(token);if(t){clearTimeout(t.id);timers.delete(token);}}
+  function clearTimers(){timers.forEach(t=>clearTimeout(t.id));timers.clear();}
   function setText(id,value){
     const el=$(id),text=String(value);
     if(el.textContent!==text)el.textContent=text;
@@ -305,7 +312,7 @@
     let i;do{i=Math.floor(Math.random()*holes.length);}while(i===lastHole);lastHole=i;
     const r=Math.random(),type=r<.12?'bad':r<.34?'bonus':'normal';
     const h=holes[i],m=h.querySelector('.mole'),species=speciesByType[type];
-    const cfg=settings[difficulty.value]||settings.normal;
+    const cfg=roundCfg;
     const recovered=Math.round((cfg.spawn-cfg.show)*.5);
     const warningAt=Math.round(cfg.show*.62)+recovered;
     const hideAt=cfg.show+recovered;
@@ -328,7 +335,7 @@
   }
   function hit(i){
     const a=actor;
-    if(!running)return;
+    if(!running||paused)return;
     // The clock ticks every 100 ms, so time can be up before the tick that ends the round.
     if(performance.now()-started>=30000){finish();return;}
     if(!a||a.i!==i||!['peek','warning'].includes(a.phase))return;
@@ -427,7 +434,7 @@
       // Each track's own level: the files measure equally loud, but do not sound it.
       source.buffer=buffer;fade.gain.value=MUSIC_TRACKS[i].gain;source.connect(fade);fade.connect(music.gain);
       // A track that arrives late joins the round where it is, so it still ends with it.
-      source.start(0,Math.min(buffer.duration,Math.max(0,(performance.now()-started)/1000)));
+      source.start(0,Math.min(buffer.duration,Math.max(0,((paused?pausedAt:performance.now())-started)/1000)));
       const playing={source,fade};music.playing=playing;
       source.onended=()=>{source.disconnect();fade.disconnect();if(music.playing===playing)music.playing=null;};
     });
@@ -444,17 +451,44 @@
     // Sheets are verified and decoded before the buttons are enabled.
     // Resume audio inside the user gesture.
     audio();beep(520,.08,'triangle');
-    session++;clearTimers();clearInterval(clockTimer);resetAll();
+    session++;clearTimers();clearInterval(clockTimer);resetAll();paused=false;frozen=[];
+    roundCfg=settings[difficulty.value]||settings.normal;
     score=0;combo=0;maxCombo=0;timeLeft=30;running=true;started=performance.now();
     overlay.classList.remove('show');$('finalScore').hidden=true;update();spawn();playMusic();
+    runClock();
+  }
+  function runClock(){
     clockTimer=setInterval(()=>{
       timeLeft=Math.max(0,30-(performance.now()-started)/1000);
       if(timeLeft===0)finish();update();
     },100);
   }
+  // Leaving the page stops everything where it is: the clock, the targets, the music.
+  function pause(){
+    if(!running||paused)return;
+    paused=true;pausedAt=performance.now();
+    clearInterval(clockTimer);
+    timers.forEach(t=>{clearTimeout(t.id);t.left=Math.max(0,t.due-pausedAt);});
+    frozen=board.getAnimations({subtree:true}).filter(x=>x.playState==='running');
+    frozen.forEach(x=>x.pause());
+    if(audioCtx&&audioCtx.state==='running')audioCtx.suspend().catch(()=>{});
+    $('modalTitle').textContent='暫停中';$('finalScore').hidden=true;
+    $('modalText').innerHTML=`還剩 <b>${Math.ceil(timeLeft)}</b> 秒，目前 <b>${score}</b> 分。準備好就按「繼續」。`;
+    modalBtn.textContent='繼續';overlay.classList.add('show');
+  }
+  // Continues from the player's tap, which also lets the browser resume the sound.
+  function resume(){
+    if(!paused)return;
+    const away=performance.now()-pausedAt;
+    paused=false;started+=away;if(actor)actor.deadline+=away;
+    timers.forEach((t,token)=>arm(token,t,t.left));
+    frozen.forEach(x=>x.play());frozen=[];
+    audio();overlay.classList.remove('show');update();
+    runClock();
+  }
   function finish(){
     if(!running)return;
-    running=false;session++;clearTimers();clearInterval(clockTimer);resetAll();
+    running=false;paused=false;session++;clearTimers();clearInterval(clockTimer);resetAll();
     stopMusic();beep(260,.09,'triangle');
     if(score>best){
       best=score;try{localStorage.setItem(BEST_KEY,String(best));}catch(_){}
@@ -464,15 +498,14 @@
     $('modalText').innerHTML=`你這局得到 <b>${score}</b> 分，最高連擊 <b>${maxCombo}</b>。再來一局挑戰更高分吧！`;
     modalBtn.textContent='再玩一次';overlay.classList.add('show');update();
   }
-  startBtn.addEventListener('click',start);modalBtn.addEventListener('click',start);
+  startBtn.addEventListener('click',start);modalBtn.addEventListener('click',()=>paused?resume():start());
   $('soundBtn').addEventListener('click',()=>{
     soundOn=!soundOn;$('soundBtn').textContent=soundOn?'🔊 音效':'🔇 靜音';
     $('soundBtn').setAttribute('aria-pressed',String(soundOn));
     if(soundOn)beep(520);else activeAudio.forEach(o=>{try{o.stop();}catch(_){}});
     if(music.gain)music.gain.gain.setTargetAtTime(soundOn?MUSIC_VOLUME:0,audioCtx.currentTime,.03);
   });
-  difficulty.addEventListener('change',()=>{if(running)start();});
-  document.addEventListener('visibilitychange',()=>{if(document.hidden&&running)finish();});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
   document.documentElement.dataset.gameVersion=VERSION;
   update();
 })();

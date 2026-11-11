@@ -2,6 +2,15 @@
 
 這裡記錄玩家會感受到的變更，最新的在最上面。版號怎麼決定見 [docs/VERSIONING.md](./docs/VERSIONING.md)。
 
+## [20.0.0] - 2026-11-11
+
+V20 改了一局進行中的兩條規則；計分方式、每局 30 秒與各難度的節奏都沒變，最高分紀錄照舊沿用。
+
+### 變更
+
+- 遊戲中切換到別的分頁或 App，遊戲會**暫停**，不再直接結束：倒數、角色的出現與停留、背景音樂都停在原處，暫停時不能得分、也不會扣時間。回來後畫面顯示「暫停中」，按「繼續」才接著玩（給玩家準備好的時間；手機瀏覽器也只允許在點擊時恢復聲音）。按「開始／重新開始」則重開一局。
+- 遊戲中改難度**不再重開**這一局：這局照原本的難度玩完，新難度從下一局開始。難度選單在遊戲中仍可選，方便先選好下一局。
+
 ## [19.2.1] - 2026-11-11
 
 ### 修正
@@ -96,6 +105,7 @@
 
 V15 以前沒有留下逐版紀錄，可以從 git 歷史查到。
 
+[20.0.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v20.0.0
 [19.2.1]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.2.1
 [19.2.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.2.0
 [19.1.2]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.1.2

@@ -21,6 +21,14 @@ async function play(run, options) {
   }
 }
 
+/** Hides or shows the page, as switching browser tabs does. */
+function setHidden(game, hidden) {
+  return game.page.evaluate(value => {
+    Object.defineProperty(document, 'hidden', { configurable: true, value });
+    document.dispatchEvent(new Event('visibilitychange'));
+  }, hidden);
+}
+
 /** Plays one target to completion and queues the next spawn. */
 async function hitTarget(game, species, nextHole) {
   assert.equal(await game.species(), species);
@@ -282,23 +290,84 @@ describe('input', () => {
     }));
   }
 
-  test('hiding the page ends the round', () => play(async game => {
-    await game.startWith('penguin');
-    await game.page.evaluate(() => {
-      Object.defineProperty(document, 'hidden', { configurable: true, value: true });
-      document.dispatchEvent(new Event('visibilitychange'));
-    });
+  test('hiding the page pauses the round: no time passes and nothing scores until the player continues', () => play(async game => {
+    await game.startWith('penguin', 0);
+    await game.advance(200);
+    await setHidden(game, true);
     assert.equal(await game.overlayShown(), true);
+    assert.equal(await game.text('#modalTitle'), '暫停中');
+    const time = await game.number('#time');
+    await game.advance(60_000);
+    assert.equal(await game.number('#time'), time, 'The clock must stand still');
+    assert.equal(await game.state(), 'peek', 'The target must wait where it was');
+    await game.hit(0);
+    assert.equal(await game.number('#score'), 0, 'Nothing scores while paused');
+    await setHidden(game, false);
+    assert.equal(await game.overlayShown(), true, 'Coming back waits for the player');
+    await game.page.locator('#modalBtn').click();
+    assert.equal(await game.overlayShown(), false);
+    await game.hit(0);
+    assert.equal(await game.number('#score'), 1, 'The same target can still be hit');
   }));
 
-  test('changing difficulty mid-round restarts it', () => play(async game => {
+  test('a paused round still lasts 30 seconds of play', () => play(async game => {
+    await game.startWith('penguin');
+    await game.advance(10_000);
+    await setHidden(game, true);
+    await game.advance(45_000);
+    await setHidden(game, false);
+    await game.page.locator('#modalBtn').click();
+    await game.advance(19_999);
+    assert.equal(await game.overlayShown(), false);
+    await game.advance(1);
+    assert.equal(await game.text('#modalTitle'), '時間到！');
+  }));
+
+  test('a target keeps the rest of its window after a pause', () => play(async game => {
+    await game.startWith('penguin', 0);
+    await game.advance(DIFFICULTY.normal.hide - 100);
+    await setHidden(game, true);
+    await game.advance(5_000);
+    await setHidden(game, false);
+    await game.page.locator('#modalBtn').click();
+    await game.advance(99);
+    assert.equal(await game.state(), 'warning');
+    await game.advance(1);
+    assert.equal(await game.state(), 'sneaky');
+  }));
+
+  test('the restart button during a pause starts a fresh round', () => play(async game => {
     await game.startWith('fox');
     await game.hitCurrent();
-    assert.equal(await game.number('#score'), 3);
-    await game.page.selectOption('#difficulty', 'hard');
+    await setHidden(game, true);
+    await setHidden(game, false);
+    await game.page.locator('#startBtn').click();
+    assert.equal(await game.overlayShown(), false);
     assert.equal(await game.number('#score'), 0);
     assert.equal(await game.number('#time'), 30);
   }));
+
+  test('changing difficulty mid-round changes nothing until the next round', () => play(async game => {
+    await game.startWith('fox');
+    await game.hitCurrent();
+    await game.page.selectOption('#difficulty', 'hard');
+    assert.equal(await game.number('#score'), 3, 'The round goes on');
+    assert.equal(await game.overlayShown(), false);
+    // The next target still keeps the normal window, not the hard one.
+    // After a hit the next target rises 640 ms later (pain 220 + sad 340 + 80).
+    await game.nextSpawn('penguin', 4);
+    await game.advance(640);
+    assert.equal(await game.activeIndex(), 4);
+    await game.advance(DIFFICULTY.hard.hide);
+    assert.equal(await game.state(), 'warning', 'A hard window would have closed by now');
+    await game.advance(30_000);
+    await game.startWith('penguin', 0);
+    await game.advance(DIFFICULTY.hard.hide - 1);
+    assert.equal(await game.state(), 'warning');
+    await game.advance(1);
+    assert.equal(await game.state(), 'sneaky', 'The next round is hard');
+  }));
+
 
   test('the restart button clears the round', () => play(async game => {
     await game.startWith('fox');

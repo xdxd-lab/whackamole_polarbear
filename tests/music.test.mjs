@@ -107,16 +107,22 @@ test('a round started with the sound off plays its music silently', async () => 
   }
 });
 
-test('leaving the page ends the music with the round', async () => {
+test('leaving the page pauses the music, and continuing carries on with the same track', async () => {
   const game = await Game.open(harness);
+  const setHidden = value => game.page.evaluate(hidden => {
+    Object.defineProperty(document, 'hidden', { configurable: true, value: hidden });
+    document.dispatchEvent(new Event('visibilitychange'));
+  }, value);
   try {
     await game.start();
     await playing(game);
-    await game.page.evaluate(() => {
-      Object.defineProperty(document, 'hidden', { configurable: true, value: true });
-      document.dispatchEvent(new Event('visibilitychange'));
-    });
-    await silent(game);
+    await setHidden(true);
+    await game.page.waitForFunction(() => window.__test.music().audio === 'suspended', null, { timeout: 10_000 });
+    assert.equal((await music(game)).playing, 1, 'The track is held, not stopped');
+    await setHidden(false);
+    await game.page.locator('#modalBtn').click();
+    await game.page.waitForFunction(() => window.__test.music().audio === 'running', null, { timeout: 10_000 });
+    assert.equal((await starts(game)).length, 1, 'Continuing must not restart the track');
   } finally {
     await game.close();
   }
