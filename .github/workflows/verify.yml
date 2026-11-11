@@ -46,10 +46,12 @@ jobs:
         run: npx playwright install chromium
       - name: Verify assets, rules and recorded behaviour
         run: npm test
-      # For people reviewing a layout change: every layout size, start screen and mid-round.
+      # For people reviewing a layout change: every layout size, start screen and mid-round,
+      # and the tap marks frozen part-way (tap-penguin, tap-fox, tap-bear, tap-empty).
       - name: Take review screenshots
         if: always()
-        run: node scripts/screenshots.mjs
+        # The tap mark pictures are only for looking at, so they may fail without failing the job.
+        run: node scripts/screenshots.mjs && (node scripts/review-effects.mjs || echo '::warning title=No tap mark pictures::scripts/review-effects.mjs failed')
       - name: Save audit and screenshot
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -123,7 +125,8 @@ jobs:
           WAM_BROWSER: ${{ matrix.browser }}
       - name: Take review screenshots
         if: always()
-        run: node scripts/screenshots.mjs
+        # The tap mark pictures are only for looking at, so they may fail without failing the job.
+        run: node scripts/screenshots.mjs && (node scripts/review-effects.mjs || echo '::warning title=No tap mark pictures::scripts/review-effects.mjs failed')
         env:
           WAM_BROWSER: ${{ matrix.browser }}
       - name: Report a failure that does not block
