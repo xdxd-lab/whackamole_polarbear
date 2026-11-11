@@ -191,7 +191,7 @@
     setPolicy: value => { policy = value; lastTarget = -1; spawnsSeen = 0; },
     stats: () => ({ maxActive }),
     fingerprint,
-    music: () => ({ log: [...musicLog], playing: musicPlaying.size, level: Math.max(0, ...[...musicPlaying].map(level)) }),
+    music: () => ({ log: [...musicLog], playing: musicPlaying.size, level: Math.max(0, ...[...musicPlaying].map(level)), audio: [...musicPlaying][0]?.context.state ?? 'none' }),
     trace: () => trace.map(entry => `${String(entry.t).padStart(6)} ${entry.text}`),
   };
 })();
