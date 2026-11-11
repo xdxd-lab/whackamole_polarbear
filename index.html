@@ -164,11 +164,11 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny foot"><span>最高分：<b id="best">0</b> · 版本 19.2.0（2026-11-11）</span> <span class="credits">音樂：<a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>（CC0）</span></div>
+  <div class="tiny foot"><span>最高分：<b id="best">0</b> · 版本 19.2.1（2026-11-11）</span> <span class="credits">音樂：<a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>（CC0）</span></div>
 </main>
 <script>(async () => {
   'use strict';
-  const VERSION = '19.2.0';
+  const VERSION = '19.2.1';
   const BEST_KEY = 'wam_best_20260904v7';
   const $ = id => document.getElementById(id);
   const board = $('board'), overlay = $('overlay');
@@ -181,8 +181,12 @@
   const states = ['peek','warning','sneaky','pain','sad'];
   const sheets = [];
   async function loadPublishSprites() {
-    const config = {"bear":{"width":192,"height":192,"avif":{"url":"assets/v16-20260909/bear-45461a4e9175.avif","sha256":"45461a4e9175a12a1a157d722123815190ba38adea450bce565a33fa22b834ac"}},"fox":{"width":192,"height":192,"avif":{"url":"assets/v16-20260909/fox-f19184045350.avif","sha256":"f191840453502462c830049c2b370ad217fb7435350b19d56bacc5f5a4201ae2"}},"penguin":{"width":192,"height":128,"avif":{"url":"assets/v16-20260909/penguin-9422776ebeb6.avif","sha256":"9422776ebeb668774e2032140128b06a3574f92c8ae840ac0c23648626598311"}}};
-    const format = 'avif';
+    const config = {"bear":{"width":192,"height":192,"avif":{"url":"assets/v16-20260909/bear-45461a4e9175.avif","sha256":"45461a4e9175a12a1a157d722123815190ba38adea450bce565a33fa22b834ac"},"webp":{"url":"assets/v16-20260909/bear-0a8f1f8b4bdf.webp","sha256":"0a8f1f8b4bdfc4b6d8fe4902befaf6efd73cf588f0e4f53670be5cf7e605cc55"},"png":{"url":"assets/v16-20260909/bear-507daf075d7a.png","sha256":"507daf075d7af00bf8af7f10953746c41a2b863daa2b83dda6d7f5bc1c2c82a3"}},"fox":{"width":192,"height":192,"avif":{"url":"assets/v16-20260909/fox-f19184045350.avif","sha256":"f191840453502462c830049c2b370ad217fb7435350b19d56bacc5f5a4201ae2"},"webp":{"url":"assets/v16-20260909/fox-0bff96eaa81d.webp","sha256":"0bff96eaa81d9a44ec335914a7234b0bf8d4556c6314b7da6213d2c3d7adee07"},"png":{"url":"assets/v16-20260909/fox-bd24022df5ca.png","sha256":"bd24022df5ca89bbb8aa31da4ab09f23402dbc4ea8b3bd1f77afb62cfee62aa2"}},"penguin":{"width":192,"height":128,"avif":{"url":"assets/v16-20260909/penguin-9422776ebeb6.avif","sha256":"9422776ebeb668774e2032140128b06a3574f92c8ae840ac0c23648626598311"},"webp":{"url":"assets/v16-20260909/penguin-ce7d933ccf22.webp","sha256":"ce7d933ccf22a5ffdc34ff0b63e8c8cbf57c21510b48caec1a4b5675af4c99ae"},"png":{"url":"assets/v16-20260909/penguin-2c5f7440025f.png","sha256":"2c5f7440025fd8f52aaa9d94508cd15e15a7930a0ff2200c97728907a62b74a4"}}};
+    // iOS 15 and older cannot decode AVIF; pick the first format this browser can, from tiny built-in samples.
+    const probes = {avif:'data:image/avif;base64,AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADybWV0YQAAAAAAAAAoaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAGxpYmF2aWYAAAAADnBpdG0AAAAAAAEAAAAeaWxvYwAAAABEAAABAAEAAAABAAABGgAAAB0AAAAoaWluZgAAAAAAAQAAABppbmZlAgAAAAABAABhdjAxQ29sb3IAAAAAamlwcnAAAABLaXBjbwAAABRpc3BlAAAAAAAAAAIAAAACAAAAEHBpeGkAAAAAAwgICAAAAAxhdjFDgQ0MAAAAABNjb2xybmNseAACAAIAAYAAAAAXaXBtYQAAAAAAAAABAAEEAQKDBAAAACVtZGF0EgAKCBgANogQEAwgMg8f8D///8WfhwB8+ErK42A=', webp:'data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA=='};
+    const decodes = async uri => { const probe = new Image(); probe.src = uri; try { await probe.decode(); return probe.naturalWidth > 0; } catch (_) { return false; } };
+    const format = await decodes(probes.avif) ? 'avif' : await decodes(probes.webp) ? 'webp' : 'png';
+    document.documentElement.dataset.spriteFormat = format;
     await Promise.all(Object.entries(config).map(async ([species,cfg]) => {
       const file = cfg[format];
       const response = await fetch(file.url);

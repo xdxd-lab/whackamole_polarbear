@@ -6,7 +6,7 @@
 
 ## 目前版本
 
-- **V19（19.2.0，2026-11-11）**：背景音樂改為 Happy 與 Clappy 兩首，每局輪流；頁尾標示音樂作者；玩法與計分和 V18 相同。
+- **V19（19.2.1，2026-11-11）**：背景音樂 Happy 與 Clappy 每局輪流；頁尾標示音樂作者；不支援 AVIF 的舊裝置（如 iOS 15 以前）也能顯示角色；玩法與計分和 V18 相同。
 - 各版變更：[CHANGELOG.md](./CHANGELOG.md)　版號規則：[docs/VERSIONING.md](./docs/VERSIONING.md)
 - 遊戲入口：[index.html](./index.html)
 - 正式角色素材（沿用 V16，未更動圖片）：[assets/v16-20260909/](./assets/v16-20260909/)

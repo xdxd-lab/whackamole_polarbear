@@ -14,6 +14,8 @@ const TYPES = {
   '.m4a': 'audio/mp4',
   '.mjs': 'text/javascript; charset=utf-8',
   '.opus': 'audio/ogg',
+  '.png': 'image/png',
+  '.webp': 'image/webp',
 };
 
 /**

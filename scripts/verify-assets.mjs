@@ -22,9 +22,14 @@ try {
   const manifest = JSON.parse(await readFile(path.join(ROOT, 'deployment/v16-release.json'), 'utf8'));
   assert.deepEqual(Object.keys(manifest.atlases).sort(), [...species].sort(), 'Expected exactly three official atlases');
 
+  // The official AVIF sheets, then the WebP and PNG fallbacks for browsers without AVIF.
+  const formats = [['avif', manifest.atlases], ['webp', manifest.fallbacks?.webp], ['png', manifest.fallbacks?.png]];
+  for (const [format, files] of formats) {
+  assert.deepEqual(Object.keys(files ?? {}).sort(), [...species].sort(), 'Expected exactly three ' + format + ' sheets');
   for (const name of species) {
-    const { url, sha256, bytes, width, height } = manifest.atlases[name];
-    assert.match(url, /^assets\/v16-20260909\/[a-z0-9-]+\.avif$/, name + ': wrong asset path');
+    const { url, sha256, bytes, width, height } = files[name];
+    assert.match(url, new RegExp('^assets/v16-20260909/' + name + '-' + sha256.slice(0, 12) + '\\.' + format + '$'), name + ': wrong ' + format + ' asset path');
+    assert.deepEqual([width, height], [manifest.atlases[name].width, manifest.atlases[name].height], name + ': ' + format + ' frame size differs from AVIF');
     const file = path.resolve(ROOT, url);
     assert.equal(file.startsWith(ROOT + path.sep), true, name + ': path escape');
     const buf = await readFile(file);
@@ -32,8 +37,9 @@ try {
     assert.equal(actual, sha256, name + ': SHA-256 mismatch');
     assert.equal(buf.length, bytes, name + ': wrong file size');
     assert.ok(width > 0 && height > 0, name + ': invalid dimensions in manifest');
-    report.files.push({ species: name, path: url, bytes: buf.length, sha256: actual, expectedDimensions: [width * 5, height] });
-    console.log('PASS bytes/hash/path: ' + name + ' ' + buf.length + ' bytes SHA-256=' + actual);
+    report.files.push({ species: name, format, path: url, bytes: buf.length, sha256: actual, expectedDimensions: [width * 5, height] });
+    console.log('PASS bytes/hash/path: ' + name + ' ' + format + ' ' + buf.length + ' bytes SHA-256=' + actual);
+  }
   }
 
   const music = JSON.parse(await readFile(path.join(ROOT, 'deployment/music.json'), 'utf8'));
@@ -82,7 +88,7 @@ try {
   assert.ok(malletSize?.width >= 24 && malletSize?.height >= 24, 'Mallet icon is too small');
   assert.equal((await page.locator('body').textContent()).includes('🔨'), false, 'Old steel-hammer emoji must stay removed');
 
-  // Independently decode each served AVIF in a real browser and check all 5 visible tiles.
+  // Independently decode each served sheet in a real browser and check all 5 visible tiles.
   report.browser.atlases = await page.evaluate(async (items) => {
     const result = [];
     for (const item of items) {
@@ -105,10 +111,10 @@ try {
         const pixels = ctx.getImageData(0, 0, frameW, frameH).data;
         let visible = 0;
         for (let k = 3; k < pixels.length; k += 4) if (pixels[k] > 12) visible++;
-        if (visible < 32) throw new Error(item.species + ' frame ' + i + ': blank/transparent sprite');
+        if (visible < 32) throw new Error(item.species + ' ' + item.format + ' frame ' + i + ': blank/transparent sprite');
         counts.push(visible);
       }
-      result.push({ species: item.species, decodedDimensions: [img.naturalWidth, img.naturalHeight], visiblePixelsPerFrame: counts });
+      result.push({ species: item.species, format: item.format, decodedDimensions: [img.naturalWidth, img.naturalHeight], visiblePixelsPerFrame: counts });
     }
     return result;
   }, report.files);
@@ -137,7 +143,7 @@ try {
   await page.screenshot({ path: path.join(ROOT, 'test-results', 'smoke.png'), animations: 'disabled' });
   report.browser.gameSmoke = 'pass: 9 holes, successfully decoded sprite visible after starting game';
   report.browser.name = BROWSER_NAME;
-  console.log('PASS ' + BROWSER_NAME + ' decode: ' + species.length + ' atlases, ' + species.length * states.length + ' nonblank frames; game smoke test');
+  console.log('PASS ' + BROWSER_NAME + ' decode: ' + report.files.length + ' sheets (AVIF, WebP, PNG), ' + report.files.length * states.length + ' nonblank frames; game smoke test');
 
   // The mutation check runs tests/ itself, right before this script, on the same files.
   if (process.argv.includes('--skip-tests')) {

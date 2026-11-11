@@ -4,7 +4,7 @@
   "index_git_blob": "aa3b280b53e94bddb1b51cff998cd3f1ad3cc430",
   "index_bytes": 26559,
   "source_handling": "Approved V16 code and complete source canvases. Web images re-encoded to AVIF quality 35, maximum edge 192px. Original offline HTML is unchanged; this web export is not byte-identical to the original artwork.",
-  "rendering": "SHA-256 verification of three downloaded image packs, decode and extract 15 separate PNG frames, original V16 IMG renderer and outcome state machine. No external legacy CSS or app.js; no CSS background sprite renderer.",
+  "rendering": "SHA-256 verification of three downloaded sheets (AVIF, or WebP/PNG where AVIF cannot be decoded), one decode per sheet, kept as a blob URL and drawn with CSS background-position per outcome state. Original V16 outcome state machine.",
   "atlases": {
     "bear": {
       "url": "assets/v16-20260909/bear-45461a4e9175.avif",
@@ -59,5 +59,54 @@
     "cases": "hit and escape branches for each species; IMG visible; no background tiling; hit motion downwards; snowfall animation active; no JavaScript errors.",
     "scope": "In-memory browser rendering; test-only fetch and Python SHA-256 adapter. No live network validation.",
     "git_transfer": "All four content blob SHAs returned by GitHub match expected local hashes."
-  }
+  },
+  "fallbacks": {
+    "webp": {
+      "bear": {
+        "url": "assets/v16-20260909/bear-0a8f1f8b4bdf.webp",
+        "sha256": "0a8f1f8b4bdfc4b6d8fe4902befaf6efd73cf588f0e4f53670be5cf7e605cc55",
+        "bytes": 52056,
+        "width": 192,
+        "height": 192
+      },
+      "fox": {
+        "url": "assets/v16-20260909/fox-0bff96eaa81d.webp",
+        "sha256": "0bff96eaa81d9a44ec335914a7234b0bf8d4556c6314b7da6213d2c3d7adee07",
+        "bytes": 47914,
+        "width": 192,
+        "height": 192
+      },
+      "penguin": {
+        "url": "assets/v16-20260909/penguin-ce7d933ccf22.webp",
+        "sha256": "ce7d933ccf22a5ffdc34ff0b63e8c8cbf57c21510b48caec1a4b5675af4c99ae",
+        "bytes": 44162,
+        "width": 192,
+        "height": 128
+      }
+    },
+    "png": {
+      "bear": {
+        "url": "assets/v16-20260909/bear-507daf075d7a.png",
+        "sha256": "507daf075d7af00bf8af7f10953746c41a2b863daa2b83dda6d7f5bc1c2c82a3",
+        "bytes": 206141,
+        "width": 192,
+        "height": 192
+      },
+      "fox": {
+        "url": "assets/v16-20260909/fox-bd24022df5ca.png",
+        "sha256": "bd24022df5ca89bbb8aa31da4ab09f23402dbc4ea8b3bd1f77afb62cfee62aa2",
+        "bytes": 193648,
+        "width": 192,
+        "height": 192
+      },
+      "penguin": {
+        "url": "assets/v16-20260909/penguin-2c5f7440025f.png",
+        "sha256": "2c5f7440025fd8f52aaa9d94508cd15e15a7930a0ff2200c97728907a62b74a4",
+        "bytes": 188575,
+        "width": 192,
+        "height": 128
+      }
+    }
+  },
+  "fallbacks_note": "Encoded with Chromium from the official AVIF sheets (WebP quality 0.9, lossless PNG) for browsers without AVIF, such as iOS 15 and older. Selected at startup by decoding a built-in sample; every file is SHA-256 verified like the AVIF sheets."
 }

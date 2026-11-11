@@ -2,6 +2,12 @@
 
 這裡記錄玩家會感受到的變更，最新的在最上面。版號怎麼決定見 [docs/VERSIONING.md](./docs/VERSIONING.md)。
 
+## [19.2.1] - 2026-11-11
+
+### 修正
+
+- 不支援 AVIF 圖片的瀏覽器（例如 iOS 15 以前的 Safari）也能正常顯示角色：遊戲開始前會先試一張內建的小圖，不能顯示 AVIF 就改用 WebP，再不行就用 PNG。三種格式的角色圖內容相同，每個檔案都會核對 SHA-256。支援 AVIF 的瀏覽器照舊只下載 AVIF。
+
 ## [19.2.0] - 2026-11-11
 
 ### 新增
@@ -87,6 +93,7 @@
 
 V15 以前沒有留下逐版紀錄，可以從 git 歷史查到。
 
+[19.2.1]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.2.1
 [19.2.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.2.0
 [19.1.2]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.1.2
 [19.1.1]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.1.1

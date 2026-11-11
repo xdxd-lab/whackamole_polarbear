@@ -23,9 +23,10 @@ export async function startHarness(options) {
 }
 
 export class Game {
-  static async open(harness, { viewport = { width: 900, height: 900 }, storage = {}, ready = true, reducedMotion = 'no-preference' } = {}) {
+  static async open(harness, { viewport = { width: 900, height: 900 }, storage = {}, ready = true, reducedMotion = 'no-preference', before } = {}) {
     const context = await harness.browser.newContext({ viewport, deviceScaleFactor: 1, reducedMotion });
     await context.addInitScript({ path: INIT_SCRIPT });
+    if (before) await context.addInitScript(before.script, before.arg);
     await context.addInitScript(entries => {
       for (const [key, value] of Object.entries(entries)) localStorage.setItem(key, value);
     }, storage);
@@ -127,8 +128,26 @@ export function spriteFrameDifference(page, selector, atlas, frame) {
     };
     const a = pixels(sheet, -offset * scale, box.width * scale, sheet.naturalHeight / sizeY);
     const b = pixels(reference, frame * width, width, height);
+    // Colour is weighted by opacity: what a transparent pixel "contains" is never seen.
     let total = 0;
-    for (let i = 0; i < a.length; i += 1) total += Math.abs(a[i] - b[i]);
+    for (let i = 0; i < a.length; i += 4) {
+      for (let c = 0; c < 3; c += 1) total += Math.abs(a[i + c] * a[i + 3] - b[i + c] * b[i + 3]) / 255;
+      total += Math.abs(a[i + 3] - b[i + 3]);
+    }
     return total / a.length;
   }, { selector, url, width, height, frame });
+}
+
+/** Init script: makes Image.decode() reject for sources matching any prefix, as a browser without that format would. */
+export function failDecoding(...prefixes) {
+  return {
+    arg: prefixes,
+    script: list => {
+      const decode = HTMLImageElement.prototype.decode;
+      HTMLImageElement.prototype.decode = function () {
+        if (list.some(prefix => this.src.startsWith(prefix))) return Promise.reject(new DOMException('The source image cannot be decoded.', 'EncodingError'));
+        return decode.call(this);
+      };
+    },
+  };
 }
