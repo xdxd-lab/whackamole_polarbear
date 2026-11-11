@@ -85,7 +85,7 @@ const MUTANTS = {
   'music plays although sound is off': replace('music.gain.gain.value=soundOn?MUSIC_VOLUME:0;', 'music.gain.gain.value=MUSIC_VOLUME;'),
   'music keeps playing after the round': replace("stopMusic();beep(260,.09,'triangle');", "beep(260,.09,'triangle');"),
   'tracks lose their own level': replace('fade.gain.value=MUSIC_TRACKS[i].gain;', ''),
-  'winter played as quietly as before': replace('"m4a":"assets/music-20261111/winter-231b7d5cb611.m4a","gain":1.5}', '"m4a":"assets/music-20261111/winter-231b7d5cb611.m4a","gain":0.5}'),
+  'clappy played as quietly as happy': replace('"m4a":"assets/music-20261111/clappy-2f3f07b7d1b2.m4a","gain":1.9}', '"m4a":"assets/music-20261111/clappy-2f3f07b7d1b2.m4a","gain":1}'),
   'happy played as quietly as before': replace('"m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a","gain":1.5}', '"m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a","gain":1}'),
   'music louder than set': replace('const MUSIC_VOLUME=.35;', 'const MUSIC_VOLUME=.7;'),
   'music skips the start of its track': replace('source.start(0,Math.min(buffer.duration,Math.max(0,(performance.now()-started)/1000)));', 'source.start(0,5);'),
@@ -97,9 +97,9 @@ const MUTANTS = {
     await setHtml(next);
     return true;
   },
-  'third track never plays': replace('music.next=(i+1)%MUSIC_TRACKS.length;', 'music.next=(i+1)%2;'),
+  'second track never plays': replace('music.next=(i+1)%MUSIC_TRACKS.length;', 'music.next=0;'),
   'a composer is left out of the credits': replace('、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>', ''),
-  'a credit links to the wrong track': replace('<a href="https://opengameart.org/content/short-loop-winter-theme" target="_blank" rel="noopener" title="Short Loop: winter theme">yd</a>', '<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Short Loop: winter theme">yd</a>'),
+  'a credit links to the wrong track': replace('<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>', '<a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>'),
   'credits take room from the board': replace('.foot .credits{display:block;margin:0 0 -13px;', '.foot .credits{display:block;'),
   'credits pushed off the screen': replace('.credits{font-size:11px;', '.credits{position:fixed;top:120vh;font-size:11px;'),
   'tap marks removed': replace("ripple(i,e,hit(i)||'miss');", 'hit(i);'),

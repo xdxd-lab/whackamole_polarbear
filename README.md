@@ -6,7 +6,7 @@
 
 ## 目前版本
 
-- **V19（19.2.0，2026-11-11）**：背景音樂增為三首，每局輪流；頁尾標示音樂作者；玩法與計分和 V18 相同。
+- **V19（19.2.0，2026-11-11）**：背景音樂改為 Happy 與 Clappy 兩首，每局輪流；頁尾標示音樂作者；玩法與計分和 V18 相同。
 - 各版變更：[CHANGELOG.md](./CHANGELOG.md)　版號規則：[docs/VERSIONING.md](./docs/VERSIONING.md)
 - 遊戲入口：[index.html](./index.html)
 - 正式角色素材（沿用 V16，未更動圖片）：[assets/v16-20260909/](./assets/v16-20260909/)
@@ -21,12 +21,11 @@
 
 ## 音樂來源
 
-三首背景音樂都以 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/deed.zh_TW) 釋出，取自 OpenGameArt.org，謝謝三位作者：
+兩首背景音樂都以 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/deed.zh_TW) 釋出，取自 OpenGameArt.org，謝謝兩位作者：
 
 | 曲目 | 作者 | 授權 |
 |---|---|---|
 | [Happy synths loop with slight christmas feeling](https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling) | 3xBlast | CC0 |
-| [Short Loop: winter theme](https://opengameart.org/content/short-loop-winter-theme) | yd | CC0 |
 | [Happy Clappy Loop](https://opengameart.org/content/happy-clappy-loop) | OwlishMedia | CC0 |
 
 每局輪流播放一首。各首在遊戲中的用途與處理方式見 [CREDITS.md](./CREDITS.md)；檔案清單與雜湊在 [deployment/music.json](./deployment/music.json)，處理用的程式在 [scripts/music/](./scripts/music/)。
