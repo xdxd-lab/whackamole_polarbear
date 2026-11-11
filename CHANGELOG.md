@@ -69,6 +69,7 @@
 
 V15 以前沒有留下逐版紀錄，可以從 git 歷史查到。
 
+[19.1.2]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.1.2
 [19.1.1]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.1.1
 [19.1.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.1.0
 [19.0.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.0.0
