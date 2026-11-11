@@ -149,7 +149,7 @@
       <div class="modal">
         <h2 id="modalTitle">準備好了嗎？</h2>
         <div class="bigscore" id="finalScore" hidden>0</div>
-        <p id="modalText" aria-live="polite">企鵝 <b>+1</b>、北極狐 <b>+3</b>，誤敲北極熊會 <b>-2</b> 並中斷連擊。</p>
+        <p id="modalText" aria-live="polite">企鵝 <b>+1</b>、北極狐 <b>+3</b>，誤敲北極熊會 <b>-2</b> 並中斷連擊，漏掉企鵝或北極狐也會中斷連擊；每連擊 5 次多得 <b>+1</b>。</p>
         <button class="btn primary" id="modalBtn" style="width:100%">開始遊戲</button>
         <p class="tiny">支援手機觸控、滑鼠；最高分會儲存在這台裝置。</p>
       </div>
@@ -328,7 +328,10 @@
   }
   function hit(i){
     const a=actor;
-    if(!running||!a||a.i!==i||!['peek','warning'].includes(a.phase))return;
+    if(!running)return;
+    // The clock ticks every 100 ms, so time can be up before the tick that ends the round.
+    if(performance.now()-started>=30000){finish();return;}
+    if(!a||a.i!==i||!['peek','warning'].includes(a.phase))return;
     if(performance.now()>=a.deadline){escape(a);return;}
     cancel(a.warningTimer);cancel(a.hideTimer);cancel(a.nextTimer);
     // Lock the on-screen anchor before removing .up. The former code

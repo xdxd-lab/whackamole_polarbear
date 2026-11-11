@@ -67,6 +67,8 @@ const MUTANTS = {
   'PNG fallback missing': replace("await decodes(probes.webp) ? 'webp' : 'png'", "await decodes(probes.webp) ? 'webp' : 'webp'"),
   'format probe ignores decode errors': replace('return probe.naturalWidth > 0; } catch (_) { return false; }', 'return probe.naturalWidth > 0; } catch (_) { return true; }'),
   'decode failure gives no hint': replace("throw new Error(species + ': 圖片解碼失敗，這台裝置可能不支援此圖片格式');", "throw new Error(species + ': 錯誤');"),
+  'start screen hides how a combo breaks': replace('，漏掉企鵝或北極狐也會中斷連擊；每連擊 5 次多得 <b>+1</b>。</p>', '。</p>'),
+  'a hit after time is up still scores': replace('if(performance.now()-started>=30000){finish();return;}', ''),
   'sad frame no longer drops': replace("{duration:340,easing:'ease-in',fill:'forwards'}", "{duration:340,easing:'ease-in'}"),
   'scoreboard rewritten on every tick': replace('if(el.textContent!==text)el.textContent=text;', 'el.textContent=text;'),
   'images forced to revalidate': replace('fetch(file.url)', "fetch(file.url, {cache:'no-cache'})"),
