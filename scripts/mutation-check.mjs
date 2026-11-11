@@ -66,8 +66,11 @@ const MUTANTS = {
   'a new difficulty waits for the next round': replace('if(running){roundLevel=level();practice=true;}', 'if(running){practice=true;}'),
   'a round with a changed difficulty still counts': replace('if(running){roundLevel=level();practice=true;}', 'if(running){roundLevel=level();}'),
   'practice carries into the next round': replace('roundLevel=level();practice=false;', 'roundLevel=level();'),
-  'a practice round sets a best score': replace("if(practice)$('modalTitle').textContent='練習局結束';\n    else if(", "if("),
-  'a practice round ends without saying so': replace('<b>練習局，不計入紀錄</b>', ''),
+  'a practice round sets a best score': replace("if(practice)$('modalTitle').innerHTML='<span class=\"practice\">練習局</span>結束';\n    else if(", "if("),
+  'practice words drawn like any other text': replace('.practice{color:#9a3c06;font-weight:800;', '.practice{'),
+  'practice words too pale to read': replace('.practice{color:#9a3c06;', '.practice{color:#e9a23b;'),
+  'plain practice mark in the footer': replace('<b class="practice">練習局</b>・', '練習局・'),
+  'a practice round ends without saying so': replace('<b><span class="practice">練習局</span>，不計入紀錄</b>', ''),
   'every difficulty shares one best score': replace("{easy: BEST_KEY+'_easy', normal: BEST_KEY, hard: BEST_KEY+'_hard'}", '{easy: BEST_KEY, normal: BEST_KEY, hard: BEST_KEY}'),
   'the earlier best score is left behind': replace("normal: BEST_KEY, hard: BEST_KEY+'_hard'}", "normal: BEST_KEY+'_normal', hard: BEST_KEY+'_hard'}"),
   'the footer keeps showing one best score': replace("$('best').textContent=bests[level()];", "$('best').textContent=bests.normal;"),
@@ -103,8 +106,8 @@ const MUTANTS = {
   'score message back in one fixed place': replace("el.style.top=Math.max(box.top-area.top+10,el.offsetHeight+2)+'px';", ''),
   'score message may cover the scoreboard': replace('Math.max(box.top-area.top+10,el.offsetHeight+2)', '(box.top-area.top+10)'),
   'score message may leave the board area': replace('area.width-half)', 'area.width+half)'),
-  'version changed in the script but not on the page': replace("const VERSION = '21.1.0';", "const VERSION = '21.1.1';"),
-  'version shown without its release date': replace('· 版本 21.1.0（2026-11-12）', '· 版本 21.1.0'),
+  'version changed in the script but not on the page': replace("const VERSION = '21.2.0';", "const VERSION = '21.2.1';"),
+  'version shown without its release date': replace('· 版本 21.2.0（2026-11-12）', '· 版本 21.2.0'),
   'music starts with the page instead of the round': replace('  track(MUSIC_TRACKS.length-1);\n', '  track(MUSIC_TRACKS.length-1);running=true;playMusic();running=false;\n'),
   'same track every round': replace('music.next=(i+1)%MUSIC_TRACKS.length;', 'music.next=0;'),
   'music ignores the sound switch': replace('if(music.gain)music.gain.gain.setTargetAtTime(soundOn?MUSIC_VOLUME:0,audioCtx.currentTime,.03);', ''),
@@ -135,8 +138,13 @@ const MUTANTS = {
   'tap marks removed': replace("ripple(i,e,hit(i)||'miss');", 'hit(i);'),
   'tap marks ignore where the finger landed': replace('const pointed=e&&(e.clientX||e.clientY);', 'const pointed=false;'),
   'tap marks swallow taps': replace('.fx{position:absolute;inset:0;pointer-events:none;z-index:5}', '.fx{position:absolute;inset:0;z-index:5}'),
+  'an empty hole gets the marks of a hit': replace("if(kind==='miss')return;", ''),
+  'stars fly under reduced motion': replace("    if(still)return;\n    // Stars for a hit", "    // Stars for a hit"),
+  'reduced motion still spreads the ring': replace("if(still)draw('ripple',size*.5,fade);\n    else draw(", "draw("),
+  'a fox gets no more stars than a penguin': replace("kind==='bonus'?8:kind==='bad'?4:5", "kind==='bad'?4:5"),
+  'tap marks painted solid': replace('border:3px solid rgba(var(--c),.7)', 'border:3px solid rgba(var(--c),1)'),
+  'tap marks resize instead of scaling': replace("{opacity:0,transform:'scale(1)'}]);\n    if(kind==='miss')return;", "{opacity:0,transform:'scale(1)',width:size*2+'px'}]);\n    if(kind==='miss')return;"),
   'tap marks pile up': replace('.finished.then(remove,remove);', ';'),
-  'reduced motion still spreads the ring': replace('grow=calm.matches?.5:1.5', 'grow=1.5'),
   'reduced motion still bounces the character': replace('if(calm.matches)return;', ''),
   'reduced motion snow keeps falling': replace('.snow-layer{animation:none;will-change:auto}', ''),
   'reduced motion hides the toast': replace('.toast.show{animation:none;opacity:1;transform:translate(-50%,-8px)}', ''),
@@ -167,9 +175,9 @@ const EQUIVALENTS = {
   },
   // A release changes the number everywhere it is written, and nothing else.
   'version bumped': async ({ html, setHtml, read, write }) => {
-    const bump = text => text.replaceAll('21.1.0', '21.1.1').replaceAll('2026-11-12', '2026-12-01');
+    const bump = text => text.replaceAll('21.2.0', '21.2.1').replaceAll('2026-11-12', '2026-12-01');
     const source = await html();
-    if (!source.includes("const VERSION = '21.1.0';")) return false;
+    if (!source.includes("const VERSION = '21.2.0';")) return false;
     await setHtml(bump(source));
     await write('README.md', bump(await read('README.md')));
     await write('CHANGELOG.md', bump(await read('CHANGELOG.md')));
