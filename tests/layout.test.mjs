@@ -83,6 +83,28 @@ for (const [width, height] of VIEWPORTS) {
       }
     });
 
+    test('the best score and the version share one line of the footer', async () => {
+      // A record of three digits is the widest a player will see; fifteen digits cannot fit on a small screen,
+      // and must run past the edge sooner than break the line in the middle of the date.
+      for (const [best, fits] of [['888', true], ['888888888888888', false]]) {
+        const game = await Game.open(harness, { viewport, storage: { wam_best_20260904v7: best } });
+        try {
+          const line = await game.page.evaluate(() => {
+            const text = document.querySelector('.foot > span');
+            const box = text.getBoundingClientRect();
+            const foot = document.querySelector('.foot').getBoundingClientRect();
+            return { shown: document.getElementById('best').textContent, height: box.height, fontSize: parseFloat(getComputedStyle(text).fontSize), spill: Math.max(foot.left - box.left, box.right - foot.right) };
+          });
+          assert.equal(line.shown, best, 'The footer must show the stored record');
+          // Two lines of text are at least twice the font size high; one line never is.
+          assert.ok(line.height < line.fontSize * 2, `${label}: with a record of ${best} the footer's first line is ${line.height}px high, more than one line of ${line.fontSize}px text`);
+          if (fits) assert.ok(line.spill <= 0.5, `${label}: the footer's first line runs ${line.spill}px past the footer`);
+        } finally {
+          await game.close();
+        }
+      }
+    });
+
     test('the music credits take no room from the game', async () => {
       const game = await Game.open(harness, { viewport });
       try {

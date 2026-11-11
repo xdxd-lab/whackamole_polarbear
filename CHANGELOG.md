@@ -2,6 +2,17 @@
 
 這裡記錄玩家會感受到的變更，最新的在最上面。版號怎麼決定見 [docs/VERSIONING.md](./docs/VERSIONING.md)。
 
+## [21.2.1] - 2026-11-12
+
+### 修正
+
+- 小螢幕橫放時（例如 568×320、640×360），頁尾的「最高分 · 版本」不再折成兩行、把日期從中間拆開。空間不夠時只顯示版號、不顯示日期；寬一點的螢幕照舊顯示日期。
+
+### 給開發者
+
+- 版面測試新增「頁尾第一行只有一行高」，每個螢幕尺寸、三種瀏覽器都檢查。
+- 截圖腳本 `scripts/review-effects.mjs` 把得分浮字和點擊效果一起凍結，截圖不再拍到淡出一半的「+3」。
+
 ## [21.2.0] - 2026-11-12
 
 ### 變更
@@ -139,6 +150,10 @@ V20 改了一局進行中的兩條規則；計分方式、每局 30 秒與各難
 
 V15 以前沒有留下逐版紀錄，可以從 git 歷史查到。
 
+[21.2.1]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v21.2.1
+[21.2.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v21.2.0
+[21.1.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v21.1.0
+[21.0.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v21.0.0
 [20.0.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v20.0.0
 [19.2.1]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.2.1
 [19.2.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.2.0
