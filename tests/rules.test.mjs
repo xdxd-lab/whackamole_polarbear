@@ -19,7 +19,9 @@ const practiceWords = game => game.page.evaluate(() => {
   const rgba = text => text.match(/[\d.]+/g).map(Number);
   const light = ([r, g, b]) => [r, g, b].map(v => v / 255).map(v => v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)
     .reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
-  return [...document.querySelectorAll('.practice')].filter(word => word.checkVisibility({ visibilityProperty: true })).map(word => {
+  // Not checkVisibility: the overlay fades in, and WebKit calls it hidden until the fade is over.
+  const onShow = word => !word.closest('[hidden]') && (word.closest('.overlay')?.classList.contains('show') ?? true);
+  return [...document.querySelectorAll('.practice')].filter(onShow).map(word => {
     const style = getComputedStyle(word);
     const [r, g, b, alpha = 1] = rgba(style.backgroundColor);
     const behind = light([r, g, b].map(v => v * alpha + 255 * (1 - alpha)));
