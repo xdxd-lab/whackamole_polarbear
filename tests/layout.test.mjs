@@ -38,7 +38,7 @@ for (const [width, height] of VIEWPORTS) {
       const game = await Game.open(harness, { viewport });
       try {
         await game.startWith('penguin');
-        assertInside(await inspect(game, ['#startBtn', '#difficulty', '#soundBtn', '#score', '#time', '#best']), label);
+        assertInside(await inspect(game, ['#startBtn', '#difficulty', '#soundBtn', '#score', '#time', '#best', '.credits', '.credits a:last-of-type']), label);
         assert.equal(await game.page.evaluate(() => document.scrollingElement.scrollHeight <= innerHeight), true, 'Page content is taller than the screen');
       } finally {
         await game.close();
@@ -57,6 +57,23 @@ for (const [width, height] of VIEWPORTS) {
         assert.ok(Math.abs((board.top - card.top) - (card.bottom - board.bottom)) <= 1, `${label}: board is not centred in its panel`);
         const hole = await game.page.locator('#board .hole').first().boundingBox();
         assert.ok(hole.width >= MIN_TOUCH_TARGET && hole.height >= MIN_TOUCH_TARGET, `${label}: holes are too small (${hole.width}x${hole.height})`);
+      } finally {
+        await game.close();
+      }
+    });
+
+    test('the music credits take no room from the game', async () => {
+      const game = await Game.open(harness, { viewport });
+      try {
+        const boxes = () => inspect(game, ['#board', '#startBtn', '#best']);
+        const withCredits = await boxes();
+        await game.page.addStyleTag({ content: '.credits{display:none!important}' });
+        const without = await boxes();
+        for (const selector of Object.keys(without)) {
+          for (const side of ['top', 'bottom', 'width', 'height']) {
+            assert.ok(Math.abs(withCredits[selector][side] - without[selector][side]) < 0.5, `${label}: the credits move or resize ${selector} (${side} ${without[selector][side]} -> ${withCredits[selector][side]})`);
+          }
+        }
       } finally {
         await game.close();
       }

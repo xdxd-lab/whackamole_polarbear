@@ -60,7 +60,7 @@ test('each round plays the next track from its start, and the music ends with th
     const order = await tracks(game);
     assert.equal(new Set(order).size, order.length, 'Every track must sound different');
     const heard = [];
-    for (let round = 0; round < 3; round += 1) {
+    for (let round = 0; round < order.length + 1; round += 1) {
       await game.start();
       await playing(game);
       const latest = (await starts(game)).at(-1);
@@ -72,7 +72,7 @@ test('each round plays the next track from its start, and the music ends with th
       assert.equal(await game.overlayShown(), true);
       await silent(game);
     }
-    assert.deepEqual(heard, [order[0], order[1], order[0]]);
+    assert.deepEqual(heard, [...order, order[0]], 'Every track plays once, in order, before the first returns');
     game.assertNoErrors();
   } finally {
     await game.close();
@@ -161,7 +161,7 @@ test('the game plays normally when its music cannot load', async () => {
   }
 });
 
-test('every track lasts the whole round, fades out and is as loud as the others', async () => {
+test('every track lasts the whole round, fades out and sounds as loud as the others on a small speaker', async () => {
   const game = await Game.open(harness);
   try {
     const shapes = await game.page.evaluate(async urls => {
@@ -176,7 +176,31 @@ test('every track lasts the whole round, fades out and is as loud as the others'
           }
           return { db: 10 * Math.log10(sum / count), peak };
         };
-        result.push({ url, duration: buffer.duration, body: rms(1, 27), tail: rms(buffer.duration - 0.2, buffer.duration) });
+        // What a phone or laptop speaker plays, almost nothing below about 300 Hz, weighted the
+        // way the ear hears it (the +4 dB high shelf of ITU-R BS.1770, as scripts/music/speaker.py).
+        const offline = new OfflineAudioContext(buffer.numberOfChannels, buffer.length, buffer.sampleRate);
+        const source = offline.createBufferSource();
+        let node = source;
+        for (const [type, frequency, gain] of [['highpass', 300], ['highpass', 300], ['highshelf', 1682, 4]]) {
+          const filter = offline.createBiquadFilter();
+          filter.type = type; filter.frequency.value = frequency;
+          if (gain) filter.gain.value = gain;
+          // Web Audio gives a high-pass Q in dB; -3.01 dB is Q 0.707, without a resonant bump.
+          if (type === 'highpass') filter.Q.value = -3.0103;
+          node.connect(filter); node = filter;
+        }
+        node.connect(offline.destination);
+        source.buffer = buffer; source.start();
+        const speaker = await offline.startRendering();
+        const level = (audio, from, to) => {
+          let sum = 0, count = 0;
+          for (let c = 0; c < audio.numberOfChannels; c += 1) {
+            const data = audio.getChannelData(c);
+            for (let i = Math.floor(from * audio.sampleRate); i < to * audio.sampleRate; i += 1) { sum += data[i] ** 2; count += 1; }
+          }
+          return 10 * Math.log10(sum / count);
+        };
+        result.push({ url, duration: buffer.duration, body: rms(1, 27), tail: rms(buffer.duration - 0.2, buffer.duration), speaker: level(speaker, 1, 27) });
       }
       return result;
     }, OPUS);
@@ -185,15 +209,28 @@ test('every track lasts the whole round, fades out and is as loud as the others'
       assert.ok(body.peak < 0.95, `${url} peaks at ${body.peak}, too close to clipping`);
       assert.ok(tail.db < body.db - 20, `${url} does not fade out (${tail.db} dB at the end, ${body.db} dB overall)`);
     }
-    const levels = shapes.map(shape => shape.body.db);
-    assert.ok(Math.max(...levels) - Math.min(...levels) < 4, `Tracks differ in loudness: ${levels.join(', ')} dB`);
+    // Played at their own gain, the tracks sound equally loud where small speakers can play.
+    const levels = shapes.map((shape, i) => shape.speaker + 20 * Math.log10(manifest.tracks[i].gain));
+    assert.ok(Math.max(...levels) - Math.min(...levels) < 2, `Tracks differ above 300 Hz: ${levels.map(db => db.toFixed(1)).join(', ')} dB`);
   } finally {
     await game.close();
   }
 });
 
 test('each track is played at the level chosen for it by ear', () => {
-  // Decided by listening on 2026-11-10: equal measured loudness left Happy too quiet and Winter too loud.
-  assert.deepEqual(manifest.tracks.map(track => [track.id, track.gain]), [['happy', 1.5], ['winter', 0.67]]);
+  // Set on 2026-11-11 by listening to each track alone: Happy is the reference; Clappy matches it
+  // above 300 Hz and is then 1 dB louder, by ear.
+  assert.deepEqual(manifest.tracks.map(track => [track.id, track.gain]), [['happy', 1.5], ['clappy', 1.9]]);
   for (const level of LEVELS) assert.ok(level < 0.9, 'A track must leave headroom below full scale');
+});
+
+test('the page credits every composer, with a link to the source of each track', async () => {
+  const game = await Game.open(harness);
+  try {
+    const shown = await game.page.$$eval('.credits a', links => links.map(link => ({ author: link.textContent, source: link.href, title: link.title, newTab: link.target === '_blank' && link.rel.includes('noopener') })));
+    assert.deepEqual(shown, manifest.tracks.map(track => ({ author: track.author, source: track.source, title: track.title, newTab: true })));
+    assert.match(await game.page.textContent('.credits'), /CC0/);
+  } finally {
+    await game.close();
+  }
 });

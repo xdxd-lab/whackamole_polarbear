@@ -2,6 +2,24 @@
 
 這裡記錄玩家會感受到的變更，最新的在最上面。版號怎麼決定見 [docs/VERSIONING.md](./docs/VERSIONING.md)。
 
+## [19.2.0] - 2026-11-11
+
+### 新增
+
+- 新的背景音樂 Happy Clappy Loop，一首輕柔俏皮的鋼琴小品。現在兩首每局輪流：Happy → Clappy。
+- 頁尾以小字標示音樂的作者，點作者名稱可以開啟該曲在 OpenGameArt 的頁面。
+
+### 移除
+
+- 背景音樂 Winter（Short Loop: winter theme）：試聽後覺得不適合這個遊戲。它的聲音大多是重低音，在手機和筆電喇叭上也幾乎聽不到。
+
+### 音樂來源
+
+兩首都以 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/deed.zh_TW) 釋出，取自 OpenGameArt.org，詳見 [CREDITS.md](./CREDITS.md)：
+
+- [Happy synths loop with slight christmas feeling](https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling)，作者 3xBlast
+- [Happy Clappy Loop](https://opengameart.org/content/happy-clappy-loop)，作者 OwlishMedia
+
 ## [19.1.2] - 2026-11-11
 
 ### 修正
@@ -69,6 +87,7 @@
 
 V15 以前沒有留下逐版紀錄，可以從 git 歷史查到。
 
+[19.2.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.2.0
 [19.1.2]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.1.2
 [19.1.1]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.1.1
 [19.1.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v19.1.0

@@ -77,14 +77,15 @@ const MUTANTS = {
   'score message back in one fixed place': replace("el.style.top=Math.max(box.top-area.top+10,el.offsetHeight+2)+'px';", ''),
   'score message may cover the scoreboard': replace('Math.max(box.top-area.top+10,el.offsetHeight+2)', '(box.top-area.top+10)'),
   'score message may leave the board area': replace('area.width-half)', 'area.width+half)'),
-  'version changed in the script but not on the page': replace("const VERSION = '19.1.2';", "const VERSION = '19.1.3';"),
-  'version shown without its release date': replace('· 版本 19.1.2（2026-11-11）', '· 版本 19.1.2'),
+  'version changed in the script but not on the page': replace("const VERSION = '19.2.0';", "const VERSION = '19.2.1';"),
+  'version shown without its release date': replace('· 版本 19.2.0（2026-11-11）', '· 版本 19.2.0'),
   'music starts with the page instead of the round': replace('  track(MUSIC_TRACKS.length-1);\n', '  track(MUSIC_TRACKS.length-1);running=true;playMusic();running=false;\n'),
   'same track every round': replace('music.next=(i+1)%MUSIC_TRACKS.length;', 'music.next=0;'),
   'music ignores the sound switch': replace('if(music.gain)music.gain.gain.setTargetAtTime(soundOn?MUSIC_VOLUME:0,audioCtx.currentTime,.03);', ''),
   'music plays although sound is off': replace('music.gain.gain.value=soundOn?MUSIC_VOLUME:0;', 'music.gain.gain.value=MUSIC_VOLUME;'),
   'music keeps playing after the round': replace("stopMusic();beep(260,.09,'triangle');", "beep(260,.09,'triangle');"),
   'tracks lose their own level': replace('fade.gain.value=MUSIC_TRACKS[i].gain;', ''),
+  'clappy played as quietly as happy': replace('"m4a":"assets/music-20261111/clappy-2f3f07b7d1b2.m4a","gain":1.9}', '"m4a":"assets/music-20261111/clappy-2f3f07b7d1b2.m4a","gain":1}'),
   'happy played as quietly as before': replace('"m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a","gain":1.5}', '"m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a","gain":1}'),
   'music louder than set': replace('const MUSIC_VOLUME=.35;', 'const MUSIC_VOLUME=.7;'),
   'music skips the start of its track': replace('source.start(0,Math.min(buffer.duration,Math.max(0,(performance.now()-started)/1000)));', 'source.start(0,5);'),
@@ -96,6 +97,11 @@ const MUTANTS = {
     await setHtml(next);
     return true;
   },
+  'second track never plays': replace('music.next=(i+1)%MUSIC_TRACKS.length;', 'music.next=0;'),
+  'a composer is left out of the credits': replace('、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>', ''),
+  'a credit links to the wrong track': replace('<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>', '<a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>'),
+  'credits take room from the board': replace('.foot .credits{display:block;margin:0 0 -13px;', '.foot .credits{display:block;'),
+  'credits pushed off the screen': replace('.credits{font-size:11px;', '.credits{position:fixed;top:120vh;font-size:11px;'),
   'tap marks removed': replace("ripple(i,e,hit(i)||'miss');", 'hit(i);'),
   'tap marks ignore where the finger landed': replace('const pointed=e&&(e.clientX||e.clientY);', 'const pointed=false;'),
   'tap marks swallow taps': replace('.fx{position:absolute;inset:0;pointer-events:none;z-index:5}', '.fx{position:absolute;inset:0;z-index:5}'),
@@ -131,9 +137,9 @@ const EQUIVALENTS = {
   },
   // A release changes the number everywhere it is written, and nothing else.
   'version bumped': async ({ html, setHtml, read, write }) => {
-    const bump = text => text.replaceAll('19.1.2', '19.1.3').replaceAll('2026-11-11', '2026-12-01');
+    const bump = text => text.replaceAll('19.2.0', '19.2.1').replaceAll('2026-11-11', '2026-12-01');
     const source = await html();
-    if (!source.includes("const VERSION = '19.1.2';")) return false;
+    if (!source.includes("const VERSION = '19.2.0';")) return false;
     await setHtml(bump(source));
     await write('README.md', bump(await read('README.md')));
     await write('CHANGELOG.md', bump(await read('CHANGELOG.md')));

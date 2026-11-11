@@ -1,5 +1,7 @@
 """Cuts a track to one round, fades it out and matches loudness (ITU-R BS.1770, gated).
-Pure standard library. Usage: prepare.py in.wav out.wav seconds fade_seconds target_lufs"""
+Optionally lowers the bass first with a low shelf at 250 Hz, for a track whose weight sits
+where small speakers cannot play it. Pure standard library.
+Usage: prepare.py in.wav out.wav seconds fade_seconds target_lufs [low_shelf_db]"""
 import array, math, sys, wave
 
 def read(path):
@@ -36,6 +38,12 @@ def k_weight(x, rate):
     w = 2 * math.pi * fc / rate; al = math.sin(w) / (2 * Q); c = math.cos(w)
     return biquad(x, [(1 + c) / 2, -(1 + c), (1 + c) / 2], [1 + al, -2 * c, 1 - al])
 
+def low_shelf(x, rate, db, fc=250.0):
+    # RBJ cookbook low shelf, slope 1.
+    A = 10 ** (db / 40); w = 2 * math.pi * fc / rate; c = math.cos(w); al = math.sin(w) / 2 * math.sqrt(2); s = 2 * math.sqrt(A) * al
+    return biquad(x, [A * ((A + 1) - (A - 1) * c + s), 2 * A * ((A - 1) - (A + 1) * c), A * ((A + 1) - (A - 1) * c - s)],
+                     [(A + 1) + (A - 1) * c + s, -2 * ((A - 1) + (A + 1) * c), (A + 1) + (A - 1) * c - s])
+
 def loudness(channels, rate):
     weighted = [k_weight(ch, rate) for ch in channels]
     block, step = int(0.4 * rate), int(0.1 * rate)
@@ -48,8 +56,9 @@ def loudness(channels, rate):
     gated = [p for p in gated if lufs(p) > relative]
     return lufs(sum(gated) / len(gated))
 
-def main(src, dst, seconds, fade, target):
+def main(src, dst, seconds, fade, target, shelf=0.0):
     rate, channels = read(src)
+    if shelf: channels = [low_shelf(ch, rate, shelf) for ch in channels]
     n = min(len(channels[0]), round(seconds * rate))
     fade_n, start_n = round(fade * rate), round(0.005 * rate)
     shaped = []
@@ -74,4 +83,4 @@ def main(src, dst, seconds, fade, target):
     print(f'{src.split("/")[-1]}: {before:.1f} LUFS -> {after:.1f} LUFS, gain {20 * math.log10(gain):+.1f} dB, peak {20 * math.log10(peak / (10 ** ((target - before) / 20)) * gain):.1f} dBFS, {n / rate:.2f}s')
 
 if __name__ == '__main__':
-    main(sys.argv[1], sys.argv[2], float(sys.argv[3]), float(sys.argv[4]), float(sys.argv[5]))
+    main(sys.argv[1], sys.argv[2], float(sys.argv[3]), float(sys.argv[4]), float(sys.argv[5]), float(sys.argv[6]) if len(sys.argv) > 6 else 0.0)
