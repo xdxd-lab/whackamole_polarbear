@@ -7,6 +7,15 @@ import { after, before, describe, test } from 'node:test';
 import { DIFFICULTY, Game, SPECIES_ROLL, holeRoll, startHarness } from './support/game.mjs';
 
 const BEST_KEY = 'wam_best_20260904v7';
+// Normal keeps the key every version before 21 wrote to.
+const BEST_KEYS = { easy: BEST_KEY + '_easy', normal: BEST_KEY, hard: BEST_KEY + '_hard' };
+/** What the footer shows: the best score line, or the practice mark in its place. */
+const footer = game => game.page.evaluate(() => {
+  const shown = id => { const style = getComputedStyle(document.getElementById(id)); return style.display !== 'none' && style.visibility !== 'hidden'; };
+  return { best: shown('bestLine'), practice: shown('practiceMark') ? document.getElementById('practiceMark').textContent : null };
+});
+const savedBests = game => game.page.evaluate(
+  keys => Object.fromEntries(Object.entries(keys).map(([level, key]) => [level, localStorage.getItem(key)])), BEST_KEYS);
 let harness;
 before(async () => { harness = await startHarness(); });
 after(() => harness.close());
@@ -347,27 +356,60 @@ describe('input', () => {
     assert.equal(await game.number('#time'), 30);
   }));
 
-  test('changing difficulty mid-round changes nothing until the next round', () => play(async game => {
+  test('changing difficulty mid-round takes over at once and makes it a practice round', () => play(async game => {
     await game.startWith('fox');
     await game.hitCurrent();
-    await game.page.selectOption('#difficulty', 'hard');
-    assert.equal(await game.number('#score'), 3, 'The round goes on');
+    await game.choose('hard');
+    assert.equal(await game.number('#score'), 3, 'The round goes on with its score');
     assert.equal(await game.overlayShown(), false);
-    // The next target still keeps the normal window, not the hard one.
+    assert.deepEqual(await footer(game), { best: false, practice: '練習局・不計紀錄' });
+    // The next target already keeps the hard window.
     // After a hit the next target rises 640 ms later (pain 220 + sad 340 + 80).
     await game.nextSpawn('penguin', 4);
     await game.advance(640);
     assert.equal(await game.activeIndex(), 4);
-    await game.advance(DIFFICULTY.hard.hide);
-    assert.equal(await game.state(), 'warning', 'A hard window would have closed by now');
-    await game.advance(30_000);
-    await game.startWith('penguin', 0);
     await game.advance(DIFFICULTY.hard.hide - 1);
     assert.equal(await game.state(), 'warning');
     await game.advance(1);
-    assert.equal(await game.state(), 'sneaky', 'The next round is hard');
+    assert.equal(await game.state(), 'sneaky', 'A normal window would still be open');
+    await game.advance(30_000);
+    assert.equal(await game.page.textContent('#modalTitle'), '練習局結束');
+    assert.match(await game.page.textContent('#modalText'), /練習局，不計入紀錄/);
+    assert.equal(await game.number('#finalScore'), 3, 'The score is still shown');
+    assert.deepEqual(await savedBests(game), { easy: null, normal: null, hard: null });
+    assert.equal(await game.number('#best'), 0);
+    assert.equal(await game.page.textContent('#bestLevel'), '（高手）');
+    assert.deepEqual(await footer(game), { best: true, practice: null }, 'The mark goes when the round ends');
+    // Playing again is a real round, in the difficulty now chosen.
+    await game.startWith('fox');
+    await game.hitCurrent();
+    await game.advance(30_000);
+    assert.equal(await game.page.textContent('#modalTitle'), '🏆 新紀錄！');
+    assert.deepEqual(await savedBests(game), { easy: null, normal: null, hard: '3' });
   }));
 
+  test('changing difficulty and back again is still a practice round', () => play(async game => {
+    await game.startWith('fox');
+    await game.choose('easy');
+    await game.choose('normal');
+    await game.hitCurrent();
+    await game.advance(30_000);
+    assert.equal(await game.page.textContent('#modalTitle'), '練習局結束');
+    assert.deepEqual(await savedBests(game), { easy: null, normal: null, hard: null });
+  }));
+
+  test('the restart button turns a practice round into a real one', () => play(async game => {
+    await game.startWith('fox');
+    await game.choose('easy');
+    await game.queueRandom([holeRoll(0), SPECIES_ROLL.fox]);
+    await game.page.locator('#startBtn').click();
+    assert.equal(await game.page.textContent('#bestLevel'), '（悠閒）');
+    assert.deepEqual(await footer(game), { best: true, practice: null });
+    await game.hitCurrent();
+    await game.advance(30_000);
+    assert.equal(await game.page.textContent('#modalTitle'), '🏆 新紀錄！');
+    assert.deepEqual(await savedBests(game), { easy: '3', normal: null, hard: null });
+  }));
 
   test('the restart button clears the round', () => play(async game => {
     await game.startWith('fox');
@@ -402,18 +444,39 @@ describe('scoreboard updates', () => {
 describe('best score', () => {
   const finishRound = async game => { await game.advance(30_000); };
 
-  test('reads the existing saved score', () => play(async game => {
+  test('the saved score from earlier versions is the normal record', () => play(async game => {
     assert.equal(await game.number('#best'), 12);
+    assert.equal(await game.page.textContent('#bestLevel'), '（普通）');
   }, { storage: { [BEST_KEY]: '12' } }));
+
+  test('each difficulty shows its own record', () => play(async game => {
+    const shown = async () => [await game.page.textContent('#bestLevel'), await game.number('#best')];
+    assert.deepEqual(await shown(), ['（普通）', 12]);
+    await game.choose('easy');
+    assert.deepEqual(await shown(), ['（悠閒）', 5]);
+    await game.choose('hard');
+    assert.deepEqual(await shown(), ['（高手）', 0]);
+  }, { storage: { [BEST_KEY]: '12', [BEST_KEYS.easy]: '5' } }));
 
   test('writes a new record to the same key', () => play(async game => {
     await game.startWith('fox');
     await game.hitCurrent();
     await finishRound(game);
-    assert.equal(await game.page.evaluate(key => localStorage.getItem(key), BEST_KEY), '3');
+    assert.deepEqual(await savedBests(game), { easy: null, normal: '3', hard: null });
     assert.equal(await game.number('#best'), 3);
     assert.equal(await game.page.textContent('#modalTitle'), '🏆 新紀錄！');
   }));
+
+  test('a record in one difficulty leaves the others alone', () => play(async game => {
+    await game.startWith('fox', 0, { difficulty: 'hard' });
+    await game.hitCurrent();
+    await finishRound(game);
+    assert.equal(await game.page.textContent('#modalTitle'), '🏆 新紀錄！', 'Chosen before the round, so it counts');
+    assert.deepEqual(await savedBests(game), { easy: null, normal: '50', hard: '3' });
+    assert.equal(await game.number('#best'), 3);
+    await game.choose('normal');
+    assert.equal(await game.number('#best'), 50);
+  }, { storage: { [BEST_KEY]: '50' } }));
 
   test('keeps a higher saved score', () => play(async game => {
     await game.startWith('fox');

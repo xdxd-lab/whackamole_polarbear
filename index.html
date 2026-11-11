@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#8fd8ff" />
 <link rel="icon" href="data:," />
-<title>雪地敲敲樂｜打企鵝・北極狐 V20</title>
+<title>雪地敲敲樂｜打企鵝・北極狐 V21</title>
 <style>
   :root{
     --sky-top:#8fd8ff; --sky-mid:#cfeeff; --sky-bottom:#eef9ff;
@@ -100,7 +100,7 @@
   .fx .normal{--c:#2a9d8f}.fx .bonus{--c:#ffb703}.fx .bad{--c:#ef476f}
 
   /* Version and music credits: small and pale, in the corner, never competing with the game. */
-  .foot{text-align:center}.foot span{display:inline-block}.credits{font-size:11px;color:#6b7f8c;margin-left:.6em}.credits a{color:inherit;text-decoration:underline;text-decoration-color:rgba(107,127,140,.45);text-underline-offset:2px}.credits a:focus-visible{outline:2px solid #1769c4;outline-offset:2px}
+  .foot{text-align:center}.foot span{display:inline-block}.foot span[hidden]{display:none}#bestSlot{position:relative}#practiceMark{position:absolute;left:50%;top:0;translate:-50% 0;white-space:nowrap}.credits{font-size:11px;color:#6b7f8c;margin-left:.6em}.credits a{color:inherit;text-decoration:underline;text-decoration-color:rgba(107,127,140,.45);text-underline-offset:2px}.credits a:focus-visible{outline:2px solid #1769c4;outline-offset:2px}
   /* Where the credits need a line of their own, that line sits in the page's bottom margin and takes no height from the game. */
   @media(max-width:560px),(orientation:landscape) and (max-height:560px){.foot .credits{display:block;margin:0 0 -13px;font-size:10.5px;line-height:13px}}
 
@@ -151,7 +151,7 @@
         <div class="bigscore" id="finalScore" hidden>0</div>
         <p id="modalText" aria-live="polite">企鵝 <b>+1</b>、北極狐 <b>+3</b>，誤敲北極熊會 <b>-2</b> 並中斷連擊，漏掉企鵝或北極狐也會中斷連擊；每連擊 5 次多得 <b>+1</b>。</p>
         <button class="btn primary" id="modalBtn" style="width:100%">開始遊戲</button>
-        <p class="tiny">支援手機觸控、滑鼠；最高分會儲存在這台裝置。</p>
+        <p class="tiny">支援手機觸控、滑鼠；每個難度的最高分分開儲存在這台裝置。</p>
       </div>
     </div>
   </section>
@@ -164,12 +164,14 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny foot"><span>最高分：<b id="best">0</b> · 版本 20.0.0（2026-11-11）</span> <span class="credits">音樂：<a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>（CC0）</span></div>
+  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden>練習局・不計紀錄</span></span> · 版本 21.0.0（2026-11-12）</span> <span class="credits">音樂：<a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>（CC0）</span></div>
 </main>
 <script>(async () => {
   'use strict';
-  const VERSION = '20.0.0';
+  const VERSION = '21.0.0';
   const BEST_KEY = 'wam_best_20260904v7';
+  // One best score per difficulty. Normal keeps the key every earlier version wrote to.
+  const BEST_KEYS = {easy: BEST_KEY+'_easy', normal: BEST_KEY, hard: BEST_KEY+'_hard'};
   const $ = id => document.getElementById(id);
   const board = $('board'), overlay = $('overlay');
   const startBtn = $('startBtn'), modalBtn = $('modalBtn'), difficulty = $('difficulty');
@@ -228,17 +230,30 @@
     board.appendChild(h); holes.push(h);
   }
   let running=false;
-  let score=0, combo=0, maxCombo=0, timeLeft=30, best=0;
+  let score=0, combo=0, maxCombo=0, timeLeft=30;
+  const bests={easy:0,normal:0,hard:0};
   let actor=null, lastHole=-1, session=0, clockTimer=null, started=0;
   // A hidden page pauses the round; the player continues it with a tap.
   let paused=false, pausedAt=0, frozen=[];
-  // The difficulty a round started with; changing the menu mid-round affects the next one.
-  let roundCfg=settings.normal;
+  // The difficulty in play. Changing the menu mid-round takes over at once and makes
+  // the round a practice round: it is played out, but it cannot set a best score.
+  let roundLevel='normal', practice=false;
   let soundOn=true, audioCtx=null, toastTimer=null;
   const timers=new Map(), activeAudio=new Set();
   const fx=$('fx'),calm=matchMedia('(prefers-reduced-motion: reduce)');
-  try {best=Math.max(0,Number(localStorage.getItem(BEST_KEY))||0);} catch (_) {}
-  $('best').textContent=best;
+  const level=()=>settings[difficulty.value]?difficulty.value:'normal';
+  for(const name in bests){try {bests[name]=Math.max(0,Number(localStorage.getItem(BEST_KEYS[name]))||0);} catch (_) {}}
+  // The footer shows the best score of the difficulty in the menu.
+  function showBest(){
+    const name=difficulty.selectedOptions[0]?.textContent||'普通';
+    $('bestLevel').textContent=`（${name}）`;
+    $('best').textContent=bests[level()];
+    // A practice round shows its mark over the record it cannot change. The record keeps
+    // its room, so the footer is the same size either way.
+    const mark=running&&practice;
+    $('bestLine').style.visibility=mark?'hidden':'';$('practiceMark').hidden=!mark;
+  }
+  showBest();
   // Audio may only start from the player's tap; start() calls this first.
   function audio(){
     try {
@@ -312,7 +327,7 @@
     let i;do{i=Math.floor(Math.random()*holes.length);}while(i===lastHole);lastHole=i;
     const r=Math.random(),type=r<.12?'bad':r<.34?'bonus':'normal';
     const h=holes[i],m=h.querySelector('.mole'),species=speciesByType[type];
-    const cfg=roundCfg;
+    const cfg=settings[roundLevel];
     const recovered=Math.round((cfg.spawn-cfg.show)*.5);
     const warningAt=Math.round(cfg.show*.62)+recovered;
     const hideAt=cfg.show+recovered;
@@ -452,9 +467,9 @@
     // Resume audio inside the user gesture.
     audio();beep(520,.08,'triangle');
     session++;clearTimers();clearInterval(clockTimer);resetAll();paused=false;frozen=[];
-    roundCfg=settings[difficulty.value]||settings.normal;
+    roundLevel=level();practice=false;
     score=0;combo=0;maxCombo=0;timeLeft=30;running=true;started=performance.now();
-    overlay.classList.remove('show');$('finalScore').hidden=true;update();spawn();playMusic();
+    overlay.classList.remove('show');$('finalScore').hidden=true;showBest();update();spawn();playMusic();
     runClock();
   }
   function runClock(){
@@ -490,12 +505,16 @@
     if(!running)return;
     running=false;paused=false;session++;clearTimers();clearInterval(clockTimer);resetAll();
     stopMusic();beep(260,.09,'triangle');
-    if(score>best){
-      best=score;try{localStorage.setItem(BEST_KEY,String(best));}catch(_){}
-      $('best').textContent=best;$('modalTitle').textContent='🏆 新紀錄！';
+    if(practice)$('modalTitle').textContent='練習局結束';
+    else if(score>bests[roundLevel]){
+      bests[roundLevel]=score;try{localStorage.setItem(BEST_KEYS[roundLevel],String(score));}catch(_){}
+      $('modalTitle').textContent='🏆 新紀錄！';
     }else $('modalTitle').textContent='時間到！';
     $('finalScore').textContent=score;$('finalScore').hidden=false;
-    $('modalText').innerHTML=`你這局得到 <b>${score}</b> 分，最高連擊 <b>${maxCombo}</b>。再來一局挑戰更高分吧！`;
+    $('modalText').innerHTML=practice
+      ?`<b>練習局，不計入紀錄</b>（這局中途改了難度）。你得到 <b>${score}</b> 分，最高連擊 <b>${maxCombo}</b>。再玩一次就是正式局。`
+      :`你這局得到 <b>${score}</b> 分，最高連擊 <b>${maxCombo}</b>。再來一局挑戰更高分吧！`;
+    showBest();
     modalBtn.textContent='再玩一次';overlay.classList.add('show');update();
   }
   startBtn.addEventListener('click',start);modalBtn.addEventListener('click',()=>paused?resume():start());
@@ -504,6 +523,10 @@
     $('soundBtn').setAttribute('aria-pressed',String(soundOn));
     if(soundOn)beep(520);else activeAudio.forEach(o=>{try{o.stop();}catch(_){}});
     if(music.gain)music.gain.gain.setTargetAtTime(soundOn?MUSIC_VOLUME:0,audioCtx.currentTime,.03);
+  });
+  difficulty.addEventListener('change',()=>{
+    if(running){roundLevel=level();practice=true;}
+    showBest();
   });
   document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});
   document.documentElement.dataset.gameVersion=VERSION;
