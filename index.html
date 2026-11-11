@@ -102,7 +102,7 @@
   /* Version and music credits: small and pale, in the corner, never competing with the game. */
   .foot{text-align:center}.foot span{display:inline-block}.foot span[hidden]{display:none}#bestSlot{position:relative}#practiceMark{position:absolute;left:50%;top:0;translate:-50% 0;white-space:nowrap}.credits{font-size:11px;color:#6b7f8c;margin-left:.6em}.credits a{color:inherit;text-decoration:underline;text-decoration-color:rgba(107,127,140,.45);text-underline-offset:2px}.credits a:focus-visible{outline:2px solid #1769c4;outline-offset:2px}
   /* Where the credits need a line of their own, that line sits in the page's bottom margin and takes no height from the game. */
-  @media(max-width:560px),(orientation:landscape) and (max-height:560px){.foot .credits{display:block;margin:0 0 -13px;font-size:10.5px;line-height:13px}}
+  @media(max-width:560px),(orientation:landscape) and (max-height:560px){.foot .credits{display:flex;justify-content:center;white-space:nowrap;margin:0 0 -13px;font-size:10.5px;line-height:13px}.foot .credits a{min-width:0;overflow:hidden;text-overflow:ellipsis}.foot .credits .label{display:none}.foot .credits:before{content:"♪ "}}
 
   .controls{display:grid;grid-template-columns:1fr auto auto;gap:10px;padding:12px}.btn,select{border:0;border-radius:15px;font:inherit;font-weight:800}.btn{padding:13px 17px;background:#fff;box-shadow:inset 0 0 0 1px #dce7df;cursor:pointer}.btn.primary{background:var(--accent);box-shadow:none}.btn:active{transform:translateY(1px)}select{padding:0 34px 0 14px;background:#fff;min-width:118px}
   .progress{height:8px;background:rgba(255,255,255,.5);border-radius:999px;overflow:hidden}.bar{height:100%;width:100%;background:linear-gradient(90deg,var(--good),var(--accent),var(--danger));transform-origin:left;transition:transform .1s linear}
@@ -164,11 +164,11 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden>練習局・不計紀錄</span></span> · 版本 21.0.0（2026-11-12）</span> <span class="credits">音樂：<a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>（CC0）</span></div>
+  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden>練習局・不計紀錄</span></span> · 版本 21.1.0（2026-11-12）</span> <span class="credits"><span class="label">音樂：</span><a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/snowfall" target="_blank" rel="noopener" title="Snowfall">Kistol</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>、<a href="https://opengameart.org/content/snow-theme" target="_blank" rel="noopener" title="Snow Theme">Cleyton Kauffman</a><span class="label">（CC0）</span></span></div>
 </main>
 <script>(async () => {
   'use strict';
-  const VERSION = '21.0.0';
+  const VERSION = '21.1.0';
   const BEST_KEY = 'wam_best_20260904v7';
   // One best score per difficulty. Normal keeps the key every earlier version wrote to.
   const BEST_KEYS = {easy: BEST_KEY+'_easy', normal: BEST_KEY, hard: BEST_KEY+'_hard'};
@@ -419,7 +419,7 @@
   // Background music: one track per round, taking turns. Fetched only after the game is
   // playable and decoded off-screen, so it never delays the first round; it starts only
   // from the player's tap, and a track that cannot load leaves the game silent, not broken.
-  const MUSIC_TRACKS=[{"opus":"assets/music-20261110/happy-fc436405b0a7.opus","m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a","gain":1.5},{"opus":"assets/music-20261111/clappy-a3e7848571dd.opus","m4a":"assets/music-20261111/clappy-2f3f07b7d1b2.m4a","gain":1.9}];
+  const MUSIC_TRACKS=[{"opus":"assets/music-20261110/happy-fc436405b0a7.opus","m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a","gain":1.5},{"opus":"assets/music-20261112/snowfall-9677861f979a.opus","m4a":"assets/music-20261112/snowfall-952e89bb8711.m4a","gain":1},{"opus":"assets/music-20261111/clappy-a3e7848571dd.opus","m4a":"assets/music-20261111/clappy-2f3f07b7d1b2.m4a","gain":1.9},{"opus":"assets/music-20261112/snowtheme-693ed710814a.opus","m4a":"assets/music-20261112/snowtheme-f01fd70c7265.m4a","gain":1.1}];
   const MUSIC_VOLUME=.35;
   const musicFormats=new Audio().canPlayType('audio/ogg; codecs=opus')?['opus','m4a']:['m4a','opus'];
   const music={loads:[],next:0,playing:null,gain:null};

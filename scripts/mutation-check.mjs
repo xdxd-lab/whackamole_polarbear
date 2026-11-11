@@ -103,8 +103,8 @@ const MUTANTS = {
   'score message back in one fixed place': replace("el.style.top=Math.max(box.top-area.top+10,el.offsetHeight+2)+'px';", ''),
   'score message may cover the scoreboard': replace('Math.max(box.top-area.top+10,el.offsetHeight+2)', '(box.top-area.top+10)'),
   'score message may leave the board area': replace('area.width-half)', 'area.width+half)'),
-  'version changed in the script but not on the page': replace("const VERSION = '21.0.0';", "const VERSION = '21.0.1';"),
-  'version shown without its release date': replace('· 版本 21.0.0（2026-11-12）', '· 版本 21.0.0'),
+  'version changed in the script but not on the page': replace("const VERSION = '21.1.0';", "const VERSION = '21.1.1';"),
+  'version shown without its release date': replace('· 版本 21.1.0（2026-11-12）', '· 版本 21.1.0'),
   'music starts with the page instead of the round': replace('  track(MUSIC_TRACKS.length-1);\n', '  track(MUSIC_TRACKS.length-1);running=true;playMusic();running=false;\n'),
   'same track every round': replace('music.next=(i+1)%MUSIC_TRACKS.length;', 'music.next=0;'),
   'music ignores the sound switch': replace('if(music.gain)music.gain.gain.setTargetAtTime(soundOn?MUSIC_VOLUME:0,audioCtx.currentTime,.03);', ''),
@@ -113,6 +113,9 @@ const MUTANTS = {
   'tracks lose their own level': replace('fade.gain.value=MUSIC_TRACKS[i].gain;', ''),
   'clappy played as quietly as happy': replace('"m4a":"assets/music-20261111/clappy-2f3f07b7d1b2.m4a","gain":1.9}', '"m4a":"assets/music-20261111/clappy-2f3f07b7d1b2.m4a","gain":1}'),
   'happy played as quietly as before': replace('"m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a","gain":1.5}', '"m4a":"assets/music-20261110/happy-5e3a15364b4c.m4a","gain":1}'),
+  'snowfall played as loudly as happy needs': replace('"m4a":"assets/music-20261112/snowfall-952e89bb8711.m4a","gain":1}', '"m4a":"assets/music-20261112/snowfall-952e89bb8711.m4a","gain":1.5}'),
+  'snow theme left as quiet as its original': replace('"m4a":"assets/music-20261112/snowtheme-f01fd70c7265.m4a","gain":1.1}', '"m4a":"assets/music-20261112/snowtheme-f01fd70c7265.m4a","gain":0.2}'),
+  'the newest composer is left out of the credits': replace('、<a href="https://opengameart.org/content/snow-theme" target="_blank" rel="noopener" title="Snow Theme">Cleyton Kauffman</a>', ''),
   'music louder than set': replace('const MUSIC_VOLUME=.35;', 'const MUSIC_VOLUME=.7;'),
   'music skips the start of its track': replace('source.start(0,Math.min(buffer.duration,Math.max(0,((paused?pausedAt:performance.now())-started)/1000)));', 'source.start(0,5);'),
   'a late track starts from its beginning': replace('source.start(0,Math.min(buffer.duration,Math.max(0,((paused?pausedAt:performance.now())-started)/1000)));', 'source.start(0,0);'),
@@ -126,7 +129,8 @@ const MUTANTS = {
   'second track never plays': replace('music.next=(i+1)%MUSIC_TRACKS.length;', 'music.next=0;'),
   'a composer is left out of the credits': replace('、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>', ''),
   'a credit links to the wrong track': replace('<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>', '<a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>'),
-  'credits take room from the board': replace('.foot .credits{display:block;margin:0 0 -13px;', '.foot .credits{display:block;'),
+  'credits take room from the board': replace('white-space:nowrap;margin:0 0 -13px;', 'white-space:nowrap;'),
+  'a long list of composers wraps onto a second line': replace('.foot .credits{display:flex;justify-content:center;white-space:nowrap;', '.foot .credits{display:block;'),
   'credits pushed off the screen': replace('.credits{font-size:11px;', '.credits{position:fixed;top:120vh;font-size:11px;'),
   'tap marks removed': replace("ripple(i,e,hit(i)||'miss');", 'hit(i);'),
   'tap marks ignore where the finger landed': replace('const pointed=e&&(e.clientX||e.clientY);', 'const pointed=false;'),
@@ -163,9 +167,9 @@ const EQUIVALENTS = {
   },
   // A release changes the number everywhere it is written, and nothing else.
   'version bumped': async ({ html, setHtml, read, write }) => {
-    const bump = text => text.replaceAll('21.0.0', '21.0.1').replaceAll('2026-11-12', '2026-12-01');
+    const bump = text => text.replaceAll('21.1.0', '21.1.1').replaceAll('2026-11-12', '2026-12-01');
     const source = await html();
-    if (!source.includes("const VERSION = '21.0.0';")) return false;
+    if (!source.includes("const VERSION = '21.1.0';")) return false;
     await setHtml(bump(source));
     await write('README.md', bump(await read('README.md')));
     await write('CHANGELOG.md', bump(await read('CHANGELOG.md')));

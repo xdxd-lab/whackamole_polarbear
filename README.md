@@ -6,11 +6,11 @@
 
 ## 目前版本
 
-- **V21（21.0.0，2026-11-12）**：每個難度各有自己的最高分；遊戲中改難度立即生效，該局變成不計入紀錄的練習局。切換分頁時遊戲暫停，回來按「繼續」接著玩；計分與每局 30 秒不變，原有的最高分保留為「普通」的紀錄。背景音樂 Happy 與 Clappy 每局輪流；不支援 AVIF 的舊裝置也能顯示角色。
+- **V21（21.1.0，2026-11-12）**：每個難度各有自己的最高分；遊戲中改難度立即生效，該局變成不計入紀錄的練習局。切換分頁時遊戲暫停，回來按「繼續」接著玩；計分與每局 30 秒不變，原有的最高分保留為「普通」的紀錄。背景音樂四首每局輪流（Happy、Snowfall、Clappy、Snow Theme）；不支援 AVIF 的舊裝置也能顯示角色。
 - 各版變更：[CHANGELOG.md](./CHANGELOG.md)　版號規則：[docs/VERSIONING.md](./docs/VERSIONING.md)
 - 遊戲入口：[index.html](./index.html)
 - 正式角色素材（沿用 V16，未更動圖片）：[assets/v16-20260909/](./assets/v16-20260909/)
-- 背景音樂（CC0）：[assets/music-20261110/](./assets/music-20261110/)、[assets/music-20261111/](./assets/music-20261111/)，來源與作者見[音樂來源](#音樂來源)與 [CREDITS.md](./CREDITS.md)
+- 背景音樂（CC0）：[assets/music-20261110/](./assets/music-20261110/)、[assets/music-20261111/](./assets/music-20261111/)、[assets/music-20261112/](./assets/music-20261112/)，來源與作者見[音樂來源](#音樂來源)與 [CREDITS.md](./CREDITS.md)
 - 原始碼 Repository：[xdxd-lab/whackamole_polarbear](https://github.com/xdxd-lab/whackamole_polarbear)
 
 ## 遊戲規則
@@ -21,12 +21,14 @@
 
 ## 音樂來源
 
-兩首背景音樂都以 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/deed.zh_TW) 釋出，取自 OpenGameArt.org，謝謝兩位作者：
+四首背景音樂都以 [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/deed.zh_TW) 釋出，取自 OpenGameArt.org，謝謝四位作者：
 
 | 曲目 | 作者 | 授權 |
 |---|---|---|
 | [Happy synths loop with slight christmas feeling](https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling) | 3xBlast | CC0 |
+| [Snowfall](https://opengameart.org/content/snowfall) | Kistol | CC0 |
 | [Happy Clappy Loop](https://opengameart.org/content/happy-clappy-loop) | OwlishMedia | CC0 |
+| [Snow Theme](https://opengameart.org/content/snow-theme) | Cleyton Kauffman | CC0 |
 
 每局輪流播放一首。各首在遊戲中的用途與處理方式見 [CREDITS.md](./CREDITS.md)；檔案清單與雜湊在 [deployment/music.json](./deployment/music.json)，處理用的程式在 [scripts/music/](./scripts/music/)。
 
