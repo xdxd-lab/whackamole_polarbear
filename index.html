@@ -93,11 +93,15 @@
   .hole.bear-sneaky .mole{bottom:-6%;left:6%}
   @keyframes bearwarn{50%{transform:translateY(-3px) rotate(-1deg)}}
 
-  /* Touch feedback: a dot where the tap landed and a ring that spreads from it. */
+  /* Touch feedback, a small magic mallet: a see-through glow where the tap landed, a ring that
+     spreads from it and, on a hit, stars thrown outwards. Only transform and opacity move. */
   .fx{position:absolute;inset:0;pointer-events:none;z-index:5}
-  .ripple,.dot{position:absolute;border-radius:50%;transform:translate(-50%,-50%);opacity:0;--c:#6fa8d0}
-  .ripple{border:4px solid var(--c)}.dot{background:var(--c)}
-  .fx .normal{--c:#2a9d8f}.fx .bonus{--c:#ffb703}.fx .bad{--c:#ef476f}
+  .ripple,.dot,.spark{position:absolute;translate:-50% -50%;opacity:0;--c:111,168,208}
+  .ripple{border-radius:50%;border:3px solid rgba(var(--c),.7);background:radial-gradient(closest-side,rgba(var(--c),0) 55%,rgba(var(--c),.26))}
+  .dot{border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.8),rgba(var(--c),.5) 55%,rgba(var(--c),0))}
+  .spark{background:rgba(var(--c),.9);clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%)}
+  .spark.bad{clip-path:polygon(50% 0,100% 100%,0 100%)}
+  .fx .normal{--c:42,157,143}.fx .bonus{--c:255,183,3}.fx .bad{--c:239,71,111}
 
   /* Version and music credits: small and pale, in the corner, never competing with the game. */
   .foot{text-align:center}.foot span{display:inline-block}.foot span[hidden]{display:none}#bestSlot{position:relative}#practiceMark{position:absolute;left:50%;top:0;translate:-50% 0;white-space:nowrap}.credits{font-size:11px;color:#6b7f8c;margin-left:.6em}.credits a{color:inherit;text-decoration:underline;text-decoration-color:rgba(107,127,140,.45);text-underline-offset:2px}.credits a:focus-visible{outline:2px solid #1769c4;outline-offset:2px}
@@ -399,15 +403,31 @@
     const area=fx.getBoundingClientRect(),box=holes[i].getBoundingClientRect();
     const pointed=e&&(e.clientX||e.clientY);
     const x=(pointed?e.clientX:box.left+box.width/2)-area.left,y=(pointed?e.clientY:box.top+box.height/2)-area.top;
-    const size=box.width,grow=calm.matches?.5:1.5;
-    const draw=(className,from,to,opacity)=>{
-      const el=document.createElement('i');el.className=`${className} ${kind}`;el.style.left=x+'px';el.style.top=y+'px';
+    const size=box.width,still=calm.matches;
+    const draw=(className,width,frames,duration=350)=>{
+      const el=document.createElement('i');el.className=`${className} ${kind}`;
+      el.style.cssText=`left:${x}px;top:${y}px;width:${width}px;height:${width}px`;
       fx.appendChild(el);
       const remove=()=>el.remove();
-      el.animate([{opacity,width:from+'px',height:from+'px'},{opacity:0,width:to+'px',height:to+'px'}],{duration:350,easing:'ease-out'}).finished.then(remove,remove);
+      el.animate(frames,{duration,easing:'ease-out'}).finished.then(remove,remove);
     };
-    draw('ripple',size*.5,size*grow,1);
-    if(kind!=='miss')draw('dot',size*.4,size*.4,.85);
+    const fade=[{opacity:.9},{opacity:0}];
+    // The ring: widest for a hit, tighter for a bear, small and plain for an empty hole.
+    const reach=kind==='miss'?.9:kind==='bad'?1.15:1.5;
+    if(still)draw('ripple',size*.5,fade);
+    else draw('ripple',size*reach,[{opacity:.9,transform:`scale(${.5/reach})`},{opacity:0,transform:'scale(1)'}]);
+    if(kind==='miss')return;
+    // The glow under the mallet: it lands big, settles, then fades.
+    draw('dot',size*.46,still?fade:[{opacity:.95,transform:'scale(1.3)'},{opacity:.8,transform:'scale(1)',offset:.3},{opacity:0,transform:'scale(1)'}]);
+    if(still)return;
+    // Stars for a hit (more and larger for a fox), a few shards for a bear. Their direction
+    // comes from where the tap landed, never from Math.random, which belongs to the rules.
+    const count=kind==='bonus'?8:kind==='bad'?4:5,turn=(x*.37+y*.61)%6.283;
+    for(let n=0;n<count;n++){
+      const angle=turn+n*6.283/count,far=size*(kind==='bad'?.5:.6+(n%2)*.18);
+      const dx=Math.cos(angle)*far,dy=Math.sin(angle)*far;
+      draw('spark',size*(kind==='bonus'?.2:.16),[{opacity:1,transform:`translate(${dx*.3}px,${dy*.3}px) scale(.4) rotate(0deg)`},{opacity:1,offset:.55},{opacity:0,transform:`translate(${dx}px,${dy}px) scale(1) rotate(${kind==='bad'?-60:90}deg)`}],450);
+    }
   }
   function bonk(a){
     if(calm.matches)return;

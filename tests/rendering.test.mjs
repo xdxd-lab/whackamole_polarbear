@@ -117,23 +117,34 @@ test('holes do not look like default buttons', async () => {
   }
 });
 
-const marks = game => game.page.$$eval('#fx > *', elements => elements.map(element => element.className).sort());
+/** The tap marks on screen, counted by kind: { 'ripple normal': 1, 'spark normal': 5, ... }. */
+const marks = game => game.page.$$eval('#fx > *', elements => {
+  const counts = {};
+  for (const element of elements) counts[element.className] = (counts[element.className] || 0) + 1;
+  return counts;
+});
 
 test('a tap leaves a mark coloured by what it hit, which then disappears', async () => {
   const game = await Game.open(harness);
   try {
     await game.startWith('penguin', 4);
     await game.hit(0);
-    assert.deepEqual(await marks(game), ['ripple miss'], 'A tap on an empty hole shows a plain ring');
+    assert.deepEqual(await marks(game), { 'ripple miss': 1 }, 'A tap on an empty hole shows a plain ring, nothing more');
     await game.settle();
     await game.page.waitForFunction(() => document.querySelectorAll('#fx > *').length === 0);
     await game.nextSpawn('bear', 2);
     await game.hitCurrent();
-    assert.deepEqual(await marks(game), ['dot normal', 'ripple normal']);
+    assert.deepEqual(await marks(game), { 'ripple normal': 1, 'dot normal': 1, 'spark normal': 5 }, 'A hit throws stars');
     await game.settle();
     await game.advance(640);
     await game.hitCurrent();
-    assert.deepEqual(await marks(game), ['dot bad', 'ripple bad']);
+    assert.deepEqual(await marks(game), { 'ripple bad': 1, 'dot bad': 1, 'spark bad': 4 }, 'A bear throws a few shards');
+    await game.settle();
+    await game.page.waitForFunction(() => document.querySelectorAll('#fx > *').length === 0);
+    await game.nextSpawn('fox', 6);
+    await game.advance(640);
+    await game.hitCurrent();
+    assert.deepEqual(await marks(game), { 'ripple bonus': 1, 'dot bonus': 1, 'spark bonus': 8 }, 'A fox throws the most stars');
     await game.settle();
     await game.page.waitForFunction(() => document.querySelectorAll('#fx > *').length === 0);
     game.assertNoErrors();
@@ -163,6 +174,35 @@ test('a tap mark appears where the finger landed and never blocks the next tap',
   }
 });
 
+test('tap marks are see-through and cheap to draw', async () => {
+  const game = await Game.open(harness);
+  try {
+    await game.startWith('fox', 4);
+    await game.hitCurrent();
+    const seen = await game.page.$$eval('#fx > *', elements => elements.map(element => {
+      const style = getComputedStyle(element);
+      const alphas = [...`${style.borderTopWidth === '0px' ? '' : style.borderTopColor} ${style.backgroundColor} ${style.backgroundImage}`.matchAll(/rgba?\(([^)]+)\)/g)]
+        .map(match => match[1].split(/[,/ ]+/).filter(Boolean)).map(parts => (parts.length > 3 ? Number(parts[3]) : 1));
+      return {
+        kind: element.className,
+        // The most solid colour the mark is painted with.
+        solid: Math.max(...alphas.filter(alpha => alpha > 0)),
+        animated: [...new Set(element.getAnimations().flatMap(animation => animation.effect.getKeyframes()).flatMap(frame => Object.keys(frame)))].filter(key => !['offset', 'easing', 'composite', 'computedOffset'].includes(key)).sort(),
+        filter: style.filter, shadow: style.boxShadow, backdrop: style.backdropFilter || 'none',
+      };
+    }));
+    assert.equal(seen.length, 10);
+    for (const mark of seen) {
+      assert.ok(mark.solid < 1, `${mark.kind} is painted solid (${mark.solid})`);
+      assert.deepEqual(mark.animated.filter(key => key !== 'opacity' && key !== 'transform'), [], `${mark.kind} animates more than opacity and transform`);
+      assert.deepEqual([mark.filter, mark.shadow, mark.backdrop], ['none', 'none', 'none'], `${mark.kind} uses a costly effect`);
+    }
+    for (const kind of ['ripple bonus', 'dot bonus']) assert.ok(seen.find(mark => mark.kind === kind).solid <= 0.8, `${kind} must let the character show through`);
+  } finally {
+    await game.close();
+  }
+});
+
 test('reduced motion: a tap mark fades in place instead of spreading', async () => {
   const game = await Game.open(harness, { reducedMotion: 'reduce' });
   try {
@@ -175,6 +215,9 @@ test('reduced motion: a tap mark fades in place instead of spreading', async () 
       return [width(0), width(349)];
     });
     assert.equal(sizes[0], sizes[1]);
+    assert.equal(await game.page.locator('#fx .spark').count(), 0, 'Nothing may fly outwards');
+    const moving = await game.page.$$eval('#fx > *', elements => elements.flatMap(element => element.getAnimations()).flatMap(animation => animation.effect.getKeyframes()).filter(frame => 'transform' in frame).length);
+    assert.equal(moving, 0, 'Marks may only fade');
     assert.equal(await game.page.$$eval('.mole .sprite', sprites => sprites.flatMap(sprite => sprite.getAnimations()).length), 0, 'The character must not bounce');
   } finally {
     await game.close();
