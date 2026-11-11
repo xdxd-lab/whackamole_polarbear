@@ -14,6 +14,25 @@ const footer = game => game.page.evaluate(() => {
   const shown = id => { const style = getComputedStyle(document.getElementById(id)); return style.display !== 'none' && style.visibility !== 'hidden'; };
   return { best: shown('bestLine'), practice: shown('practiceMark') ? document.getElementById('practiceMark').textContent : null };
 });
+// Every 練習局 on show: how it is drawn, and its contrast against its own tint laid over white.
+const practiceWords = game => game.page.evaluate(() => {
+  const rgba = text => text.match(/[\d.]+/g).map(Number);
+  const light = ([r, g, b]) => [r, g, b].map(v => v / 255).map(v => v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4)
+    .reduce((sum, v, i) => sum + v * [0.2126, 0.7152, 0.0722][i], 0);
+  return [...document.querySelectorAll('.practice')].filter(word => word.checkVisibility({ visibilityProperty: true })).map(word => {
+    const style = getComputedStyle(word);
+    const [r, g, b, alpha = 1] = rgba(style.backgroundColor);
+    const behind = light([r, g, b].map(v => v * alpha + 255 * (1 - alpha)));
+    const slot = word.closest('#practiceMark')?.parentElement.getBoundingClientRect();
+    const mark = word.closest('#practiceMark')?.getBoundingClientRect();
+    return {
+      text: word.textContent, bold: Number(style.fontWeight) >= 700,
+      coloured: style.color !== getComputedStyle(word.parentElement).color,
+      contrast: Math.round((behind + 0.05) / (light(rgba(style.color)) + 0.05) * 10) / 10,
+      spill: slot ? Math.round(Math.max(0, mark.width - slot.width)) : 0,
+    };
+  });
+});
 const savedBests = game => game.page.evaluate(
   keys => Object.fromEntries(Object.entries(keys).map(([level, key]) => [level, localStorage.getItem(key)])), BEST_KEYS);
 let harness;
@@ -363,6 +382,11 @@ describe('input', () => {
     assert.equal(await game.number('#score'), 3, 'The round goes on with its score');
     assert.equal(await game.overlayShown(), false);
     assert.deepEqual(await footer(game), { best: false, practice: '練習局・不計紀錄' });
+    const inFooter = await practiceWords(game);
+    assert.equal(inFooter.length, 1);
+    assert.deepEqual({ ...inFooter[0], contrast: 0, spill: 0 }, { text: '練習局', bold: true, coloured: true, contrast: 0, spill: 0 });
+    assert.ok(inFooter[0].contrast >= 4.5, `Contrast ${inFooter[0].contrast}`);
+    assert.ok(inFooter[0].spill <= 6, `The mark is ${inFooter[0].spill}px wider than the line it covers`);
     // The next target already keeps the hard window.
     // After a hit the next target rises 640 ms later (pain 220 + sad 340 + 80).
     await game.nextSpawn('penguin', 4);
@@ -375,6 +399,12 @@ describe('input', () => {
     await game.advance(30_000);
     assert.equal(await game.page.textContent('#modalTitle'), '練習局結束');
     assert.match(await game.page.textContent('#modalText'), /練習局，不計入紀錄/);
+    const atTheEnd = await practiceWords(game);
+    assert.equal(atTheEnd.length, 2, 'The title and the text');
+    for (const word of atTheEnd) {
+      assert.deepEqual({ ...word, contrast: 0 }, { text: '練習局', bold: true, coloured: true, contrast: 0, spill: 0 });
+      assert.ok(word.contrast >= 4.5, `Contrast ${word.contrast}`);
+    }
     assert.equal(await game.number('#finalScore'), 3, 'The score is still shown');
     assert.deepEqual(await savedBests(game), { easy: null, normal: null, hard: null });
     assert.equal(await game.number('#best'), 0);

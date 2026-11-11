@@ -1,6 +1,7 @@
 // Pictures of the tap marks for a human review, in the engine WAM_BROWSER names: a hit on a
 // penguin, a fox and a bear, and a tap on an empty hole, each frozen part-way through.
-// Writes test-results/screens/<browser>/tap-<kind>.png. Checks nothing.
+// Then the practice round's mark and its end. Writes test-results/screens/<browser>/tap-<kind>.png
+// and practice-{footer,end}.png. Checks nothing.
 import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { BROWSER_NAME } from '../tests/support/browser.mjs';
@@ -29,7 +30,20 @@ try {
       await game.close();
     }
   }
-  console.log(`4 tap mark pictures in ${path.relative(ROOT, out)}`);
+  // The practice round, on the smallest landscape screen: its mark in the footer, then its end.
+  const game = await Game.open(harness, { viewport: { width: 640, height: 360 } });
+  try {
+    await game.startWith('fox', 4);
+    await game.choose('hard');
+    await game.settle();
+    await game.page.screenshot({ path: path.join(out, 'practice-footer.png') });
+    await game.advance(30_000);
+    await game.settle();
+    await game.page.screenshot({ path: path.join(out, 'practice-end.png') });
+  } finally {
+    await game.close();
+  }
+  console.log(`4 tap mark and 2 practice round pictures in ${path.relative(ROOT, out)}`);
 } finally {
   await harness.close();
 }

@@ -104,7 +104,7 @@
   .fx .normal{--c:42,157,143}.fx .bonus{--c:255,183,3}.fx .bad{--c:239,71,111}
 
   /* Version and music credits: small and pale, in the corner, never competing with the game. */
-  .foot{text-align:center}.foot span{display:inline-block}.foot span[hidden]{display:none}#bestSlot{position:relative}#practiceMark{position:absolute;left:50%;top:0;translate:-50% 0;white-space:nowrap}.credits{font-size:11px;color:#6b7f8c;margin-left:.6em}.credits a{color:inherit;text-decoration:underline;text-decoration-color:rgba(107,127,140,.45);text-underline-offset:2px}.credits a:focus-visible{outline:2px solid #1769c4;outline-offset:2px}
+  .foot{text-align:center}.foot span{display:inline-block}.foot span[hidden]{display:none}#bestSlot{position:relative}#practiceMark{position:absolute;left:50%;top:0;translate:-50% 0;white-space:nowrap}.practice{color:#9a3c06;font-weight:800;background:rgba(255,183,3,.24);border-radius:.4em;padding:0 .2em}.credits{font-size:11px;color:#6b7f8c;margin-left:.6em}.credits a{color:inherit;text-decoration:underline;text-decoration-color:rgba(107,127,140,.45);text-underline-offset:2px}.credits a:focus-visible{outline:2px solid #1769c4;outline-offset:2px}
   /* Where the credits need a line of their own, that line sits in the page's bottom margin and takes no height from the game. */
   @media(max-width:560px),(orientation:landscape) and (max-height:560px){.foot .credits{display:flex;justify-content:center;white-space:nowrap;margin:0 0 -13px;font-size:10.5px;line-height:13px}.foot .credits a{min-width:0;overflow:hidden;text-overflow:ellipsis}.foot .credits .label{display:none}.foot .credits:before{content:"♪ "}}
 
@@ -168,7 +168,7 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden>練習局・不計紀錄</span></span> · 版本 21.2.0（2026-11-12）</span> <span class="credits"><span class="label">音樂：</span><a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/snowfall" target="_blank" rel="noopener" title="Snowfall">Kistol</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>、<a href="https://opengameart.org/content/snow-theme" target="_blank" rel="noopener" title="Snow Theme">Cleyton Kauffman</a><span class="label">（CC0）</span></span></div>
+  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden><b class="practice">練習局</b>・不計紀錄</span></span> · 版本 21.2.0（2026-11-12）</span> <span class="credits"><span class="label">音樂：</span><a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/snowfall" target="_blank" rel="noopener" title="Snowfall">Kistol</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>、<a href="https://opengameart.org/content/snow-theme" target="_blank" rel="noopener" title="Snow Theme">Cleyton Kauffman</a><span class="label">（CC0）</span></span></div>
 </main>
 <script>(async () => {
   'use strict';
@@ -525,14 +525,14 @@
     if(!running)return;
     running=false;paused=false;session++;clearTimers();clearInterval(clockTimer);resetAll();
     stopMusic();beep(260,.09,'triangle');
-    if(practice)$('modalTitle').textContent='練習局結束';
+    if(practice)$('modalTitle').innerHTML='<span class="practice">練習局</span>結束';
     else if(score>bests[roundLevel]){
       bests[roundLevel]=score;try{localStorage.setItem(BEST_KEYS[roundLevel],String(score));}catch(_){}
       $('modalTitle').textContent='🏆 新紀錄！';
     }else $('modalTitle').textContent='時間到！';
     $('finalScore').textContent=score;$('finalScore').hidden=false;
     $('modalText').innerHTML=practice
-      ?`<b>練習局，不計入紀錄</b>（這局中途改了難度）。你得到 <b>${score}</b> 分，最高連擊 <b>${maxCombo}</b>。再玩一次就是正式局。`
+      ?`<b><span class="practice">練習局</span>，不計入紀錄</b>（這局中途改了難度）。你得到 <b>${score}</b> 分，最高連擊 <b>${maxCombo}</b>。再玩一次就是正式局。`
       :`你這局得到 <b>${score}</b> 分，最高連擊 <b>${maxCombo}</b>。再來一局挑戰更高分吧！`;
     showBest();
     modalBtn.textContent='再玩一次';overlay.classList.add('show');update();
