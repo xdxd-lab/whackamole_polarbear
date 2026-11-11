@@ -295,7 +295,7 @@ describe('input', () => {
     await game.advance(200);
     await setHidden(game, true);
     assert.equal(await game.overlayShown(), true);
-    assert.equal(await game.text('#modalTitle'), '暫停中');
+    assert.equal(await game.page.textContent('#modalTitle'), '暫停中');
     const time = await game.number('#time');
     await game.advance(60_000);
     assert.equal(await game.number('#time'), time, 'The clock must stand still');
@@ -320,7 +320,7 @@ describe('input', () => {
     await game.advance(19_999);
     assert.equal(await game.overlayShown(), false);
     await game.advance(1);
-    assert.equal(await game.text('#modalTitle'), '時間到！');
+    assert.equal(await game.page.textContent('#modalTitle'), '時間到！');
   }));
 
   test('a target keeps the rest of its window after a pause', () => play(async game => {
