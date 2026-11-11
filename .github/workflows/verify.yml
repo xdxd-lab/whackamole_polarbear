@@ -39,6 +39,10 @@ jobs:
         run: npx playwright install-deps chromium
       - name: Verify assets, rules and recorded behaviour
         run: npm test
+      # For people reviewing a layout change: every layout size, start screen and mid-round.
+      - name: Take review screenshots
+        if: always()
+        run: node scripts/screenshots.mjs
       - name: Save audit and screenshot
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -101,6 +105,11 @@ jobs:
         # An experimental engine may fail here without failing the job; the next step says so out loud.
         continue-on-error: ${{ matrix.experimental }}
         run: npm test
+        env:
+          WAM_BROWSER: ${{ matrix.browser }}
+      - name: Take review screenshots
+        if: always()
+        run: node scripts/screenshots.mjs
         env:
           WAM_BROWSER: ${{ matrix.browser }}
       - name: Report a failure that does not block
