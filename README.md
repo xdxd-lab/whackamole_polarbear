@@ -1,5 +1,7 @@
 # 雪地敲敲樂 · Whackamole Polarbear
 
+[![Verify game](https://github.com/xdxd-lab/whackamole_polarbear/actions/workflows/verify.yml/badge.svg?branch=main)](https://github.com/xdxd-lab/whackamole_polarbear/actions/workflows/verify.yml)
+
 **[開始遊戲（GitHub Pages）](https://xdxd-lab.github.io/whackamole_polarbear/)**
 
 使用瀏覽器即可遊玩，不需要下載或安裝。手機可觸控操作，電腦可使用滑鼠。
@@ -34,7 +36,7 @@
 
 ## 自動化驗證
 
-每次推送至 `main`、提出 Pull Request 或手動執行時，GitHub Actions 會在 Chromium 跑完下列檢查。測試只觀察玩家看得到的結果（畫面、音效、震動、儲存的最高分），所以整理或搬動程式碼不會誤判。
+每次推送至 `main`、提出 Pull Request 或手動執行時，GitHub Actions 會在 Chromium、Firefox、WebKit 三種瀏覽器各跑一次下列檢查（突變檢查只在 Chromium，分 5 組平行執行）。8 個工作全部通過才能合併到 `main`。測試只觀察玩家看得到的結果（畫面、音效、震動、儲存的最高分），所以整理或搬動程式碼不會誤判。
 
 | 檢查 | 內容 |
 |---|---|
@@ -43,19 +45,36 @@
 | 規則測試 | 分數、連擊、機率、三種難度的毫秒時序、30 秒、BEST_KEY、音效與輸入 |
 | 整局重播 | 固定時鐘與亂數重播五局，逐行比對 V18 的錄製結果 |
 | 畫面狀態 | 三種角色 × 五種狀態 × 三種視窗的計算後樣式與顯示影格 |
+| 版面 | 16 種螢幕尺寸下，每個控制項都在畫面內且點得到；頁面不需捲動 |
+| 舊裝置 | 不支援 AVIF 時改用 WebP 或 PNG；圖片損毀或無法解碼時停下並顯示訊息 |
 | 突變檢查 | 故意改壞規則確認測試會失敗，並確認等價重構不會誤判 |
 | 版號一致 | 頁面、README 與 CHANGELOG 寫的版號與日期必須相同 |
 
-本機執行（`node` 需為 22 以上）：
+每次執行還會為各螢幕尺寸拍下截圖，連同檢查報告存成該次執行的產出，供審查版面改動時查看。
+
+本機執行（`node` 需為 22 以上；完整說明見 [CONTRIBUTING.md](./CONTRIBUTING.md)）：
 
 ```sh
 npm install --no-package-lock
 npx playwright install chromium
 npm test                # 等同 node scripts/verify-assets.mjs
-npm run test:mutation
+node scripts/mutation-check.mjs --strict --only "penguin +1 becomes +5"   # 突變檢查很重，本機一次只跑一項
 ```
 
 確定要變更行為時，才用 `UPDATE_GOLDEN=1 node --test "tests/**/*.test.mjs"` 更新錄製檔。
+
+## 文件
+
+| 文件 | 內容 |
+|---|---|
+| [CHANGELOG.md](./CHANGELOG.md) | 每一版玩家感受得到的變更 |
+| [CONTRIBUTING.md](./CONTRIBUTING.md) | 怎麼在本機執行檢查、怎麼送出改動 |
+| [docs/ENGINEERING.md](./docs/ENGINEERING.md) | 工程筆記：測試策略、突變檢查、三種瀏覽器、CI、發布流程、素材授權，以及踩過的坑 |
+| [docs/VERSIONING.md](./docs/VERSIONING.md) | 版號規則與發版步驟 |
+| [CREDITS.md](./CREDITS.md) | 素材來源、作者與授權，以及對原作做的處理 |
+| [scripts/music/README.md](./scripts/music/README.md) | 背景音樂的處理方式與音量校正 |
+
+## 相關連結
 
 - [驗證工作流程](./.github/workflows/verify.yml)
 - [素材核對程式](./scripts/verify-assets.mjs)
