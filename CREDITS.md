@@ -13,6 +13,8 @@
 | 3 | Happy Clappy Loop | OwlishMedia | <https://opengameart.org/content/happy-clappy-loop> | CC0 1.0 |
 | 4 | Snow Theme | Cleyton Kauffman | <https://opengameart.org/content/snow-theme> | CC0 1.0 |
 
+Snow Theme 的作者希望這樣署名：Music by Cleyton Kauffman - <https://soundcloud.com/cleytonkauffman>
+
 ### 我們對原曲做了什麼
 
 一局是 30 秒，所以每首都做成 31 秒的檔案，結尾淡出 1 秒，響度調到 -18 LUFS。沒有更動旋律、速度或音色。

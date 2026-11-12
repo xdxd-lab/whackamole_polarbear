@@ -233,9 +233,12 @@ test('each track is played at the level chosen for it by ear', () => {
 test('the page credits every composer, with a link to the source of each track', async () => {
   const game = await Game.open(harness);
   try {
-    const shown = await game.page.$$eval('.credits a', links => links.map(link => ({ author: link.textContent, source: link.href, title: link.title, newTab: link.target === '_blank' && link.rel.includes('noopener') })));
+    const shown = await game.page.$$eval('.credits .names a', links => links.map(link => ({ author: link.textContent, source: link.href, title: link.title, newTab: link.target === '_blank' && link.rel.includes('noopener') })));
     assert.deepEqual(shown, manifest.tracks.map(track => ({ author: track.author, source: track.source, title: track.title, newTab: true })));
     assert.match(await game.page.textContent('.credits'), /CC0/);
+    // Where the names do not fit, one link stands for them; it leads to the full credits.
+    const short = await game.page.$eval('.credits .short', link => ({ text: link.textContent, href: link.href, newTab: link.target === '_blank' && link.rel.includes('noopener') }));
+    assert.deepEqual(short, { text: `音樂：${manifest.tracks.length} 位作者（CC0）`, href: 'https://github.com/xdxd-lab/whackamole_polarbear/blob/main/CREDITS.md', newTab: true });
   } finally {
     await game.close();
   }

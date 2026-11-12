@@ -106,10 +106,15 @@ const MUTANTS = {
   'score message back in one fixed place': replace("el.style.top=Math.max(box.top-area.top+10,el.offsetHeight+2)+'px';", ''),
   'score message may cover the scoreboard': replace('Math.max(box.top-area.top+10,el.offsetHeight+2)', '(box.top-area.top+10)'),
   'score message may leave the board area': replace('area.width-half)', 'area.width+half)'),
-  'version changed in the script but not on the page': replace("const VERSION = '21.2.1';", "const VERSION = '21.2.2';"),
-  'version shown without its release date': replace('· 版本 21.2.1<span class="date">（2026-11-12）</span>', '· 版本 21.2.1'),
+  'version changed in the script but not on the page': replace("const VERSION = '21.2.2';", "const VERSION = '21.2.3';"),
+  'version shown without its release date': replace('· 版本 21.2.2<span class="date">（2026-11-12）</span>', '· 版本 21.2.2'),
   'small screens keep the release date in the footer': replace('@container (max-width:330px){.foot .date{display:none}}', ''),
   'footer line free to break': replace('.foot>span:first-child{white-space:nowrap}', ''),
+  'a narrow footer cuts the composers short': replace("credits.classList.toggle('brief',cut);", ''),
+  'the short credits lead nowhere': replace('<a class="short" href="https://github.com/xdxd-lab/whackamole_polarbear/blob/main/CREDITS.md" target="_blank" rel="noopener">', '<a class="short" href="#">'),
+  'the short credits replace the composers everywhere': replace("credits.classList.toggle('brief',cut);", "credits.classList.add('brief');"),
+  'the credits are fitted once and never again': replace("addEventListener('resize',fitCredits);", ''),
+  'the short credits keep the names beside them': replace('.credits.brief .names,.credits.brief .label{display:none}', '.credits.brief .label{display:none}'),
   'music starts with the page instead of the round': replace('  track(MUSIC_TRACKS.length-1);\n', '  track(MUSIC_TRACKS.length-1);running=true;playMusic();running=false;\n'),
   'same track every round': replace('music.next=(i+1)%MUSIC_TRACKS.length;', 'music.next=0;'),
   'music ignores the sound switch': replace('if(music.gain)music.gain.gain.setTargetAtTime(soundOn?MUSIC_VOLUME:0,audioCtx.currentTime,.03);', ''),
@@ -177,9 +182,9 @@ const EQUIVALENTS = {
   },
   // A release changes the number everywhere it is written, and nothing else.
   'version bumped': async ({ html, setHtml, read, write }) => {
-    const bump = text => text.replaceAll('21.2.1', '21.2.2').replaceAll('2026-11-12', '2026-12-01');
+    const bump = text => text.replaceAll('21.2.2', '21.2.3').replaceAll('2026-11-12', '2026-12-01');
     const source = await html();
-    if (!source.includes("const VERSION = '21.2.1';")) return false;
+    if (!source.includes("const VERSION = '21.2.2';")) return false;
     await setHtml(bump(source));
     await write('README.md', bump(await read('README.md')));
     await write('CHANGELOG.md', bump(await read('CHANGELOG.md')));
