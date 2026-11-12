@@ -104,7 +104,9 @@
   .fx .normal{--c:42,157,143}.fx .bonus{--c:255,183,3}.fx .bad{--c:239,71,111}
 
   /* Version and music credits: small and pale, in the corner, never competing with the game. */
-  .foot{text-align:center;container-type:inline-size}.foot span{display:inline-block}.foot>span:first-child{white-space:nowrap}@container (max-width:330px){.foot .date{display:none}}.foot span[hidden]{display:none}#bestSlot{position:relative}#practiceMark{position:absolute;left:50%;top:0;translate:-50% 0;white-space:nowrap}.practice{color:#9a3c06;font-weight:800;background:rgba(255,183,3,.24);border-radius:.4em;padding:0 .2em}.credits{font-size:11px;color:#6b7f8c;margin-left:.6em}.credits a{color:inherit;text-decoration:underline;text-decoration-color:rgba(107,127,140,.45);text-underline-offset:2px}.credits a:focus-visible{outline:2px solid #1769c4;outline-offset:2px}
+  .foot{text-align:center;container-type:inline-size}.foot span{display:inline-block}.foot>span:first-child{white-space:nowrap}@container (max-width:330px){.foot .date{display:none}}.foot span[hidden]{display:none}#bestSlot{position:relative}#practiceMark{position:absolute;left:50%;top:0;translate:-50% 0;white-space:nowrap}.practice{color:#9a3c06;font-weight:800;background:rgba(255,183,3,.24);border-radius:.4em;padding:0 .2em}.credits{font-size:11px;color:#6b7f8c;margin-left:.6em}.credits a{color:inherit;text-decoration:underline;text-decoration-color:rgba(107,127,140,.45);text-underline-offset:2px}.credits a:focus-visible{outline:2px solid #1769c4;outline-offset:2px}.credits .names{display:contents}.credits .short{display:none}
+  /* Four names need about 260px. A footer narrower than 270px shows one link to the full credits instead of cutting each name short. */
+  @container (max-width:269.99px){.foot .credits .names,.foot .credits .label{display:none}.foot .credits .short{display:inline}}
   /* Where the credits need a line of their own, that line sits in the page's bottom margin and takes no height from the game. */
   @media(max-width:560px),(orientation:landscape) and (max-height:560px){.foot .credits{display:flex;justify-content:center;white-space:nowrap;margin:0 0 -13px;font-size:10.5px;line-height:13px}.foot .credits a{min-width:0;overflow:hidden;text-overflow:ellipsis}.foot .credits .label{display:none}.foot .credits:before{content:"♪ "}}
 
@@ -168,11 +170,11 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden><b class="practice">練習局</b>・不計紀錄</span></span> · 版本 21.2.1<span class="date">（2026-11-12）</span></span> <span class="credits"><span class="label">音樂：</span><a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/snowfall" target="_blank" rel="noopener" title="Snowfall">Kistol</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>、<a href="https://opengameart.org/content/snow-theme" target="_blank" rel="noopener" title="Snow Theme">Cleyton Kauffman</a><span class="label">（CC0）</span></span></div>
+  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden><b class="practice">練習局</b>・不計紀錄</span></span> · 版本 21.2.2<span class="date">（2026-11-12）</span></span> <span class="credits"><span class="label">音樂：</span><span class="names"><a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/snowfall" target="_blank" rel="noopener" title="Snowfall">Kistol</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>、<a href="https://opengameart.org/content/snow-theme" target="_blank" rel="noopener" title="Snow Theme">Cleyton Kauffman</a></span><span class="label">（CC0）</span><a class="short" href="https://github.com/xdxd-lab/whackamole_polarbear/blob/main/CREDITS.md" target="_blank" rel="noopener">音樂：4 位作者（CC0）</a></span></div>
 </main>
 <script>(async () => {
   'use strict';
-  const VERSION = '21.2.1';
+  const VERSION = '21.2.2';
   const BEST_KEY = 'wam_best_20260904v7';
   // One best score per difficulty. Normal keeps the key every earlier version wrote to.
   const BEST_KEYS = {easy: BEST_KEY+'_easy', normal: BEST_KEY, hard: BEST_KEY+'_hard'};

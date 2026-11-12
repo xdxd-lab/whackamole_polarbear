@@ -2,6 +2,21 @@
 
 這裡記錄玩家會感受到的變更，最新的在最上面。版號怎麼決定見 [docs/VERSIONING.md](./docs/VERSIONING.md)。
 
+## [21.2.2] - 2026-11-12
+
+### 修正
+
+- 最小的橫向螢幕（例如 568×320）上，頁尾的音樂致謝不再把四位作者的名字各截成「3xBl…」。頁尾窄於 270px 時改顯示一個連結「♪ 音樂：4 位作者（CC0）」，點了在新分頁開啟完整的 [致謝與素材來源](./CREDITS.md)；其他螢幕照舊直接列出四位作者。
+
+### 文件
+
+- CREDITS.md 補上 Snow Theme 作者希望的署名：Music by Cleyton Kauffman - <https://soundcloud.com/cleytonkauffman>。
+
+### 給開發者
+
+- 版面測試新增「音樂致謝不被截斷」，每個螢幕尺寸、三種瀏覽器都檢查；致謝連結的測試改為依畫面上實際顯示的那一個。
+- 截圖腳本的頁尾截圖沿用 568×320 與 640×360，前者是短版連結、後者是四位作者。
+
 ## [21.2.1] - 2026-11-12
 
 ### 修正
@@ -150,6 +165,7 @@ V20 改了一局進行中的兩條規則；計分方式、每局 30 秒與各難
 
 V15 以前沒有留下逐版紀錄，可以從 git 歷史查到。
 
+[21.2.2]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v21.2.2
 [21.2.1]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v21.2.1
 [21.2.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v21.2.0
 [21.1.0]: https://github.com/xdxd-lab/whackamole_polarbear/releases/tag/v21.1.0

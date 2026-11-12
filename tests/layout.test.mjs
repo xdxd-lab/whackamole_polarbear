@@ -22,6 +22,9 @@ const inspect = (game, selectors) => game.page.evaluate(list => Object.fromEntri
   }];
 })), selectors);
 
+/** The last link of the music credits that is on show: the last composer, or the one link that stands for them all. */
+const lastCredit = game => game.page.evaluate(() => getComputedStyle(document.querySelector('.credits .short')).display === 'none' ? '.credits .names a:last-of-type' : '.credits .short');
+
 function assertInside(boxes, label) {
   for (const [selector, box] of Object.entries(boxes)) {
     assert.ok(box.inside, `${label}: ${selector} is cut off (${JSON.stringify(box)})`);
@@ -38,7 +41,7 @@ for (const [width, height] of VIEWPORTS) {
       const game = await Game.open(harness, { viewport });
       try {
         await game.startWith('penguin');
-        assertInside(await inspect(game, ['#startBtn', '#difficulty', '#soundBtn', '#score', '#time', '#best', '.credits', '.credits a:last-of-type']), label);
+        assertInside(await inspect(game, ['#startBtn', '#difficulty', '#soundBtn', '#score', '#time', '#best', '.credits', await lastCredit(game)]), label);
         assert.equal(await game.page.evaluate(() => document.scrollingElement.scrollHeight <= innerHeight), true, 'Page content is taller than the screen');
       } finally {
         await game.close();
@@ -70,7 +73,7 @@ for (const [width, height] of VIEWPORTS) {
         const before = await boxes();
         await game.choose('easy');
         const marked = await boxes();
-        assertInside(await inspect(game, ['#practiceMark', '#startBtn', '.credits a:last-of-type']), label);
+        assertInside(await inspect(game, ['#practiceMark', '#startBtn', await lastCredit(game)]), label);
         for (const side of ['left', 'width']) assert.ok(Math.abs(marked['.foot'][side] - before['.foot'][side]) < 0.5, `${label}: the practice mark changes the footer's ${side}`);
         for (const selector of Object.keys(marked)) {
           for (const side of ['top', 'bottom', 'height']) {
@@ -105,6 +108,24 @@ for (const [width, height] of VIEWPORTS) {
         } finally {
           await game.close();
         }
+      }
+    });
+
+    test('the music credits are never cut short', async () => {
+      const game = await Game.open(harness, { viewport });
+      try {
+        const credits = await game.page.evaluate(() => {
+          const shown = selector => [...document.querySelectorAll(selector)].filter(link => getComputedStyle(link).display !== 'none' && link.getClientRects().length);
+          const cut = links => links.filter(link => link.scrollWidth > link.clientWidth && getComputedStyle(link).overflow !== 'visible').map(link => link.textContent);
+          const [names, short] = [shown('.credits .names a'), shown('.credits .short')];
+          return { width: document.querySelector('.foot').getBoundingClientRect().width, names: names.length, short: short.length, cut: cut([...names, ...short]) };
+        });
+        // Like the release date, the short form goes by the room the footer has, not by the fonts of one machine.
+        const narrow = credits.width < 270;
+        assert.deepEqual([credits.names, credits.short], narrow ? [0, 1] : [4, 0], `${label}: a footer ${credits.width}px wide shows ${credits.names} composers and ${credits.short} short link`);
+        assert.deepEqual(credits.cut, [], `${label}: the credits are cut short`);
+      } finally {
+        await game.close();
       }
     });
 
