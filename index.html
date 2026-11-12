@@ -105,8 +105,8 @@
 
   /* Version and music credits: small and pale, in the corner, never competing with the game. */
   .foot{text-align:center;container-type:inline-size}.foot span{display:inline-block}.foot>span:first-child{white-space:nowrap}@container (max-width:330px){.foot .date{display:none}}.foot span[hidden]{display:none}#bestSlot{position:relative}#practiceMark{position:absolute;left:50%;top:0;translate:-50% 0;white-space:nowrap}.practice{color:#9a3c06;font-weight:800;background:rgba(255,183,3,.24);border-radius:.4em;padding:0 .2em}.credits{font-size:11px;color:#6b7f8c;margin-left:.6em}.credits a{color:inherit;text-decoration:underline;text-decoration-color:rgba(107,127,140,.45);text-underline-offset:2px}.credits a:focus-visible{outline:2px solid #1769c4;outline-offset:2px}.credits .names{display:contents}.credits .short{display:none}
-  /* Four names need about 260px. A footer narrower than 270px shows one link to the full credits instead of cutting each name short. */
-  @container (max-width:269.99px){.foot .credits .names,.foot .credits .label{display:none}.foot .credits .short{display:inline}}
+  /* Where the names would be cut short, one link to the full credits stands for them (fitCredits). */
+  .credits.brief .names,.credits.brief .label{display:none}.credits.brief .short{display:inline}
   /* Where the credits need a line of their own, that line sits in the page's bottom margin and takes no height from the game. */
   @media(max-width:560px),(orientation:landscape) and (max-height:560px){.foot .credits{display:flex;justify-content:center;white-space:nowrap;margin:0 0 -13px;font-size:10.5px;line-height:13px}.foot .credits a{min-width:0;overflow:hidden;text-overflow:ellipsis}.foot .credits .label{display:none}.foot .credits:before{content:"♪ "}}
 
@@ -260,6 +260,16 @@
     $('bestLine').style.visibility=mark?'hidden':'';$('practiceMark').hidden=!mark;
   }
   showBest();
+  // The composers are listed by name where the names fit. How wide they are depends on the fonts
+  // of the device, so the page measures them: if any would be cut short, one link stands for them all.
+  const credits=document.querySelector('.credits');
+  function fitCredits(){
+    credits.classList.remove('brief');
+    const text=document.createRange();
+    const cut=[...credits.querySelectorAll('.names a')].some(link=>{text.selectNodeContents(link);return text.getBoundingClientRect().width>link.getBoundingClientRect().width+.5;});
+    credits.classList.toggle('brief',cut);
+  }
+  fitCredits();addEventListener('resize',fitCredits);document.fonts?.ready.then(fitCredits);
   // Audio may only start from the player's tap; start() calls this first.
   function audio(){
     try {

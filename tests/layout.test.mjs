@@ -114,16 +114,70 @@ for (const [width, height] of VIEWPORTS) {
     test('the music credits are never cut short', async () => {
       const game = await Game.open(harness, { viewport });
       try {
-        const credits = await game.page.evaluate(() => {
-          const shown = selector => [...document.querySelectorAll(selector)].filter(link => getComputedStyle(link).display !== 'none' && link.getClientRects().length);
-          const cut = links => links.filter(link => link.scrollWidth > link.clientWidth && getComputedStyle(link).overflow !== 'visible').map(link => link.textContent);
-          const [names, short] = [shown('.credits .names a'), shown('.credits .short')];
-          return { width: document.querySelector('.foot').getBoundingClientRect().width, names: names.length, short: short.length, cut: cut([...names, ...short]) };
+        // How wide the names are depends on the fonts of the machine, so this measures rather than
+        // expects a width: the names are listed wherever they fit, and only there.
+        const read = () => game.page.evaluate(() => {
+          const credits = document.querySelector('.credits');
+          const shown = selector => [...credits.querySelectorAll(selector)].filter(link => link.getClientRects().length);
+          const cut = links => links.filter(link => {
+            const text = document.createRange();
+            text.selectNodeContents(link);
+            return text.getBoundingClientRect().width > link.getBoundingClientRect().width + 0.5;
+          }).map(link => link.textContent);
+          const state = { names: shown('.names a').length, short: shown('.short').length, cut: cut([...shown('.names a'), ...shown('.short')]) };
+          // Would the names have fitted, had the page listed them?
+          const brief = credits.classList.contains('brief');
+          credits.classList.remove('brief');
+          state.namesFit = cut(shown('.names a')).length === 0;
+          credits.classList.toggle('brief', brief);
+          return state;
         });
-        // Like the release date, the short form goes by the room the footer has, not by the fonts of one machine.
-        const narrow = credits.width < 270;
-        assert.deepEqual([credits.names, credits.short], narrow ? [0, 1] : [4, 0], `${label}: a footer ${credits.width}px wide shows ${credits.names} composers and ${credits.short} short link`);
-        assert.deepEqual(credits.cut, [], `${label}: the credits are cut short`);
+        const check = (credits, when) => {
+          assert.deepEqual(credits.cut, [], `${label}${when}: the credits are cut short`);
+          assert.deepEqual([credits.names > 0, credits.short], credits.namesFit ? [true, 0] : [false, 1], `${label}${when}: the names ${credits.namesFit ? 'fit' : 'do not fit'}, yet the footer shows ${credits.names} of them and ${credits.short} short link`);
+        };
+        check(await read(), '');
+        // Two more composers than today, and the screen turned or resized: the page fits the credits again.
+        const listed = await game.page.evaluate(() => {
+          const names = document.querySelector('.credits .names');
+          for (const name of ['A Fifth Composer', 'A Sixth Composer']) {
+            const link = names.querySelector('a').cloneNode();
+            link.textContent = name;
+            names.append('、', link);
+          }
+          dispatchEvent(new Event('resize'));
+          return names.querySelectorAll('a').length;
+        });
+        const longer = await read();
+        check(longer, ' with six composers');
+        if (longer.names) assert.equal(longer.names, listed, `${label}: only ${longer.names} of ${listed} composers are listed`);
+        // The smallest landscape screens have no room for six names in any font.
+        if (width <= 568 && height <= 320) assert.equal(longer.short, 1, `${label}: six composers cannot fit a footer this narrow`);
+      } finally {
+        await game.close();
+      }
+    });
+
+    test('more composers than fit stay on one line', async () => {
+      const game = await Game.open(harness, { viewport });
+      try {
+        // Where the credits have a line of their own, that line is in the page's bottom margin: a second
+        // line would fall off the screen. Two more composers than today must shorten the names, not wrap.
+        const line = await game.page.evaluate(() => {
+          const credits = document.querySelector('.credits');
+          // On their own line the credits drop the words around the names.
+          const ownLine = getComputedStyle(credits.querySelector('.label')).display === 'none';
+          const names = credits.querySelector('.names');
+          const height = () => credits.getBoundingClientRect().height;
+          const before = height();
+          for (const name of ['A Fifth Composer', 'A Sixth Composer']) {
+            const link = names.querySelector('a').cloneNode();
+            link.textContent = name;
+            names.append('、', link);
+          }
+          return { ownLine, listed: getComputedStyle(names).display !== 'none', before, after: height() };
+        });
+        if (line.ownLine && line.listed) assert.ok(Math.abs(line.after - line.before) < 0.5, `${label}: six composers make the credits ${line.after}px high, not the ${line.before}px of one line`);
       } finally {
         await game.close();
       }
