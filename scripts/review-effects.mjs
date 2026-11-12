@@ -1,7 +1,7 @@
 // Pictures of the tap marks for a human review, in the engine WAM_BROWSER names: a hit on a
 // penguin, a fox and a bear, and a tap on an empty hole, each frozen part-way through.
 // Then the practice round's mark and its end. Writes test-results/screens/<browser>/tap-<kind>.png
-// and practice-{footer,end}.png. Checks nothing.
+// practice-{footer,end}.png and footer-<width>x<height>.png. Checks nothing.
 import { mkdir } from 'node:fs/promises';
 import path from 'node:path';
 import { BROWSER_NAME } from '../tests/support/browser.mjs';
@@ -11,9 +11,9 @@ import { ROOT } from '../tests/support/server.mjs';
 const out = path.join(ROOT, 'test-results', 'screens', BROWSER_NAME);
 await mkdir(out, { recursive: true });
 const harness = await startHarness();
-/** Stops every tap mark a given part of the way through its animation. */
+/** Stops every tap mark, and the score that floats up, a given part of the way through its animation. */
 const freeze = (game, part) => game.page.evaluate(at => {
-  for (const mark of document.querySelectorAll('#fx > *')) {
+  for (const mark of document.querySelectorAll('#fx > *, #toast')) {
     for (const animation of mark.getAnimations()) { animation.pause(); animation.currentTime = animation.effect.getComputedTiming().duration * at; }
   }
 }, part);
@@ -43,7 +43,16 @@ try {
   } finally {
     await game.close();
   }
-  console.log(`4 tap mark and 2 practice round pictures in ${path.relative(ROOT, out)}`);
+  // The footer where it has the least room, with a record of three digits.
+  for (const [width, height] of [[568, 320], [640, 360]]) {
+    const small = await Game.open(harness, { viewport: { width, height }, storage: { wam_best_20260904v7: '888' } });
+    try {
+      await small.page.screenshot({ path: path.join(out, `footer-${width}x${height}.png`) });
+    } finally {
+      await small.close();
+    }
+  }
+  console.log(`4 tap mark, 2 practice round and 2 footer pictures in ${path.relative(ROOT, out)}`);
 } finally {
   await harness.close();
 }
