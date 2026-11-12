@@ -74,6 +74,13 @@ node scripts/mutation-check.mjs --strict --only "penguin +1 becomes +5"   # 突�
 | [CREDITS.md](./CREDITS.md) | 素材來源、作者與授權，以及對原作做的處理 |
 | [scripts/music/README.md](./scripts/music/README.md) | 背景音樂的處理方式與音量校正 |
 
+## 授權
+
+這個 repository 沒有附授權條款（沒有 LICENSE 檔）。
+
+- **程式碼與角色圖：保留所有權利，不開放重用。** 可以在 GitHub 上瀏覽，也可以玩線上的遊戲；複製、修改、再散布或用在其他專案之前，請先開 issue 取得同意。
+- **背景音樂：CC0。** 音樂是各作者以 CC0 釋出的作品，不受上面的限制；曲名、作者與來源見 [CREDITS.md](./CREDITS.md)。
+
 ## 相關連結
 
 - [驗證工作流程](./.github/workflows/verify.yml)
