@@ -232,23 +232,37 @@ describe('timing', () => {
     assert.equal(await game.state(), 'sneaky');
   }));
 
-  test('after a hit: pain 220 ms, sad 340 ms, then 80 ms until the next spawn', () => play(async game => {
-    await game.startWith('penguin');
-    await game.nextSpawn('fox', 3);
-    await game.hitCurrent();
-    await game.advance(219);
-    assert.equal(await game.state(), 'pain');
-    await game.advance(1);
-    assert.equal(await game.state(), 'sad');
-    await game.advance(339);
-    assert.equal(await game.state(), 'sad');
-    await game.advance(1);
-    assert.equal(await game.activeIndex(), -1);
-    await game.advance(79);
-    assert.equal(await game.activeIndex(), -1);
-    await game.advance(1);
-    assert.equal(await game.activeIndex(), 3);
-  }));
+  for (const [difficulty, timing] of Object.entries(DIFFICULTY)) {
+    const { pain, sad, rest } = timing;
+    test(`${difficulty}: after a hit, pain ${pain} ms, sad ${sad} ms, then ${rest} ms until the next spawn`, () => play(async game => {
+      await game.startWith('penguin', 0, { difficulty });
+      await game.nextSpawn('fox', 3);
+      await game.hitCurrent();
+      await game.advance(pain - 1);
+      assert.equal(await game.state(), 'pain');
+      await game.advance(1);
+      assert.equal(await game.state(), 'sad');
+      await game.advance(sad - 1);
+      assert.equal(await game.state(), 'sad');
+      await game.advance(1);
+      assert.equal(await game.activeIndex(), -1);
+      await game.advance(rest - 1);
+      assert.equal(await game.activeIndex(), -1);
+      await game.advance(1);
+      assert.equal(await game.activeIndex(), 3);
+    }));
+  }
+
+  test('each difficulty is set apart from the next by at least a quarter', () => {
+    const afterHit = t => t.pain + t.sad + t.rest;
+    const { easy, normal, hard } = DIFFICULTY;
+    assert.deepEqual([easy, normal, hard].map(t => t.hide), [1000, 725, 480]);
+    assert.deepEqual([easy, normal, hard].map(afterHit), [800, 640, 450]);
+    for (const [slower, faster] of [[easy, normal], [normal, hard]]) {
+      assert.ok(slower.hide >= faster.hide * 1.25, `Time to hit: ${slower.hide} then ${faster.hide}`);
+      assert.ok(afterHit(slower) >= afterHit(faster) * 1.25, `After a hit: ${afterHit(slower)} then ${afterHit(faster)}`);
+    }
+  });
 
   test('a round lasts exactly 30 seconds and spawns nothing afterwards', () => play(async game => {
     await game.startWith('penguin');
