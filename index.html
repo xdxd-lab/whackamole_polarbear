@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#8fd8ff" />
 <link rel="icon" href="data:," />
-<title>雪地敲敲樂｜打企鵝・北極狐 V21</title>
+<title>雪地敲敲樂｜打企鵝・北極狐 V22</title>
 <style>
   :root{
     --sky-top:#8fd8ff; --sky-mid:#cfeeff; --sky-bottom:#eef9ff;
@@ -170,21 +170,25 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden><b class="practice">練習局</b>・不計紀錄</span></span> · 版本 21.2.2<span class="date">（2026-11-12）</span></span> <span class="credits"><span class="label">音樂：</span><span class="names"><a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/snowfall" target="_blank" rel="noopener" title="Snowfall">Kistol</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>、<a href="https://opengameart.org/content/snow-theme" target="_blank" rel="noopener" title="Snow Theme">Cleyton Kauffman</a></span><span class="label">（CC0）</span><a class="short" href="https://github.com/xdxd-lab/whackamole_polarbear/blob/main/CREDITS.md" target="_blank" rel="noopener">音樂：4 位作者（CC0）</a></span></div>
+  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden><b class="practice">練習局</b>・不計紀錄</span></span> · 版本 22.0.0<span class="date">（2026-11-14）</span></span> <span class="credits"><span class="label">音樂：</span><span class="names"><a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/snowfall" target="_blank" rel="noopener" title="Snowfall">Kistol</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>、<a href="https://opengameart.org/content/snow-theme" target="_blank" rel="noopener" title="Snow Theme">Cleyton Kauffman</a></span><span class="label">（CC0）</span><a class="short" href="https://github.com/xdxd-lab/whackamole_polarbear/blob/main/CREDITS.md" target="_blank" rel="noopener">音樂：4 位作者（CC0）</a></span></div>
 </main>
 <script>(async () => {
   'use strict';
-  const VERSION = '21.2.2';
+  const VERSION = '22.0.0';
   const BEST_KEY = 'wam_best_20260904v7';
   // One best score per difficulty. Normal keeps the key every earlier version wrote to.
   const BEST_KEYS = {easy: BEST_KEY+'_easy', normal: BEST_KEY, hard: BEST_KEY+'_hard'};
   const $ = id => document.getElementById(id);
   const board = $('board'), overlay = $('overlay');
   const startBtn = $('startBtn'), modalBtn = $('modalBtn'), difficulty = $('difficulty');
+  // spawn: from one target to the next when nothing is hit. show: how long a target stays, before
+  // the half of the spare time it gets back (see spawn()). pain, sad, rest: after a hit, the two
+  // frames of the animal going down and the wait for the next one. Normal is the reference; the
+  // other two are set apart from it by about a third.
   const settings = {
-    easy: {spawn: 1050, show: 780},
-    normal: {spawn: 850, show: 600},
-    hard: {spawn: 650, show: 470}
+    easy: {spawn: 1150, show: 850, pain: 220, sad: 340, rest: 240},
+    normal: {spawn: 850, show: 600, pain: 220, sad: 340, rest: 80},
+    hard: {spawn: 550, show: 410, pain: 160, sad: 240, rest: 50}
   };
   const states = ['peek','warning','sneaky','pain','sad'];
   const sheets = [];
@@ -361,7 +365,7 @@
     a.h.classList.remove('up');setState(a,'sneaky');
     if(a.type!=='bad')combo=0;
     update();
-    // v8's short escape window is retained: 135/125/90 ms.
+    // What is left of the gap before the next spawn: 150/125/70 ms.
     // The already scheduled next spawn clears this actor.
   }
   function hit(i){
@@ -391,6 +395,8 @@
       else showToast(`${names[a.species]} +${delta}`,a);
     }
     score=Math.max(0,score+delta);update();
+    // The difficulty at the moment of the hit sets the pace of what follows it.
+    const cfg=settings[roundLevel];
     later(()=>{
       if(actor!==a||a.phase!=='pain')return;
       setState(a,'sad');
@@ -398,12 +404,12 @@
       // in one direction: down. No peek/sneaky callbacks survive a hit.
       const distance=Math.max(0,a.h.clientHeight-a.m.offsetTop+2);
       a.m.animate([{transform:'translateY(0px)'},{transform:`translateY(${distance}px)`}],
-        {duration:340,easing:'ease-in',fill:'forwards'});
+        {duration:cfg.sad,easing:'ease-in',fill:'forwards'});
       later(()=>{
         if(actor!==a)return;
-        resetHole(a.h);actor=null;later(spawn,80);
-      },340);
-    },220);
+        resetHole(a.h);actor=null;later(spawn,cfg.rest);
+      },cfg.sad);
+    },cfg.pain);
     return a.type;
   }
   // Feedback only. Nothing below reads or changes the score, the clock or the rules.

@@ -11,9 +11,9 @@ export const SPECIES_ROLL = { bear: 0.05, fox: 0.2, penguin: 0.9 };
 export const holeRoll = index => (index + 0.5) / 9;
 
 export const DIFFICULTY = {
-  easy: { warning: 619, hide: 915, next: 1050 },
-  normal: { warning: 497, hide: 725, next: 850 },
-  hard: { warning: 381, hide: 560, next: 650 },
+  easy: { warning: 677, hide: 1000, next: 1150, pain: 220, sad: 340, rest: 240 },
+  normal: { warning: 497, hide: 725, next: 850, pain: 220, sad: 340, rest: 80 },
+  hard: { warning: 324, hide: 480, next: 550, pain: 160, sad: 240, rest: 50 },
 };
 
 export async function startHarness(options) {
