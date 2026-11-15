@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#8fd8ff" />
 <link rel="icon" href="data:," />
-<title>雪地敲敲樂｜打企鵝・北極狐 V23</title>
+<title>雪地敲敲樂｜打企鵝・北極狐 V24</title>
 <style>
   :root{
     --sky-top:#8fd8ff; --sky-mid:#cfeeff; --sky-bottom:#eef9ff;
@@ -170,11 +170,11 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden><b class="practice">練習局</b>・不計紀錄</span></span> · 版本 23.0.0<span class="date">（2026-11-15）</span></span> <span class="credits"><span class="label">音樂：</span><span class="names"><a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/snowfall" target="_blank" rel="noopener" title="Snowfall">Kistol</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>、<a href="https://opengameart.org/content/snow-theme" target="_blank" rel="noopener" title="Snow Theme">Cleyton Kauffman</a></span><span class="label">（CC0）</span><a class="short" href="https://github.com/xdxd-lab/whackamole_polarbear/blob/main/CREDITS.md" target="_blank" rel="noopener">音樂：4 位作者（CC0）</a></span></div>
+  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden><b class="practice">練習局</b>・不計紀錄</span></span> · 版本 24.0.0<span class="date">（2026-11-15）</span></span> <span class="credits"><span class="label">音樂：</span><span class="names"><a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/snowfall" target="_blank" rel="noopener" title="Snowfall">Kistol</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>、<a href="https://opengameart.org/content/snow-theme" target="_blank" rel="noopener" title="Snow Theme">Cleyton Kauffman</a></span><span class="label">（CC0）</span><a class="short" href="https://github.com/xdxd-lab/whackamole_polarbear/blob/main/CREDITS.md" target="_blank" rel="noopener">音樂：4 位作者（CC0）</a></span></div>
 </main>
 <script>(async () => {
   'use strict';
-  const VERSION = '23.0.0';
+  const VERSION = '24.0.0';
   const BEST_KEY = 'wam_best_20260904v7';
   // One best score per difficulty. Normal keeps the key every earlier version wrote to.
   const BEST_KEYS = {easy: BEST_KEY+'_easy', normal: BEST_KEY, hard: BEST_KEY+'_hard'};
@@ -182,13 +182,14 @@
   const board = $('board'), overlay = $('overlay');
   const startBtn = $('startBtn'), modalBtn = $('modalBtn'), difficulty = $('difficulty');
   // spawn: from one target to the next when nothing is hit. show: how long a target stays, before
-  // the half of the spare time it gets back (see spawn()). pain, sad, rest: after a hit, the two
+  // the half of the spare time it gets back (see rise()). pain, sad, rest: after a hit, the two
   // frames of the animal going down and the wait for the next one. Normal is the reference; the
-  // other two are set apart from it by about a third.
+  // other two are set apart from it by about a third. pairEvery, pairDelay: hard only, every
+  // third wave brings a second target, rising 200 ms after the first.
   const settings = {
     easy: {spawn: 1350, show: 1050, pain: 220, sad: 340, rest: 240},
     normal: {spawn: 995, show: 745, pain: 220, sad: 340, rest: 80},
-    hard: {spawn: 646, show: 506, pain: 160, sad: 240, rest: 50}
+    hard: {spawn: 646, show: 506, pain: 160, sad: 240, rest: 50, pairEvery: 3, pairDelay: 200}
   };
   const states = ['peek','warning','sneaky','pain','sad'];
   const sheets = [];
@@ -242,7 +243,8 @@
   let running=false;
   let score=0, combo=0, maxCombo=0, timeLeft=30;
   const bests={easy:0,normal:0,hard:0};
-  let actor=null, lastHole=-1, session=0, clockTimer=null, started=0;
+  // The targets on the board, the waves sent this round, and the targets of this wave not yet over.
+  let actors=[], wave=0, waiting=0, lastHole=-1, session=0, clockTimer=null, started=0;
   // A hidden page pauses the round; the player continues it with a tap.
   let paused=false, pausedAt=0, frozen=[];
   // The difficulty in play. Changing the menu mid-round takes over at once and makes
@@ -333,7 +335,7 @@
     m.className='mole';m.removeAttribute('style');
     h.setAttribute('aria-label',`洞 ${holes.indexOf(h)+1}`);
   }
-  function resetAll(){if(actor)resetHole(actor.h);actor=null;}
+  function resetAll(){actors.forEach(a=>resetHole(a.h));actors=[];}
   function setState(a,state){
     a.phase=state;a.h.dataset.state=state;
     a.h.classList.remove(...states.map(s=>`${a.species}-${s}`));
@@ -341,10 +343,29 @@
     // data-state picks the frame in CSS. These are outcome branches, NOT an automatic five-frame slideshow.
     a.h.setAttribute('aria-label',`${names[a.species]}，${state==='peek'||state==='warning'?(a.type==='bad'?'別打！':a.type==='bonus'?'+3 分':'+1 分'):'已離開可打擊階段'}`);
   }
+  // Targets come in waves. A wave is one target, or in hard every third wave a pair, and the
+  // next wave starts only when every target of this one is over (see over()).
   function spawn(){
     if(!running)return;
     resetAll();
     let i;do{i=Math.floor(Math.random()*holes.length);}while(i===lastHole);lastHole=i;
+    const cfg=settings[roundLevel];
+    wave++;
+    const pair=cfg.pairEvery>0&&wave%cfg.pairEvery===0;
+    waiting=pair?2:1;
+    rise(i);
+    if(pair)later(second,cfg.pairDelay);
+  }
+  // Holes that share an edge on the 3×3 board.
+  const beside=(p,q)=>Math.abs(p%3-q%3)+Math.abs((p/3|0)-(q/3|0))===1;
+  // The second target of a pair takes a free hole that shares no edge with a target on the board.
+  // It only rises if the difficulty in play still sends pairs.
+  function second(){
+    if(!settings[roundLevel].pairEvery){over();return;}
+    const open=holes.map((_,k)=>k).filter(k=>actors.every(o=>o.i!==k&&!beside(o.i,k)));
+    rise(open[Math.floor(Math.random()*open.length)]);
+  }
+  function rise(i){
     const r=Math.random(),type=r<.12?'bad':r<.34?'bonus':'normal';
     const h=holes[i],m=h.querySelector('.mole'),species=speciesByType[type];
     const cfg=settings[roundLevel];
@@ -352,28 +373,33 @@
     const warningAt=Math.round(cfg.show*.62)+recovered;
     const hideAt=cfg.show+recovered;
     const a={i,h,m,type,species,phase:'peek',deadline:performance.now()+hideAt,warningTimer:null,hideTimer:null,nextTimer:null};
-    actor=a;h.dataset.character=species;
+    actors.push(a);h.dataset.character=species;
     m.className=`mole ${type}`;h.classList.add('up',`${species}-active`);
     setState(a,'peek');
-    a.warningTimer=later(()=>{if(actor===a&&a.phase==='peek')setState(a,'warning');},warningAt);
+    a.warningTimer=later(()=>{if(actors.includes(a)&&a.phase==='peek')setState(a,'warning');},warningAt);
     a.hideTimer=later(()=>escape(a),hideAt);
-    a.nextTimer=later(spawn,cfg.spawn);
+    // Unless it is hit, a target's turn ends when a single next target would rise.
+    a.nextTimer=later(()=>{leave(a);over();},cfg.spawn);
   }
+  // Frees the hole of a target whose turn has ended.
+  function leave(a){resetHole(a.h);actors=actors.filter(o=>o!==a);}
+  // One target of the wave is over: escaped and gone, hit and gone down, or a pair's second
+  // that will not rise. The last one starts the next wave, so a late hit is never cut short.
+  function over(){if(--waiting===0)spawn();}
   function escape(a){
-    if(actor!==a||!['peek','warning'].includes(a.phase))return;
+    if(!actors.includes(a)||!['peek','warning'].includes(a.phase))return;
     cancel(a.warningTimer);a.h.dataset.outcome='escape';
     a.h.classList.remove('up');setState(a,'sneaky');
     if(a.type!=='bad')combo=0;
     update();
-    // What is left of the gap before the next spawn: 150/125/70 ms.
-    // The already scheduled next spawn clears this actor.
+    // Its hole stays taken for what is left of its turn: 150/125/70 ms.
   }
   function hit(i){
-    const a=actor;
+    const a=actors.find(o=>o.i===i);
     if(!running||paused)return;
     // The clock ticks every 100 ms, so time can be up before the tick that ends the round.
     if(performance.now()-started>=30000){finish();return;}
-    if(!a||a.i!==i||!['peek','warning'].includes(a.phase))return;
+    if(!a||!['peek','warning'].includes(a.phase))return;
     if(performance.now()>=a.deadline){escape(a);return;}
     cancel(a.warningTimer);cancel(a.hideTimer);cancel(a.nextTimer);
     // Lock the on-screen anchor before removing .up. The former code
@@ -398,7 +424,7 @@
     // The difficulty at the moment of the hit sets the pace of what follows it.
     const cfg=settings[roundLevel];
     later(()=>{
-      if(actor!==a||a.phase!=='pain')return;
+      if(!actors.includes(a)||a.phase!=='pain')return;
       setState(a,'sad');
       // Anchor stays fixed. Only this animation moves the outgoing sprite,
       // in one direction: down. No peek/sneaky callbacks survive a hit.
@@ -406,8 +432,8 @@
       a.m.animate([{transform:'translateY(0px)'},{transform:`translateY(${distance}px)`}],
         {duration:cfg.sad,easing:'ease-in',fill:'forwards'});
       later(()=>{
-        if(actor!==a)return;
-        resetHole(a.h);actor=null;later(spawn,cfg.rest);
+        if(!actors.includes(a))return;
+        leave(a);later(over,cfg.rest);
       },cfg.sad);
     },cfg.pain);
     return a.type;
@@ -505,7 +531,7 @@
     // Resume audio inside the user gesture.
     audio();beep(520,.08,'triangle');
     session++;clearTimers();clearInterval(clockTimer);resetAll();paused=false;frozen=[];
-    roundLevel=level();practice=false;
+    roundLevel=level();practice=false;wave=0;
     score=0;combo=0;maxCombo=0;timeLeft=30;running=true;started=performance.now();
     overlay.classList.remove('show');$('finalScore').hidden=true;showBest();update();spawn();playMusic();
     runClock();
@@ -533,7 +559,7 @@
   function resume(){
     if(!paused)return;
     const away=performance.now()-pausedAt;
-    paused=false;started+=away;if(actor)actor.deadline+=away;
+    paused=false;started+=away;actors.forEach(a=>a.deadline+=away);
     timers.forEach((t,token)=>arm(token,t,t.left));
     frozen.forEach(x=>x.play());frozen=[];
     audio();overlay.classList.remove('show');update();
