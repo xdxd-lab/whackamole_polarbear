@@ -148,18 +148,19 @@ jobs:
   # Tests the tests. Every case runs the whole browser suite, so each runner takes
   # one case at a time and the list is split across runners instead.
   mutation:
-    name: Mutation check ${{ matrix.shard }}/5
+    # The total comes from the matrix below, so the shard list is the one place to change it.
+    name: Mutation check ${{ matrix.shard }}/${{ strategy.job-total }}
     needs: verify
     runs-on: ubuntu-latest
-    # About 28 cases a runner at 65-75 s each: 30 to 35 minutes of work (V24). 60 leaves room
-    # for about 15 more cases a runner. More runners would also do, but the shard count is in
-    # the job name, which branch protection lists by name: change the count and the required
-    # checks on main together.
-    timeout-minutes: 60
+    # About 170 runner-minutes in all (V24, 142 cases at about 70 s), so 12 runners take about
+    # 14 minutes each and the slowest about 16. 30 leaves room for more cases. The shard count
+    # is in the job name, which branch protection lists by name: change the count and the
+    # required checks on main together.
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3, 4, 5]
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
@@ -190,7 +191,7 @@ jobs:
         if: steps.browser-cache.outputs.cache-hit != 'true'
         run: npx playwright install chromium
       - name: Check that the tests catch broken rules
-        run: npm run test:mutation -- --strict --shard ${{ matrix.shard }}/5
+        run: npm run test:mutation -- --strict --shard ${{ matrix.shard }}/${{ strategy.job-total }}
         env:
           MUTATION_WORKERS: '1'
       - name: Save mutation report and failing output
