@@ -170,11 +170,11 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden><b class="practice">練習局</b>・不計紀錄</span></span> · 版本 25.0.0<span class="date">（2026-11-16）</span></span> <span class="credits"><span class="label">音樂：</span><span class="names"><a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/snowfall" target="_blank" rel="noopener" title="Snowfall">Kistol</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>、<a href="https://opengameart.org/content/snow-theme" target="_blank" rel="noopener" title="Snow Theme">Cleyton Kauffman</a></span><span class="label">（CC0）</span><a class="short" href="https://github.com/xdxd-lab/whackamole_polarbear/blob/main/CREDITS.md" target="_blank" rel="noopener">音樂：4 位作者（CC0）</a></span></div>
+  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden><b class="practice">練習局</b>・不計紀錄</span></span> · 版本 25.0.1<span class="date">（2026-11-16）</span></span> <span class="credits"><span class="label">音樂：</span><span class="names"><a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/snowfall" target="_blank" rel="noopener" title="Snowfall">Kistol</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>、<a href="https://opengameart.org/content/snow-theme" target="_blank" rel="noopener" title="Snow Theme">Cleyton Kauffman</a></span><span class="label">（CC0）</span><a class="short" href="https://github.com/xdxd-lab/whackamole_polarbear/blob/main/CREDITS.md" target="_blank" rel="noopener">音樂：4 位作者（CC0）</a></span></div>
 </main>
 <script>(async () => {
   'use strict';
-  const VERSION = '25.0.0';
+  const VERSION = '25.0.1';
   const BEST_KEY = 'wam_best_20260904v7';
   // One best score per difficulty. Normal keeps the key every earlier version wrote to.
   const BEST_KEYS = {easy: BEST_KEY+'_easy', normal: BEST_KEY, hard: BEST_KEY+'_hard'};
@@ -277,10 +277,13 @@
   }
   fitCredits();addEventListener('resize',fitCredits);document.fonts?.ready.then(fitCredits);
   // Audio may only start from the player's tap; start() calls this first.
+  // Resume and suspend always ask: the state seen here may still be on its way to the
+  // last one asked for, and the browser carries the requests out in order. A pause keeps
+  // the sound off until the player continues, whatever asks for it meanwhile.
   function audio(){
     try {
       audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();
-      if(audioCtx.state==='suspended') audioCtx.resume().catch(()=>{});
+      if(audioCtx.state!=='closed'&&!paused) audioCtx.resume().catch(()=>{});
     } catch (_) {}
     return audioCtx;
   }
@@ -537,9 +540,9 @@
   }
   function start(){
     // Sheets are verified and decoded before the buttons are enabled.
-    // Resume audio inside the user gesture.
-    audio();beep(520,.08,'triangle');
-    session++;clearTimers();clearInterval(clockTimer);resetAll();paused=false;frozen=[];
+    // Resume audio inside the user gesture; a new round also ends a pause.
+    paused=false;audio();beep(520,.08,'triangle');
+    session++;clearTimers();clearInterval(clockTimer);resetAll();frozen=[];
     roundLevel=level();practice=false;wave=0;
     score=0;combo=0;maxCombo=0;timeLeft=30;running=true;started=performance.now();
     overlay.classList.remove('show');$('finalScore').hidden=true;showBest();update();spawn();playMusic();
@@ -559,7 +562,7 @@
     timers.forEach(t=>{clearTimeout(t.id);t.left=Math.max(0,t.due-pausedAt);});
     frozen=board.getAnimations({subtree:true}).filter(x=>x.playState==='running');
     frozen.forEach(x=>x.pause());
-    if(audioCtx&&audioCtx.state==='running')audioCtx.suspend().catch(()=>{});
+    if(audioCtx&&audioCtx.state!=='closed')audioCtx.suspend().catch(()=>{});
     $('modalTitle').textContent='暫停中';$('finalScore').hidden=true;
     $('modalText').innerHTML=`還剩 <b>${Math.ceil(timeLeft)}</b> 秒，目前 <b>${score}</b> 分。準備好就按「繼續」。`;
     modalBtn.textContent='繼續';overlay.classList.add('show');
