@@ -256,7 +256,7 @@ describe('timing', () => {
   test('each difficulty is set apart from the next by at least a quarter', () => {
     const afterHit = t => t.pain + t.sad + t.rest;
     const { easy, normal, hard } = DIFFICULTY;
-    assert.deepEqual([easy, normal, hard].map(t => t.hide), [1000, 725, 480]);
+    assert.deepEqual([easy, normal, hard].map(t => t.hide), [1200, 870, 576]);
     assert.deepEqual([easy, normal, hard].map(afterHit), [800, 640, 450]);
     for (const [slower, faster] of [[easy, normal], [normal, hard]]) {
       assert.ok(slower.hide >= faster.hide * 1.25, `Time to hit: ${slower.hide} then ${faster.hide}`);

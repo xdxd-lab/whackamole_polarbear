@@ -36,7 +36,7 @@ const MUTANTS = {
   'penguin +1 becomes +5': replace("delta=a.type==='bonus'?3:1", "delta=a.type==='bonus'?3:5"),
   'bear -2 becomes 0': replace('delta=-2;combo=0', 'delta=0;'),
   'round 30 s becomes 5 s': replace('30-(performance.now()-started)/1000', '5-(performance.now()-started)/1000'),
-  'normal show 600 becomes 6000': replace('normal: {spawn: 850, show: 600,', 'normal: {spawn: 850, show: 6000,'),
+  'normal show 745 becomes 7450': replace('normal: {spawn: 995, show: 745,', 'normal: {spawn: 995, show: 7450,'),
   'bear chance .12 becomes .9': replace("r<.12?'bad'", "r<.9?'bad'"),
   'BEST_KEY renamed': replace('wam_best_20260904v7', 'wam_best_new'),
   'hard difficulty removed': replace('<option value="hard">高手</option>', ''),
@@ -47,8 +47,8 @@ const MUTANTS = {
   'score may go negative': replace('score=Math.max(0,score+delta)', 'score=score+delta'),
   'escape keeps combo': replace("if(a.type!=='bad')combo=0;", ''),
   'fox chance .34 becomes .5': replace("r<.34?'bonus'", "r<.5?'bonus'"),
-  'easy spawn 1150 becomes 1100': replace('easy: {spawn: 1150, show: 850,', 'easy: {spawn: 1100, show: 850,'),
-  'hard show 410 becomes 440': replace('hard: {spawn: 550, show: 410,', 'hard: {spawn: 550, show: 440,'),
+  'easy spawn 1350 becomes 1300': replace('easy: {spawn: 1350, show: 1050,', 'easy: {spawn: 1300, show: 1050,'),
+  'hard show 506 becomes 536': replace('hard: {spawn: 646, show: 506,', 'hard: {spawn: 646, show: 536,'),
   'easy waits no longer than normal after a hit': replace('sad: 340, rest: 240}', 'sad: 340, rest: 80}'),
   'hard goes down as slowly as normal after a hit': replace('pain: 160, sad: 240, rest: 50}', 'pain: 220, sad: 340, rest: 50}'),
   'hard rest 50 ms becomes 80 ms': replace('sad: 240, rest: 50}', 'sad: 240, rest: 80}'),
@@ -109,8 +109,8 @@ const MUTANTS = {
   'score message back in one fixed place': replace("el.style.top=Math.max(box.top-area.top+10,el.offsetHeight+2)+'px';", ''),
   'score message may cover the scoreboard': replace('Math.max(box.top-area.top+10,el.offsetHeight+2)', '(box.top-area.top+10)'),
   'score message may leave the board area': replace('area.width-half)', 'area.width+half)'),
-  'version changed in the script but not on the page': replace("const VERSION = '22.0.0';", "const VERSION = '22.0.1';"),
-  'version shown without its release date': replace('· 版本 22.0.0<span class="date">（2026-11-14）</span>', '· 版本 22.0.0'),
+  'version changed in the script but not on the page': replace("const VERSION = '23.0.0';", "const VERSION = '23.0.1';"),
+  'version shown without its release date': replace('· 版本 23.0.0<span class="date">（2026-11-15）</span>', '· 版本 23.0.0'),
   'small screens keep the release date in the footer': replace('@container (max-width:330px){.foot .date{display:none}}', ''),
   'footer line free to break': replace('.foot>span:first-child{white-space:nowrap}', ''),
   'a narrow footer cuts the composers short': replace("credits.classList.toggle('brief',cut);", ''),
@@ -185,9 +185,9 @@ const EQUIVALENTS = {
   },
   // A release changes the number everywhere it is written, and nothing else.
   'version bumped': async ({ html, setHtml, read, write }) => {
-    const bump = text => text.replaceAll('22.0.0', '22.0.1').replaceAll('2026-11-14', '2026-12-01');
+    const bump = text => text.replaceAll('23.0.0', '23.0.1').replaceAll('2026-11-15', '2026-12-01');
     const source = await html();
-    if (!source.includes("const VERSION = '22.0.0';")) return false;
+    if (!source.includes("const VERSION = '23.0.0';")) return false;
     await setHtml(bump(source));
     await write('README.md', bump(await read('README.md')));
     await write('CHANGELOG.md', bump(await read('CHANGELOG.md')));

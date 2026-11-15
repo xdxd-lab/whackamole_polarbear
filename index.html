@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#8fd8ff" />
 <link rel="icon" href="data:," />
-<title>雪地敲敲樂｜打企鵝・北極狐 V22</title>
+<title>雪地敲敲樂｜打企鵝・北極狐 V23</title>
 <style>
   :root{
     --sky-top:#8fd8ff; --sky-mid:#cfeeff; --sky-bottom:#eef9ff;
@@ -170,11 +170,11 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden><b class="practice">練習局</b>・不計紀錄</span></span> · 版本 22.0.0<span class="date">（2026-11-14）</span></span> <span class="credits"><span class="label">音樂：</span><span class="names"><a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/snowfall" target="_blank" rel="noopener" title="Snowfall">Kistol</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>、<a href="https://opengameart.org/content/snow-theme" target="_blank" rel="noopener" title="Snow Theme">Cleyton Kauffman</a></span><span class="label">（CC0）</span><a class="short" href="https://github.com/xdxd-lab/whackamole_polarbear/blob/main/CREDITS.md" target="_blank" rel="noopener">音樂：4 位作者（CC0）</a></span></div>
+  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden><b class="practice">練習局</b>・不計紀錄</span></span> · 版本 23.0.0<span class="date">（2026-11-15）</span></span> <span class="credits"><span class="label">音樂：</span><span class="names"><a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/snowfall" target="_blank" rel="noopener" title="Snowfall">Kistol</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>、<a href="https://opengameart.org/content/snow-theme" target="_blank" rel="noopener" title="Snow Theme">Cleyton Kauffman</a></span><span class="label">（CC0）</span><a class="short" href="https://github.com/xdxd-lab/whackamole_polarbear/blob/main/CREDITS.md" target="_blank" rel="noopener">音樂：4 位作者（CC0）</a></span></div>
 </main>
 <script>(async () => {
   'use strict';
-  const VERSION = '22.0.0';
+  const VERSION = '23.0.0';
   const BEST_KEY = 'wam_best_20260904v7';
   // One best score per difficulty. Normal keeps the key every earlier version wrote to.
   const BEST_KEYS = {easy: BEST_KEY+'_easy', normal: BEST_KEY, hard: BEST_KEY+'_hard'};
@@ -186,9 +186,9 @@
   // frames of the animal going down and the wait for the next one. Normal is the reference; the
   // other two are set apart from it by about a third.
   const settings = {
-    easy: {spawn: 1150, show: 850, pain: 220, sad: 340, rest: 240},
-    normal: {spawn: 850, show: 600, pain: 220, sad: 340, rest: 80},
-    hard: {spawn: 550, show: 410, pain: 160, sad: 240, rest: 50}
+    easy: {spawn: 1350, show: 1050, pain: 220, sad: 340, rest: 240},
+    normal: {spawn: 995, show: 745, pain: 220, sad: 340, rest: 80},
+    hard: {spawn: 646, show: 506, pain: 160, sad: 240, rest: 50}
   };
   const states = ['peek','warning','sneaky','pain','sad'];
   const sheets = [];
