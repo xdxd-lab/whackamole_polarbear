@@ -4,7 +4,7 @@
  */
 import assert from 'node:assert/strict';
 import { after, before, describe, test } from 'node:test';
-import { DIFFICULTY, Game, PAIR, SPECIES_ROLL, holeRoll, pairHoles, pairRoll, startHarness } from './support/game.mjs';
+import { DIFFICULTY, Game, PAIR, SPECIES_ROLL, holeRoll, pairHoles, startHarness } from './support/game.mjs';
 
 const BEST_KEY = 'wam_best_20260904v7';
 // Normal keeps the key every version before 21 wrote to.
@@ -470,20 +470,9 @@ describe('hard pairs', () => {
   const HARD = DIFFICULTY.hard;
   // With every target left to escape, the third wave, the first pair, rises at this time.
   const PAIR_AT = 2 * HARD.next;
-  /** Starts a hard round and lets two waves escape; the pair's first target rises in `hole`. */
-  async function toPair(game, species, hole) {
-    await game.startWith('penguin', (hole + 2) % 9, { difficulty: 'hard' });
-    await game.nextSpawn('penguin', (hole + 1) % 9);
-    await game.advance(HARD.next);
-    await game.nextSpawn(species, hole);
-    await game.advance(HARD.next);
-  }
-  /** Chooses the pair's second target, which rises PAIR.delay ms after the first. */
-  const partner = (game, first, species, hole) => game.queueRandom([pairRoll(first, hole), SPECIES_ROLL[species]]);
 
   test('every third wave is a pair: a second target rises 200 ms after the first', () => play(async game => {
-    await toPair(game, 'penguin', 4);
-    await partner(game, 4, 'fox', 0);
+    await game.toPair('penguin', 4, ['fox', 0]);
     assert.deepEqual(await game.targets(), [[4, 'penguin', 'peek']]);
     await game.advance(PAIR.delay - 1);
     assert.deepEqual(await game.targets(), [[4, 'penguin', 'peek']]);
@@ -540,8 +529,7 @@ describe('hard pairs', () => {
   }));
 
   test('each target of a pair scores on its own', () => play(async game => {
-    await toPair(game, 'penguin', 4);
-    await partner(game, 4, 'fox', 0);
+    await game.toPair('penguin', 4, ['fox', 0]);
     await game.advance(50);
     await game.hit(4);
     await game.advance(PAIR.delay);
@@ -551,8 +539,7 @@ describe('hard pairs', () => {
   }));
 
   test('two targets hit at the same moment both score', () => play(async game => {
-    await toPair(game, 'penguin', 4);
-    await partner(game, 4, 'fox', 0);
+    await game.toPair('penguin', 4, ['fox', 0]);
     await game.advance(PAIR.delay + 50);
     await game.page.evaluate(() => { window.__test.input(4); window.__test.input(0); });
     assert.equal(await game.number('#score'), 4);
@@ -560,8 +547,7 @@ describe('hard pairs', () => {
   }));
 
   test('a penguin or fox missed from a pair breaks the combo', () => play(async game => {
-    await toPair(game, 'penguin', 4);
-    await partner(game, 4, 'penguin', 0);
+    await game.toPair('penguin', 4, ['penguin', 0]);
     await game.advance(50);
     await game.hit(4);
     assert.equal(await game.number('#combo'), 1);
@@ -572,8 +558,7 @@ describe('hard pairs', () => {
   }));
 
   test('a bear left alone in a pair keeps the combo', () => play(async game => {
-    await toPair(game, 'penguin', 4);
-    await partner(game, 4, 'bear', 0);
+    await game.toPair('penguin', 4, ['bear', 0]);
     await game.advance(50);
     await game.hit(4);
     await game.advance(PAIR.delay + HARD.hide);
@@ -582,8 +567,7 @@ describe('hard pairs', () => {
   }));
 
   test('a pair hit twice: the next wave rises 450 ms after the later hit', () => play(async game => {
-    await toPair(game, 'penguin', 4);
-    await partner(game, 4, 'penguin', 0);
+    await game.toPair('penguin', 4, ['penguin', 0]);
     await game.advance(50);
     await game.hit(4);
     await game.advance(PAIR.delay);
@@ -595,8 +579,7 @@ describe('hard pairs', () => {
   }));
 
   test('a pair left to escape: the next wave rises when the second target\'s turn is up', () => play(async game => {
-    await toPair(game, 'penguin', 4);
-    await partner(game, 4, 'penguin', 0);
+    await game.toPair('penguin', 4, ['penguin', 0]);
     await game.advance(HARD.next);
     assert.deepEqual(await game.targets(), [[0, 'penguin', 'warning']], 'The first hole is free when its turn is up');
     await game.advance(PAIR.delay - 1);
@@ -606,8 +589,7 @@ describe('hard pairs', () => {
   }));
 
   test('a last-moment hit on the second target goes down in full before the next wave', () => play(async game => {
-    await toPair(game, 'penguin', 4);
-    await partner(game, 4, 'fox', 0);
+    await game.toPair('penguin', 4, ['fox', 0]);
     await game.advance(PAIR.delay + HARD.hide - 1);
     await game.hit(0);
     assert.equal(await game.number('#score'), 3);
@@ -622,8 +604,7 @@ describe('hard pairs', () => {
   }));
 
   test('a pause keeps the rest of both targets\' windows', () => play(async game => {
-    await toPair(game, 'penguin', 4);
-    await partner(game, 4, 'fox', 0);
+    await game.toPair('penguin', 4, ['fox', 0]);
     await game.advance(PAIR.delay + 100);
     await setHidden(game, true);
     await game.advance(5_000);
@@ -639,7 +620,7 @@ describe('hard pairs', () => {
   }));
 
   test('leaving hard before the second target rises: it never does, and no later wave is a pair', () => play(async game => {
-    await toPair(game, 'penguin', 4);
+    await game.toPair('penguin', 4);
     await game.advance(PAIR.delay - 100);
     await game.choose('normal');
     await game.advance(100);

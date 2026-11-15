@@ -95,6 +95,20 @@ export class Game {
   async number(selector) { return Number(await this.page.locator(selector).textContent()); }
   overlayShown() { return this.page.evaluate(() => document.getElementById('overlay').classList.contains('show')); }
 
+  /**
+   * Starts a hard round and lets its first two waves escape, so the third wave, the first pair,
+   * rises now with its first target in `hole`. `partner` ([species, hole]) chooses the second
+   * target, which rises PAIR.delay ms later.
+   */
+  async toPair(species, hole, partner) {
+    await this.startWith('penguin', (hole + 2) % 9, { difficulty: 'hard' });
+    await this.nextSpawn('penguin', (hole + 1) % 9);
+    await this.advance(DIFFICULTY.hard.next);
+    await this.nextSpawn(species, hole);
+    await this.advance(DIFFICULTY.hard.next);
+    if (partner) await this.queueRandom([pairRoll(hole, partner[1]), SPECIES_ROLL[partner[0]]]);
+  }
+
   /** Hits the current target after `wait` virtual ms, then lets the next one appear. */
   async hitCurrent(wait = 100) {
     await this.advance(wait);

@@ -47,11 +47,12 @@ jobs:
       - name: Verify assets, rules and recorded behaviour
         run: npm test
       # For people reviewing a layout change: every layout size, start screen and mid-round,
-      # and the tap marks frozen part-way (tap-penguin, tap-fox, tap-bear, tap-empty).
+      # the tap marks frozen part-way (tap-penguin, tap-fox, tap-bear, tap-empty), and hard's
+      # pairs (pair-upright, pair-on-its-side, pair-with-bear, pair-one-down, pair-both-hit).
       - name: Take review screenshots
         if: always()
-        # The tap mark pictures are only for looking at, so they may fail without failing the job.
-        run: node scripts/screenshots.mjs && (node scripts/review-effects.mjs || echo '::warning title=No tap mark pictures::scripts/review-effects.mjs failed')
+        # The tap mark and pair pictures are only for looking at, so they may fail without failing the job.
+        run: node scripts/screenshots.mjs && (node scripts/review-effects.mjs || echo '::warning title=No tap mark pictures::scripts/review-effects.mjs failed') && (node scripts/review-pairs.mjs || echo '::warning title=No pair pictures::scripts/review-pairs.mjs failed')
       - name: Save audit and screenshot
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -125,8 +126,8 @@ jobs:
           WAM_BROWSER: ${{ matrix.browser }}
       - name: Take review screenshots
         if: always()
-        # The tap mark pictures are only for looking at, so they may fail without failing the job.
-        run: node scripts/screenshots.mjs && (node scripts/review-effects.mjs || echo '::warning title=No tap mark pictures::scripts/review-effects.mjs failed')
+        # The tap mark and pair pictures are only for looking at, so they may fail without failing the job.
+        run: node scripts/screenshots.mjs && (node scripts/review-effects.mjs || echo '::warning title=No tap mark pictures::scripts/review-effects.mjs failed') && (node scripts/review-pairs.mjs || echo '::warning title=No pair pictures::scripts/review-pairs.mjs failed')
         env:
           WAM_BROWSER: ${{ matrix.browser }}
       - name: Report a failure that does not block
@@ -150,10 +151,11 @@ jobs:
     name: Mutation check ${{ matrix.shard }}/5
     needs: verify
     runs-on: ubuntu-latest
-    # About 20 cases a runner at 50-55 s each: under 20 minutes of work, so leave room.
-    # The shard count is also in the job name, which branch protection lists by name:
-    # change the count and the required checks on main together.
-    timeout-minutes: 35
+    # About 28 cases a runner at 65-75 s each: 30 to 35 minutes of work (V24). 60 leaves room
+    # for about 15 more cases a runner. More runners would also do, but the shard count is in
+    # the job name, which branch protection lists by name: change the count and the required
+    # checks on main together.
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
