@@ -77,6 +77,13 @@ export class Game {
   }
 
   queueRandom(values) { return this.page.evaluate(list => window.__test.queueRandom(list), values); }
+  /**
+   * Queues rolls for the rhythm wobble, 0 to 1; 0.5 moves nothing. One is taken when a target
+   * rises (used if it escapes), one when a hit target has gone down.
+   */
+  wobble(rolls) { return this.page.evaluate(list => window.__test.queueWobble(list), rolls); }
+  /** Lets the wobble roll from a seeded stream instead of the middle value. */
+  seedWobble() { return this.page.evaluate(() => window.__test.seedWobble()); }
   /** Chooses the next spawn. */
   nextSpawn(species, hole) { return this.queueRandom([holeRoll(hole), SPECIES_ROLL[species]]); }
   advance(ms) { return this.page.evaluate(value => window.__test.advance(value), ms); }

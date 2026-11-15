@@ -10,15 +10,36 @@
   'use strict';
 
   // Deterministic random numbers: queued values first, then a seeded stream.
-  const queuedRandom = [];
-  let seed = 0x20261105;
-  Math.random = () => {
-    if (queuedRandom.length) return queuedRandom.shift();
-    seed = (seed + 0x6d2b79f5) | 0;
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  const stream = start => {
+    let seed = start;
+    return () => {
+      seed = (seed + 0x6d2b79f5) | 0;
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
   };
+  const queuedRandom = [];
+  const rules = stream(0x20261105);
+  Math.random = () => (queuedRandom.length ? queuedRandom.shift() : rules());
+
+  // The rhythm wobble rolls through crypto.getRandomValues, one Uint32Array(1) at a time, apart
+  // from the rules. Unless a test queues rolls or asks for a seeded stream, every roll is the
+  // middle one, which moves nothing: every round recorded before the wobble still replays.
+  // Rolls are taken in this order: one when a target rises (used if it escapes), one when a hit
+  // target has gone down. The two targets of a pair each take their own.
+  const queuedWobble = [];
+  let wobbles = () => 0.5;
+  const getRandomValues = crypto.getRandomValues.bind(crypto);
+  Object.defineProperty(crypto, 'getRandomValues', {
+    configurable: true,
+    value: array => {
+      if (!(array instanceof Uint32Array) || array.length !== 1) return getRandomValues(array);
+      const roll = queuedWobble.length ? queuedWobble.shift() : wobbles();
+      array[0] = Math.min(2 ** 32 - 1, Math.floor(roll * 2 ** 32));
+      return array;
+    },
+  });
 
   // Virtual clock. Time moves only when a test calls advance().
   let now = 0;
@@ -193,6 +214,8 @@
     jump: ms => { now += ms; },
     now: () => now,
     queueRandom: values => queuedRandom.push(...values),
+    queueWobble: values => queuedWobble.push(...values),
+    seedWobble: () => { wobbles = stream(0x0b0b2026); },
     record,
     resetTrace: () => { trace.length = 0; lastSample = ''; },
     setPolicy: value => { policy = value; reacted.clear(); spawnsSeen = 0; },

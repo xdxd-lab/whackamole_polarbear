@@ -55,7 +55,13 @@ const MUTANTS = {
   'warning at 62% becomes 70%': replace('cfg.show*.62', 'cfg.show*.7'),
   'hit deadline ignored': replace('if(performance.now()>=a.deadline){escape(a);return;}', ''),
   'pain lasts 80 ms longer': replace('},cfg.pain);', '},cfg.pain+80);'),
-  'next spawn 120 ms later': replace('later(over,cfg.rest)', 'later(over,cfg.rest+120)'),
+  'next spawn 120 ms later': replace('Math.max(0,cfg.rest+lean(', 'Math.max(0,cfg.rest+120+lean('),
+  'the rhythm never wobbles': replace('const wobble=.12;', 'const wobble=0;'),
+  'the rhythm wobbles twice as much': replace('const wobble=.12;', 'const wobble=.24;'),
+  'the wobble moves the window to hit': replace('const hideAt=cfg.show+recovered;', 'const hideAt=cfg.show+recovered+late;'),
+  'an escaped target may leave at once': replace('Math.max(hideAt+40,', 'Math.max(hideAt,'),
+  'a hit leaves the rhythm steady': replace('cfg.rest+lean(cfg.pain+cfg.sad+cfg.rest)', 'cfg.rest'),
+  'the wobble rolls with the rules': replace('crypto.getRandomValues(new Uint32Array(1))[0]/2**32', 'Math.random()'),
   'same hole may repeat': replace('while(i===lastHole)', 'while(false)'),
   'bear sound quieter': replace("beep(120,.12,'sawtooth',.16)", "beep(120,.12,'sawtooth',.08)"),
   'hidden page keeps playing': replace("document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});", ''),
@@ -119,8 +125,8 @@ const MUTANTS = {
   'score message back in one fixed place': replace("el.style.top=Math.max(box.top-area.top+10,el.offsetHeight+2)+'px';", ''),
   'score message may cover the scoreboard': replace('Math.max(box.top-area.top+10,el.offsetHeight+2)', '(box.top-area.top+10)'),
   'score message may leave the board area': replace('area.width-half)', 'area.width+half)'),
-  'version changed in the script but not on the page': replace("const VERSION = '24.0.0';", "const VERSION = '24.0.1';"),
-  'version shown without its release date': replace('· 版本 24.0.0<span class="date">（2026-11-15）</span>', '· 版本 24.0.0'),
+  'version changed in the script but not on the page': replace("const VERSION = '25.0.0';", "const VERSION = '25.0.1';"),
+  'version shown without its release date': replace('· 版本 25.0.0<span class="date">（2026-11-16）</span>', '· 版本 25.0.0'),
   'small screens keep the release date in the footer': replace('@container (max-width:330px){.foot .date{display:none}}', ''),
   'footer line free to break': replace('.foot>span:first-child{white-space:nowrap}', ''),
   'a narrow footer cuts the composers short': replace("credits.classList.toggle('brief',cut);", ''),
@@ -195,9 +201,9 @@ const EQUIVALENTS = {
   },
   // A release changes the number everywhere it is written, and nothing else.
   'version bumped': async ({ html, setHtml, read, write }) => {
-    const bump = text => text.replaceAll('24.0.0', '24.0.1').replaceAll('2026-11-15', '2026-12-01');
+    const bump = text => text.replaceAll('25.0.0', '25.0.1').replaceAll('2026-11-16', '2026-12-01');
     const source = await html();
-    if (!source.includes("const VERSION = '24.0.0';")) return false;
+    if (!source.includes("const VERSION = '25.0.0';")) return false;
     await setHtml(bump(source));
     await write('README.md', bump(await read('README.md')));
     await write('CHANGELOG.md', bump(await read('CHANGELOG.md')));
