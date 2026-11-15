@@ -81,7 +81,10 @@ const MUTANTS = {
   'waves carry over to the next round': replace('practice=false;wave=0;', 'practice=false;'),
   'targets move on while paused': replace('timers.forEach(t=>{clearTimeout(t.id);t.left=Math.max(0,t.due-pausedAt);});', 'timers.forEach(t=>{t.left=Math.max(0,t.due-pausedAt);});'),
   'hits land while paused': replace('if(!running||paused)return;\n    // The clock ticks', 'if(!running)return;\n    // The clock ticks'),
-  'music plays on while paused': replace("if(audioCtx&&audioCtx.state==='running')audioCtx.suspend().catch(()=>{});", ''),
+  'music plays on while paused': replace("if(audioCtx&&audioCtx.state!=='closed')audioCtx.suspend().catch(()=>{});", ''),
+  'a pause skips sound still starting': replace("audioCtx.state!=='closed')audioCtx.suspend()", "audioCtx.state==='running')audioCtx.suspend()"),
+  'continuing skips sound still pausing': replace("if(audioCtx.state!=='closed'&&!paused) audioCtx.resume()", "if(audioCtx.state==='suspended'&&!paused) audioCtx.resume()"),
+  'anything wakes the sound during a pause': replace("audioCtx.state!=='closed'&&!paused)", "audioCtx.state!=='closed')"),
   'a new difficulty waits for the next round': replace('if(running){roundLevel=level();practice=true;}', 'if(running){practice=true;}'),
   'a round with a changed difficulty still counts': replace('if(running){roundLevel=level();practice=true;}', 'if(running){roundLevel=level();}'),
   'practice carries into the next round': replace('roundLevel=level();practice=false;', 'roundLevel=level();'),
@@ -125,8 +128,8 @@ const MUTANTS = {
   'score message back in one fixed place': replace("el.style.top=Math.max(box.top-area.top+10,el.offsetHeight+2)+'px';", ''),
   'score message may cover the scoreboard': replace('Math.max(box.top-area.top+10,el.offsetHeight+2)', '(box.top-area.top+10)'),
   'score message may leave the board area': replace('area.width-half)', 'area.width+half)'),
-  'version changed in the script but not on the page': replace("const VERSION = '25.0.0';", "const VERSION = '25.0.1';"),
-  'version shown without its release date': replace('· 版本 25.0.0<span class="date">（2026-11-16）</span>', '· 版本 25.0.0'),
+  'version changed in the script but not on the page': replace("const VERSION = '25.0.1';", "const VERSION = '25.0.2';"),
+  'version shown without its release date': replace('· 版本 25.0.1<span class="date">（2026-11-16）</span>', '· 版本 25.0.1'),
   'small screens keep the release date in the footer': replace('@container (max-width:330px){.foot .date{display:none}}', ''),
   'footer line free to break': replace('.foot>span:first-child{white-space:nowrap}', ''),
   'a narrow footer cuts the composers short': replace("credits.classList.toggle('brief',cut);", ''),
@@ -201,9 +204,9 @@ const EQUIVALENTS = {
   },
   // A release changes the number everywhere it is written, and nothing else.
   'version bumped': async ({ html, setHtml, read, write }) => {
-    const bump = text => text.replaceAll('25.0.0', '25.0.1').replaceAll('2026-11-16', '2026-12-01');
+    const bump = text => text.replaceAll('25.0.1', '25.0.2').replaceAll('2026-11-16', '2026-12-01');
     const source = await html();
-    if (!source.includes("const VERSION = '25.0.0';")) return false;
+    if (!source.includes("const VERSION = '25.0.1';")) return false;
     await setHtml(bump(source));
     await write('README.md', bump(await read('README.md')));
     await write('CHANGELOG.md', bump(await read('CHANGELOG.md')));

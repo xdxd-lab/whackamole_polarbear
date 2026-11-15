@@ -107,22 +107,180 @@ test('a round started with the sound off plays its music silently', async () => 
   }
 });
 
+/**
+ * Init script: an audio device that is slow to start, as Firefox on CI sometimes is.
+ * Every resume() and suspend() waits, in the order it was called, until the test calls
+ * window.__audioDevice.start(); idle() resolves once they have run, and stall() makes
+ * the ones after it wait again.
+ * Until then a new context stays suspended, the state a slow device leaves it in.
+ */
+const slowAudioDevice = {
+  script: () => {
+    const Real = window.AudioContext;
+    const { resume, suspend } = Real.prototype;
+    let open = () => {};
+    let queue = Promise.resolve();
+    const stall = () => { queue = queue.then(() => new Promise(resolve => { open = resolve; })); };
+    const later = (context, method) => (queue = queue.then(() => method.call(context)).catch(() => {}));
+    stall();
+    window.AudioContext = class extends Real {
+      constructor(...args) { super(...args); suspend.call(this); }
+      resume() { return later(this, resume); }
+      suspend() { return later(this, suspend); }
+    };
+    window.__audioDevice = { start: () => open(), stall, idle: () => queue };
+  },
+};
+
+/**
+ * Init script: watches the real resume() and suspend() without changing their timing.
+ * window.__audioSettled() resolves once every one asked for so far has been carried out;
+ * window.__audioAsked() lists them as [name, asked while a tap was being handled].
+ */
+const watchAudio = {
+  script: () => {
+    const asked = [];
+    const names = [];
+    let tapping = false;
+    addEventListener('click', () => { tapping = true; }, true);
+    addEventListener('click', () => { tapping = false; });
+    for (const name of ['resume', 'suspend']) {
+      const method = AudioContext.prototype[name];
+      AudioContext.prototype[name] = function (...args) {
+        const result = method.apply(this, args);
+        asked.push(result);
+        names.push([name, tapping]);
+        return result;
+      };
+    }
+    window.__audioAsked = () => names;
+    window.__audioSettled = async () => {
+      for (let seen = -1; seen !== asked.length;) {
+        seen = asked.length;
+        await Promise.allSettled(asked);
+      }
+    };
+  },
+};
+const audioSettled = game => game.page.evaluate(() => window.__audioSettled());
+
+/** Hides or shows the page, as switching tabs does. */
+const setHidden = (game, hidden) => game.page.evaluate(value => {
+  Object.defineProperty(document, 'hidden', { configurable: true, value });
+  document.dispatchEvent(new Event('visibilitychange'));
+}, hidden);
+
 test('leaving the page pauses the music, and continuing carries on with the same track', async () => {
   const game = await Game.open(harness);
-  const setHidden = value => game.page.evaluate(hidden => {
-    Object.defineProperty(document, 'hidden', { configurable: true, value: hidden });
-    document.dispatchEvent(new Event('visibilitychange'));
-  }, value);
   try {
     await game.start();
     await playing(game);
-    await setHidden(true);
+    await setHidden(game, true);
     await game.page.waitForFunction(() => window.__test.music().audio === 'suspended', null, { timeout: 10_000 });
     assert.equal((await music(game)).playing, 1, 'The track is held, not stopped');
-    await setHidden(false);
+    await setHidden(game, false);
     await game.page.locator('#modalBtn').click();
     await game.page.waitForFunction(() => window.__test.music().audio === 'running', null, { timeout: 10_000 });
     assert.equal((await starts(game)).length, 1, 'Continuing must not restart the track');
+  } finally {
+    await game.close();
+  }
+});
+
+test('leaving the page while the sound is still starting pauses the music all the same', async () => {
+  const game = await Game.open(harness, { before: slowAudioDevice });
+  try {
+    await game.start();
+    await playing(game);
+    await setHidden(game, true);
+    assert.equal(await game.overlayShown(), true, 'The round is paused');
+    await game.page.evaluate(() => { window.__audioDevice.start(); return window.__audioDevice.idle(); });
+    assert.equal((await music(game)).audio, 'suspended', 'The sound started after the page was left, and must not play');
+    await setHidden(game, false);
+    await game.page.locator('#modalBtn').click();
+    await game.page.waitForFunction(() => window.__test.music().audio === 'running', null, { timeout: 10_000 });
+    assert.equal((await starts(game)).length, 1, 'Continuing must not restart the track');
+  } finally {
+    await game.close();
+  }
+});
+
+test('continuing while the sound is still pausing brings the music back', async () => {
+  const game = await Game.open(harness, { before: slowAudioDevice });
+  try {
+    await game.start();
+    await playing(game);
+    await game.page.evaluate(() => { window.__audioDevice.start(); return window.__audioDevice.idle(); });
+    assert.equal((await music(game)).audio, 'running', 'The sound has started');
+    // The device stalls again: the pause asks for silence, and the player is back before it comes.
+    await game.page.evaluate(() => window.__audioDevice.stall());
+    await setHidden(game, true);
+    await setHidden(game, false);
+    await game.page.locator('#modalBtn').click();
+    await game.page.evaluate(() => { window.__audioDevice.start(); return window.__audioDevice.idle(); });
+    assert.equal((await music(game)).audio, 'running', 'The round goes on, and so must its music');
+  } finally {
+    await game.close();
+  }
+});
+
+test('leaving the page in the same moment the round starts pauses the music', async () => {
+  const game = await Game.open(harness, { before: watchAudio });
+  try {
+    // Hidden right after the game handles the tap, before the browser can start the sound.
+    await game.page.evaluate(() => document.getElementById('modalBtn').addEventListener('click', () => {
+      Object.defineProperty(document, 'hidden', { configurable: true, value: true });
+      document.dispatchEvent(new Event('visibilitychange'));
+    }));
+    await game.page.locator('#modalBtn').click();
+    assert.equal(await game.text('#modalTitle'), '暫停中');
+    await playing(game);
+    await audioSettled(game);
+    assert.equal((await music(game)).audio, 'suspended', 'The sound must not play behind the pause');
+  } finally {
+    await game.close();
+  }
+});
+
+test('music that arrives during a pause waits silently for the player', async () => {
+  const local = await startHarness({ override: pathname => /\.(opus|m4a)$/.test(pathname) ? { delay: 2000 } : null });
+  const game = await Game.open(local, { before: watchAudio });
+  try {
+    await game.start();
+    assert.equal((await music(game)).playing, 0, 'The music is still on its way');
+    await setHidden(game, true);
+    await playing(game);
+    await audioSettled(game);
+    assert.equal((await music(game)).audio, 'suspended', 'The late track must not start the sound while paused');
+    await setHidden(game, false);
+    await game.page.locator('#modalBtn').click();
+    await game.page.waitForFunction(() => window.__test.music().audio === 'running', null, { timeout: 10_000 });
+  } finally {
+    await game.close();
+    await local.close();
+  }
+});
+
+test('the sound switch and the start button work during a pause without waking the music early', async () => {
+  const game = await Game.open(harness, { before: watchAudio });
+  try {
+    await game.start();
+    await playing(game);
+    await setHidden(game, true);
+    await game.page.locator('#soundBtn').click();
+    await game.page.locator('#soundBtn').click();
+    await audioSettled(game);
+    assert.equal((await music(game)).audio, 'suspended', 'Turning the sound back on must not play it behind the pause');
+    await setHidden(game, false);
+    // With the sound off no start beep asks for the sound, so the round itself must.
+    await game.page.locator('#soundBtn').click();
+    const before = (await game.page.evaluate(() => window.__audioAsked())).length;
+    await game.page.locator('#startBtn').click();
+    assert.equal(await game.overlayShown(), false, 'A new round begins');
+    // Some browsers start sound only from inside the tap itself.
+    const tap = (await game.page.evaluate(() => window.__audioAsked())).slice(before).filter(([, duringTap]) => duringTap);
+    assert.ok(tap.some(([name]) => name === 'resume'), `The start button must resume the sound during its tap: ${JSON.stringify(tap)}`);
+    await game.page.waitForFunction(() => window.__test.music().playing === 1 && window.__test.music().audio === 'running', null, { timeout: 10_000 });
   } finally {
     await game.close();
   }
