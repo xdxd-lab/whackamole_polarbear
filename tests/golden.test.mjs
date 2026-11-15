@@ -7,16 +7,24 @@ import assert from 'node:assert/strict';
 import { readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { after, before, test } from 'node:test';
-import { Game, startHarness } from './support/game.mjs';
+import { Game, beside, startHarness } from './support/game.mjs';
 import { ROOT } from './support/server.mjs';
 
+// together: how many targets the board shows at once. Only hard sends pairs.
 const SCENARIOS = [
-  { name: 'normal-no-hits', difficulty: 'normal', mode: 'none', reaction: 0 },
-  { name: 'normal-hit-everything', difficulty: 'normal', mode: 'all', reaction: 200 },
-  { name: 'normal-skip-bears', difficulty: 'normal', mode: 'skip-bears', reaction: 300 },
-  { name: 'easy-every-second', difficulty: 'easy', mode: 'every-2nd', reaction: 400 },
-  { name: 'hard-skip-bears', difficulty: 'hard', mode: 'skip-bears', reaction: 150 },
+  { name: 'normal-no-hits', difficulty: 'normal', mode: 'none', reaction: 0, together: 1 },
+  { name: 'normal-hit-everything', difficulty: 'normal', mode: 'all', reaction: 200, together: 1 },
+  { name: 'normal-skip-bears', difficulty: 'normal', mode: 'skip-bears', reaction: 300, together: 1 },
+  { name: 'easy-every-second', difficulty: 'easy', mode: 'every-2nd', reaction: 400, together: 1 },
+  { name: 'hard-skip-bears', difficulty: 'hard', mode: 'skip-bears', reaction: 150, together: 2 },
+  { name: 'hard-hit-everything', difficulty: 'hard', mode: 'all', reaction: 150, together: 2 },
 ];
+
+/** The holes on the board in each recorded moment that shows more than one target. */
+const crowded = trace => trace
+  .map(line => line.trim().replace(/^\d+ /, '').split(' ')[0])
+  .filter(board => board.includes(','))
+  .map(board => board.split(',').map(target => Number(target.split(':')[0])));
 
 let harness;
 before(async () => { harness = await startHarness(); });
@@ -35,7 +43,10 @@ for (const scenario of SCENARIOS) {
       const expected = await readFile(file, 'utf8');
       assert.equal(actual, expected, `${scenario.name} no longer matches its recording`);
       const { maxActive } = await game.page.evaluate(() => window.__test.stats());
-      assert.equal(maxActive, 1, 'At most one character may be on the board');
+      assert.equal(maxActive, scenario.together, `Targets on the board at once in ${scenario.difficulty}`);
+      for (const [first, second] of crowded(actual.trimEnd().split('\n'))) {
+        assert.ok(!beside(first, second), `Two targets side by side in holes ${first} and ${second}`);
+      }
       game.assertNoErrors();
     } finally {
       await game.close();

@@ -13,304 +13,354 @@
   1000 0:fox:sad:hit:北極狐，已離開可打擊階段 score=4 combo=2 time=29 best=0 toast=北極狐 +3 playing
   1150 empty score=4 combo=2 time=29 best=0 toast=北極狐 +3 playing
   1200 1:bear:peek:-:北極熊，別打！ score=4 combo=2 time=29 best=0 toast=北極狐 +3 playing
-  1584 1:bear:warning:-:北極熊，別打！ score=4 combo=2 time=29 best=0 toast=北極狐 +3 playing
-  1776 1:bear:sneaky:escape:北極熊，已離開可打擊階段 score=4 combo=2 time=29 best=0 toast=北極狐 +3 playing
-  1846 8:penguin:peek:-:企鵝，+1 分 score=4 combo=2 time=29 best=0 toast=北極狐 +3 playing
-  1996 sound sine 495Hz gain=0.12 dur=0.07
-  1996 vibrate 10
-  1996 8:penguin:pain:hit:企鵝，已離開可打擊階段 score=5 combo=3 time=29 best=0 toast=企鵝 +1 playing
-  2000 8:penguin:pain:hit:企鵝，已離開可打擊階段 score=5 combo=3 time=28 best=0 toast=企鵝 +1 playing
-  2156 8:penguin:sad:hit:企鵝，已離開可打擊階段 score=5 combo=3 time=28 best=0 toast=企鵝 +1 playing
-  2396 empty score=5 combo=3 time=28 best=0 toast=企鵝 +1 playing
-  2446 7:penguin:peek:-:企鵝，+1 分 score=5 combo=3 time=28 best=0 toast=企鵝 +1 playing
-  2596 sound sine 520Hz gain=0.12 dur=0.07
-  2596 vibrate 10
-  2596 7:penguin:pain:hit:企鵝，已離開可打擊階段 score=6 combo=4 time=28 best=0 toast=企鵝 +1 playing
-  2756 7:penguin:sad:hit:企鵝，已離開可打擊階段 score=6 combo=4 time=28 best=0 toast=企鵝 +1 playing
-  2996 empty score=6 combo=4 time=28 best=0 toast=企鵝 +1 playing
-  3000 empty score=6 combo=4 time=27 best=0 toast=企鵝 +1 playing
-  3046 4:bear:peek:-:北極熊，別打！ score=6 combo=4 time=27 best=0 toast=企鵝 +1 playing
-  3430 4:bear:warning:-:北極熊，別打！ score=6 combo=4 time=27 best=0 toast=企鵝 +1 playing
-  3622 4:bear:sneaky:escape:北極熊，已離開可打擊階段 score=6 combo=4 time=27 best=0 toast=企鵝 +1 playing
-  3692 0:penguin:peek:-:企鵝，+1 分 score=6 combo=4 time=27 best=0 toast=企鵝 +1 playing
-  3842 sound sine 545Hz gain=0.12 dur=0.07
-  3842 vibrate 10
-  3842 0:penguin:pain:hit:企鵝，已離開可打擊階段 score=8 combo=5 time=27 best=0 toast=連擊獎勵 +2 playing
-  4000 0:penguin:pain:hit:企鵝，已離開可打擊階段 score=8 combo=5 time=26 best=0 toast=連擊獎勵 +2 playing
-  4002 0:penguin:sad:hit:企鵝，已離開可打擊階段 score=8 combo=5 time=26 best=0 toast=連擊獎勵 +2 playing
-  4242 empty score=8 combo=5 time=26 best=0 toast=連擊獎勵 +2 playing
-  4292 3:penguin:peek:-:企鵝，+1 分 score=8 combo=5 time=26 best=0 toast=連擊獎勵 +2 playing
-  4442 sound sine 570Hz gain=0.12 dur=0.07
-  4442 vibrate 10
-  4442 3:penguin:pain:hit:企鵝，已離開可打擊階段 score=9 combo=6 time=26 best=0 toast=企鵝 +1 playing
-  4602 3:penguin:sad:hit:企鵝，已離開可打擊階段 score=9 combo=6 time=26 best=0 toast=企鵝 +1 playing
-  4842 empty score=9 combo=6 time=26 best=0 toast=企鵝 +1 playing
-  4892 7:fox:peek:-:北極狐，+3 分 score=9 combo=6 time=26 best=0 toast=企鵝 +1 playing
-  5000 7:fox:peek:-:北極狐，+3 分 score=9 combo=6 time=25 best=0 toast=企鵝 +1 playing
-  5042 sound triangle 760Hz gain=0.12 dur=0.07
-  5042 vibrate 18
-  5042 7:fox:pain:hit:北極狐，已離開可打擊階段 score=12 combo=7 time=25 best=0 toast=北極狐 +3 playing
-  5202 7:fox:sad:hit:北極狐，已離開可打擊階段 score=12 combo=7 time=25 best=0 toast=北極狐 +3 playing
-  5442 empty score=12 combo=7 time=25 best=0 toast=北極狐 +3 playing
-  5492 0:bear:peek:-:北極熊，別打！ score=12 combo=7 time=25 best=0 toast=北極狐 +3 playing
-  5876 0:bear:warning:-:北極熊，別打！ score=12 combo=7 time=25 best=0 toast=北極狐 +3 playing
-  6000 0:bear:warning:-:北極熊，別打！ score=12 combo=7 time=24 best=0 toast=北極狐 +3 playing
-  6068 0:bear:sneaky:escape:北極熊，已離開可打擊階段 score=12 combo=7 time=24 best=0 toast=北極狐 +3 playing
-  6138 1:bear:peek:-:北極熊，別打！ score=12 combo=7 time=24 best=0 toast=北極狐 +3 playing
-  6522 1:bear:warning:-:北極熊，別打！ score=12 combo=7 time=24 best=0 toast=北極狐 +3 playing
-  6714 1:bear:sneaky:escape:北極熊，已離開可打擊階段 score=12 combo=7 time=24 best=0 toast=北極狐 +3 playing
-  6784 0:penguin:peek:-:企鵝，+1 分 score=12 combo=7 time=24 best=0 toast=北極狐 +3 playing
-  6934 sound sine 620Hz gain=0.12 dur=0.07
-  6934 vibrate 10
-  6934 0:penguin:pain:hit:企鵝，已離開可打擊階段 score=13 combo=8 time=24 best=0 toast=企鵝 +1 playing
-  7000 0:penguin:pain:hit:企鵝，已離開可打擊階段 score=13 combo=8 time=23 best=0 toast=企鵝 +1 playing
-  7094 0:penguin:sad:hit:企鵝，已離開可打擊階段 score=13 combo=8 time=23 best=0 toast=企鵝 +1 playing
-  7334 empty score=13 combo=8 time=23 best=0 toast=企鵝 +1 playing
-  7384 6:penguin:peek:-:企鵝，+1 分 score=13 combo=8 time=23 best=0 toast=企鵝 +1 playing
-  7534 sound sine 645Hz gain=0.12 dur=0.07
-  7534 vibrate 10
-  7534 6:penguin:pain:hit:企鵝，已離開可打擊階段 score=14 combo=9 time=23 best=0 toast=企鵝 +1 playing
-  7694 6:penguin:sad:hit:企鵝，已離開可打擊階段 score=14 combo=9 time=23 best=0 toast=企鵝 +1 playing
-  7934 empty score=14 combo=9 time=23 best=0 toast=企鵝 +1 playing
-  7984 7:fox:peek:-:北極狐，+3 分 score=14 combo=9 time=23 best=0 toast=企鵝 +1 playing
-  8000 7:fox:peek:-:北極狐，+3 分 score=14 combo=9 time=22 best=0 toast=企鵝 +1 playing
-  8134 sound triangle 760Hz gain=0.12 dur=0.07
-  8134 vibrate 18
-  8134 7:fox:pain:hit:北極狐，已離開可打擊階段 score=18 combo=10 time=22 best=0 toast=連擊獎勵 +4 playing
-  8294 7:fox:sad:hit:北極狐，已離開可打擊階段 score=18 combo=10 time=22 best=0 toast=連擊獎勵 +4 playing
-  8534 empty score=18 combo=10 time=22 best=0 toast=連擊獎勵 +4 playing
-  8584 1:penguin:peek:-:企鵝，+1 分 score=18 combo=10 time=22 best=0 toast=連擊獎勵 +4 playing
-  8734 sound sine 695Hz gain=0.12 dur=0.07
-  8734 vibrate 10
-  8734 1:penguin:pain:hit:企鵝，已離開可打擊階段 score=19 combo=11 time=22 best=0 toast=企鵝 +1 playing
-  8894 1:penguin:sad:hit:企鵝，已離開可打擊階段 score=19 combo=11 time=22 best=0 toast=企鵝 +1 playing
-  9000 1:penguin:sad:hit:企鵝，已離開可打擊階段 score=19 combo=11 time=21 best=0 toast=企鵝 +1 playing
-  9134 empty score=19 combo=11 time=21 best=0 toast=企鵝 +1 playing
-  9184 8:penguin:peek:-:企鵝，+1 分 score=19 combo=11 time=21 best=0 toast=企鵝 +1 playing
-  9334 sound sine 720Hz gain=0.12 dur=0.07
-  9334 vibrate 10
-  9334 8:penguin:pain:hit:企鵝，已離開可打擊階段 score=20 combo=12 time=21 best=0 toast=企鵝 +1 playing
-  9494 8:penguin:sad:hit:企鵝，已離開可打擊階段 score=20 combo=12 time=21 best=0 toast=企鵝 +1 playing
-  9734 empty score=20 combo=12 time=21 best=0 toast=企鵝 +1 playing
-  9784 4:fox:peek:-:北極狐，+3 分 score=20 combo=12 time=21 best=0 toast=企鵝 +1 playing
-  9934 sound triangle 760Hz gain=0.12 dur=0.07
-  9934 vibrate 18
-  9934 4:fox:pain:hit:北極狐，已離開可打擊階段 score=23 combo=13 time=21 best=0 toast=北極狐 +3 playing
- 10000 4:fox:pain:hit:北極狐，已離開可打擊階段 score=23 combo=13 time=20 best=0 toast=北極狐 +3 playing
- 10094 4:fox:sad:hit:北極狐，已離開可打擊階段 score=23 combo=13 time=20 best=0 toast=北極狐 +3 playing
- 10334 empty score=23 combo=13 time=20 best=0 toast=北極狐 +3 playing
- 10384 2:fox:peek:-:北極狐，+3 分 score=23 combo=13 time=20 best=0 toast=北極狐 +3 playing
- 10534 sound triangle 760Hz gain=0.12 dur=0.07
- 10534 vibrate 18
- 10534 2:fox:pain:hit:北極狐，已離開可打擊階段 score=26 combo=14 time=20 best=0 toast=北極狐 +3 playing
- 10694 2:fox:sad:hit:北極狐，已離開可打擊階段 score=26 combo=14 time=20 best=0 toast=北極狐 +3 playing
- 10934 empty score=26 combo=14 time=20 best=0 toast=北極狐 +3 playing
- 10984 0:penguin:peek:-:企鵝，+1 分 score=26 combo=14 time=20 best=0 toast=北極狐 +3 playing
- 11000 0:penguin:peek:-:企鵝，+1 分 score=26 combo=14 time=19 best=0 toast=北極狐 +3 playing
- 11134 sound sine 720Hz gain=0.12 dur=0.07
- 11134 vibrate 10
- 11134 0:penguin:pain:hit:企鵝，已離開可打擊階段 score=28 combo=15 time=19 best=0 toast=連擊獎勵 +2 playing
- 11294 0:penguin:sad:hit:企鵝，已離開可打擊階段 score=28 combo=15 time=19 best=0 toast=連擊獎勵 +2 playing
- 11534 empty score=28 combo=15 time=19 best=0 toast=連擊獎勵 +2 playing
- 11584 5:penguin:peek:-:企鵝，+1 分 score=28 combo=15 time=19 best=0 toast=連擊獎勵 +2 playing
- 11734 sound sine 720Hz gain=0.12 dur=0.07
- 11734 vibrate 10
- 11734 5:penguin:pain:hit:企鵝，已離開可打擊階段 score=29 combo=16 time=19 best=0 toast=企鵝 +1 playing
- 11894 5:penguin:sad:hit:企鵝，已離開可打擊階段 score=29 combo=16 time=19 best=0 toast=企鵝 +1 playing
- 12000 5:penguin:sad:hit:企鵝，已離開可打擊階段 score=29 combo=16 time=18 best=0 toast=企鵝 +1 playing
- 12134 empty score=29 combo=16 time=18 best=0 toast=企鵝 +1 playing
- 12184 8:fox:peek:-:北極狐，+3 分 score=29 combo=16 time=18 best=0 toast=企鵝 +1 playing
- 12334 sound triangle 760Hz gain=0.12 dur=0.07
- 12334 vibrate 18
- 12334 8:fox:pain:hit:北極狐，已離開可打擊階段 score=32 combo=17 time=18 best=0 toast=北極狐 +3 playing
- 12494 8:fox:sad:hit:北極狐，已離開可打擊階段 score=32 combo=17 time=18 best=0 toast=北極狐 +3 playing
- 12734 empty score=32 combo=17 time=18 best=0 toast=北極狐 +3 playing
- 12784 3:fox:peek:-:北極狐，+3 分 score=32 combo=17 time=18 best=0 toast=北極狐 +3 playing
- 12934 sound triangle 760Hz gain=0.12 dur=0.07
- 12934 vibrate 18
- 12934 3:fox:pain:hit:北極狐，已離開可打擊階段 score=35 combo=18 time=18 best=0 toast=北極狐 +3 playing
- 13000 3:fox:pain:hit:北極狐，已離開可打擊階段 score=35 combo=18 time=17 best=0 toast=北極狐 +3 playing
- 13094 3:fox:sad:hit:北極狐，已離開可打擊階段 score=35 combo=18 time=17 best=0 toast=北極狐 +3 playing
- 13334 empty score=35 combo=18 time=17 best=0 toast=北極狐 +3 playing
- 13384 4:penguin:peek:-:企鵝，+1 分 score=35 combo=18 time=17 best=0 toast=北極狐 +3 playing
- 13534 sound sine 720Hz gain=0.12 dur=0.07
- 13534 vibrate 10
- 13534 4:penguin:pain:hit:企鵝，已離開可打擊階段 score=36 combo=19 time=17 best=0 toast=企鵝 +1 playing
- 13694 4:penguin:sad:hit:企鵝，已離開可打擊階段 score=36 combo=19 time=17 best=0 toast=企鵝 +1 playing
- 13934 empty score=36 combo=19 time=17 best=0 toast=企鵝 +1 playing
- 13984 7:fox:peek:-:北極狐，+3 分 score=36 combo=19 time=17 best=0 toast=企鵝 +1 playing
- 14000 7:fox:peek:-:北極狐，+3 分 score=36 combo=19 time=16 best=0 toast=企鵝 +1 playing
- 14134 sound triangle 760Hz gain=0.12 dur=0.07
- 14134 vibrate 18
- 14134 7:fox:pain:hit:北極狐，已離開可打擊階段 score=40 combo=20 time=16 best=0 toast=連擊獎勵 +4 playing
- 14294 7:fox:sad:hit:北極狐，已離開可打擊階段 score=40 combo=20 time=16 best=0 toast=連擊獎勵 +4 playing
- 14534 empty score=40 combo=20 time=16 best=0 toast=連擊獎勵 +4 playing
- 14584 1:fox:peek:-:北極狐，+3 分 score=40 combo=20 time=16 best=0 toast=連擊獎勵 +4 playing
- 14734 sound triangle 760Hz gain=0.12 dur=0.07
- 14734 vibrate 18
- 14734 1:fox:pain:hit:北極狐，已離開可打擊階段 score=43 combo=21 time=16 best=0 toast=北極狐 +3 playing
- 14894 1:fox:sad:hit:北極狐，已離開可打擊階段 score=43 combo=21 time=16 best=0 toast=北極狐 +3 playing
- 15000 1:fox:sad:hit:北極狐，已離開可打擊階段 score=43 combo=21 time=15 best=0 toast=北極狐 +3 playing
- 15134 empty score=43 combo=21 time=15 best=0 toast=北極狐 +3 playing
- 15184 2:fox:peek:-:北極狐，+3 分 score=43 combo=21 time=15 best=0 toast=北極狐 +3 playing
- 15334 sound triangle 760Hz gain=0.12 dur=0.07
- 15334 vibrate 18
- 15334 2:fox:pain:hit:北極狐，已離開可打擊階段 score=46 combo=22 time=15 best=0 toast=北極狐 +3 playing
- 15494 2:fox:sad:hit:北極狐，已離開可打擊階段 score=46 combo=22 time=15 best=0 toast=北極狐 +3 playing
- 15734 empty score=46 combo=22 time=15 best=0 toast=北極狐 +3 playing
- 15784 5:fox:peek:-:北極狐，+3 分 score=46 combo=22 time=15 best=0 toast=北極狐 +3 playing
- 15934 sound triangle 760Hz gain=0.12 dur=0.07
- 15934 vibrate 18
- 15934 5:fox:pain:hit:北極狐，已離開可打擊階段 score=49 combo=23 time=15 best=0 toast=北極狐 +3 playing
- 16000 5:fox:pain:hit:北極狐，已離開可打擊階段 score=49 combo=23 time=14 best=0 toast=北極狐 +3 playing
- 16094 5:fox:sad:hit:北極狐，已離開可打擊階段 score=49 combo=23 time=14 best=0 toast=北極狐 +3 playing
- 16334 empty score=49 combo=23 time=14 best=0 toast=北極狐 +3 playing
- 16384 3:penguin:peek:-:企鵝，+1 分 score=49 combo=23 time=14 best=0 toast=北極狐 +3 playing
- 16534 sound sine 720Hz gain=0.12 dur=0.07
- 16534 vibrate 10
- 16534 3:penguin:pain:hit:企鵝，已離開可打擊階段 score=50 combo=24 time=14 best=0 toast=企鵝 +1 playing
- 16694 3:penguin:sad:hit:企鵝，已離開可打擊階段 score=50 combo=24 time=14 best=0 toast=企鵝 +1 playing
- 16934 empty score=50 combo=24 time=14 best=0 toast=企鵝 +1 playing
- 16984 1:penguin:peek:-:企鵝，+1 分 score=50 combo=24 time=14 best=0 toast=企鵝 +1 playing
- 17000 1:penguin:peek:-:企鵝，+1 分 score=50 combo=24 time=13 best=0 toast=企鵝 +1 playing
- 17134 sound sine 720Hz gain=0.12 dur=0.07
- 17134 vibrate 10
- 17134 1:penguin:pain:hit:企鵝，已離開可打擊階段 score=52 combo=25 time=13 best=0 toast=連擊獎勵 +2 playing
- 17294 1:penguin:sad:hit:企鵝，已離開可打擊階段 score=52 combo=25 time=13 best=0 toast=連擊獎勵 +2 playing
- 17534 empty score=52 combo=25 time=13 best=0 toast=連擊獎勵 +2 playing
- 17584 0:penguin:peek:-:企鵝，+1 分 score=52 combo=25 time=13 best=0 toast=連擊獎勵 +2 playing
+  1400 1:bear:peek:-:北極熊，別打！,8:penguin:peek:-:企鵝，+1 分 score=4 combo=2 time=29 best=0 toast=北極狐 +3 playing
+  1550 sound sine 495Hz gain=0.12 dur=0.07
+  1550 vibrate 10
+  1550 1:bear:peek:-:北極熊，別打！,8:penguin:pain:hit:企鵝，已離開可打擊階段 score=5 combo=3 time=29 best=0 toast=企鵝 +1 playing
+  1584 1:bear:warning:-:北極熊，別打！,8:penguin:pain:hit:企鵝，已離開可打擊階段 score=5 combo=3 time=29 best=0 toast=企鵝 +1 playing
+  1710 1:bear:warning:-:北極熊，別打！,8:penguin:sad:hit:企鵝，已離開可打擊階段 score=5 combo=3 time=29 best=0 toast=企鵝 +1 playing
+  1776 1:bear:sneaky:escape:北極熊，已離開可打擊階段,8:penguin:sad:hit:企鵝，已離開可打擊階段 score=5 combo=3 time=29 best=0 toast=企鵝 +1 playing
+  1846 8:penguin:sad:hit:企鵝，已離開可打擊階段 score=5 combo=3 time=29 best=0 toast=企鵝 +1 playing
+  1950 empty score=5 combo=3 time=29 best=0 toast=企鵝 +1 playing
+  2000 empty score=5 combo=3 time=28 best=0 toast=企鵝 +1 playing
+  2000 7:penguin:peek:-:企鵝，+1 分 score=5 combo=3 time=28 best=0 toast=企鵝 +1 playing
+  2150 sound sine 520Hz gain=0.12 dur=0.07
+  2150 vibrate 10
+  2150 7:penguin:pain:hit:企鵝，已離開可打擊階段 score=6 combo=4 time=28 best=0 toast=企鵝 +1 playing
+  2310 7:penguin:sad:hit:企鵝，已離開可打擊階段 score=6 combo=4 time=28 best=0 toast=企鵝 +1 playing
+  2550 empty score=6 combo=4 time=28 best=0 toast=企鵝 +1 playing
+  2600 4:bear:peek:-:北極熊，別打！ score=6 combo=4 time=28 best=0 toast=企鵝 +1 playing
+  2984 4:bear:warning:-:北極熊，別打！ score=6 combo=4 time=28 best=0 toast=企鵝 +1 playing
+  3000 4:bear:warning:-:北極熊，別打！ score=6 combo=4 time=27 best=0 toast=企鵝 +1 playing
+  3176 4:bear:sneaky:escape:北極熊，已離開可打擊階段 score=6 combo=4 time=27 best=0 toast=企鵝 +1 playing
+  3246 0:penguin:peek:-:企鵝，+1 分 score=6 combo=4 time=27 best=0 toast=企鵝 +1 playing
+  3396 sound sine 545Hz gain=0.12 dur=0.07
+  3396 vibrate 10
+  3396 0:penguin:pain:hit:企鵝，已離開可打擊階段 score=8 combo=5 time=27 best=0 toast=連擊獎勵 +2 playing
+  3446 0:penguin:pain:hit:企鵝，已離開可打擊階段,5:penguin:peek:-:企鵝，+1 分 score=8 combo=5 time=27 best=0 toast=連擊獎勵 +2 playing
+  3556 0:penguin:sad:hit:企鵝，已離開可打擊階段,5:penguin:peek:-:企鵝，+1 分 score=8 combo=5 time=27 best=0 toast=連擊獎勵 +2 playing
+  3596 sound sine 570Hz gain=0.12 dur=0.07
+  3596 vibrate 10
+  3596 0:penguin:sad:hit:企鵝，已離開可打擊階段,5:penguin:pain:hit:企鵝，已離開可打擊階段 score=9 combo=6 time=27 best=0 toast=企鵝 +1 playing
+  3756 0:penguin:sad:hit:企鵝，已離開可打擊階段,5:penguin:sad:hit:企鵝，已離開可打擊階段 score=9 combo=6 time=27 best=0 toast=企鵝 +1 playing
+  3796 5:penguin:sad:hit:企鵝，已離開可打擊階段 score=9 combo=6 time=27 best=0 toast=企鵝 +1 playing
+  3996 empty score=9 combo=6 time=27 best=0 toast=企鵝 +1 playing
+  4000 empty score=9 combo=6 time=26 best=0 toast=企鵝 +1 playing
+  4046 7:fox:peek:-:北極狐，+3 分 score=9 combo=6 time=26 best=0 toast=企鵝 +1 playing
+  4196 sound triangle 760Hz gain=0.12 dur=0.07
+  4196 vibrate 18
+  4196 7:fox:pain:hit:北極狐，已離開可打擊階段 score=12 combo=7 time=26 best=0 toast=北極狐 +3 playing
+  4356 7:fox:sad:hit:北極狐，已離開可打擊階段 score=12 combo=7 time=26 best=0 toast=北極狐 +3 playing
+  4596 empty score=12 combo=7 time=26 best=0 toast=北極狐 +3 playing
+  4646 0:bear:peek:-:北極熊，別打！ score=12 combo=7 time=26 best=0 toast=北極狐 +3 playing
+  5000 0:bear:peek:-:北極熊，別打！ score=12 combo=7 time=25 best=0 toast=北極狐 +3 playing
+  5030 0:bear:warning:-:北極熊，別打！ score=12 combo=7 time=25 best=0 toast=北極狐 +3 playing
+  5222 0:bear:sneaky:escape:北極熊，已離開可打擊階段 score=12 combo=7 time=25 best=0 toast=北極狐 +3 playing
+  5292 1:bear:peek:-:北極熊，別打！ score=12 combo=7 time=25 best=0 toast=北極狐 +3 playing
+  5492 1:bear:peek:-:北極熊，別打！,3:bear:peek:-:北極熊，別打！ score=12 combo=7 time=25 best=0 toast=北極狐 +3 playing
+  5676 1:bear:warning:-:北極熊，別打！,3:bear:peek:-:北極熊，別打！ score=12 combo=7 time=25 best=0 toast=北極狐 +3 playing
+  5868 1:bear:sneaky:escape:北極熊，已離開可打擊階段,3:bear:peek:-:北極熊，別打！ score=12 combo=7 time=25 best=0 toast=北極狐 +3 playing
+  5876 1:bear:sneaky:escape:北極熊，已離開可打擊階段,3:bear:warning:-:北極熊，別打！ score=12 combo=7 time=25 best=0 toast=北極狐 +3 playing
+  5938 3:bear:warning:-:北極熊，別打！ score=12 combo=7 time=25 best=0 toast=北極狐 +3 playing
+  6000 3:bear:warning:-:北極熊，別打！ score=12 combo=7 time=24 best=0 toast=北極狐 +3 playing
+  6068 3:bear:sneaky:escape:北極熊，已離開可打擊階段 score=12 combo=7 time=24 best=0 toast=北極狐 +3 playing
+  6138 7:penguin:peek:-:企鵝，+1 分 score=12 combo=7 time=24 best=0 toast=北極狐 +3 playing
+  6288 sound sine 620Hz gain=0.12 dur=0.07
+  6288 vibrate 10
+  6288 7:penguin:pain:hit:企鵝，已離開可打擊階段 score=13 combo=8 time=24 best=0 toast=企鵝 +1 playing
+  6448 7:penguin:sad:hit:企鵝，已離開可打擊階段 score=13 combo=8 time=24 best=0 toast=企鵝 +1 playing
+  6688 empty score=13 combo=8 time=24 best=0 toast=企鵝 +1 playing
+  6738 6:penguin:peek:-:企鵝，+1 分 score=13 combo=8 time=24 best=0 toast=企鵝 +1 playing
+  6888 sound sine 645Hz gain=0.12 dur=0.07
+  6888 vibrate 10
+  6888 6:penguin:pain:hit:企鵝，已離開可打擊階段 score=14 combo=9 time=24 best=0 toast=企鵝 +1 playing
+  7000 6:penguin:pain:hit:企鵝，已離開可打擊階段 score=14 combo=9 time=23 best=0 toast=企鵝 +1 playing
+  7048 6:penguin:sad:hit:企鵝，已離開可打擊階段 score=14 combo=9 time=23 best=0 toast=企鵝 +1 playing
+  7288 empty score=14 combo=9 time=23 best=0 toast=企鵝 +1 playing
+  7338 1:fox:peek:-:北極狐，+3 分 score=14 combo=9 time=23 best=0 toast=企鵝 +1 playing
+  7488 sound triangle 760Hz gain=0.12 dur=0.07
+  7488 vibrate 18
+  7488 1:fox:pain:hit:北極狐，已離開可打擊階段 score=18 combo=10 time=23 best=0 toast=連擊獎勵 +4 playing
+  7538 1:fox:pain:hit:北極狐，已離開可打擊階段,7:penguin:peek:-:企鵝，+1 分 score=18 combo=10 time=23 best=0 toast=連擊獎勵 +4 playing
+  7648 1:fox:sad:hit:北極狐，已離開可打擊階段,7:penguin:peek:-:企鵝，+1 分 score=18 combo=10 time=23 best=0 toast=連擊獎勵 +4 playing
+  7688 sound sine 695Hz gain=0.12 dur=0.07
+  7688 vibrate 10
+  7688 1:fox:sad:hit:北極狐，已離開可打擊階段,7:penguin:pain:hit:企鵝，已離開可打擊階段 score=19 combo=11 time=23 best=0 toast=企鵝 +1 playing
+  7848 1:fox:sad:hit:北極狐，已離開可打擊階段,7:penguin:sad:hit:企鵝，已離開可打擊階段 score=19 combo=11 time=23 best=0 toast=企鵝 +1 playing
+  7888 7:penguin:sad:hit:企鵝，已離開可打擊階段 score=19 combo=11 time=23 best=0 toast=企鵝 +1 playing
+  8000 7:penguin:sad:hit:企鵝，已離開可打擊階段 score=19 combo=11 time=22 best=0 toast=企鵝 +1 playing
+  8088 empty score=19 combo=11 time=22 best=0 toast=企鵝 +1 playing
+  8138 6:penguin:peek:-:企鵝，+1 分 score=19 combo=11 time=22 best=0 toast=企鵝 +1 playing
+  8288 sound sine 720Hz gain=0.12 dur=0.07
+  8288 vibrate 10
+  8288 6:penguin:pain:hit:企鵝，已離開可打擊階段 score=20 combo=12 time=22 best=0 toast=企鵝 +1 playing
+  8448 6:penguin:sad:hit:企鵝，已離開可打擊階段 score=20 combo=12 time=22 best=0 toast=企鵝 +1 playing
+  8688 empty score=20 combo=12 time=22 best=0 toast=企鵝 +1 playing
+  8738 1:fox:peek:-:北極狐，+3 分 score=20 combo=12 time=22 best=0 toast=企鵝 +1 playing
+  8888 sound triangle 760Hz gain=0.12 dur=0.07
+  8888 vibrate 18
+  8888 1:fox:pain:hit:北極狐，已離開可打擊階段 score=23 combo=13 time=22 best=0 toast=北極狐 +3 playing
+  9000 1:fox:pain:hit:北極狐，已離開可打擊階段 score=23 combo=13 time=21 best=0 toast=北極狐 +3 playing
+  9048 1:fox:sad:hit:北極狐，已離開可打擊階段 score=23 combo=13 time=21 best=0 toast=北極狐 +3 playing
+  9288 empty score=23 combo=13 time=21 best=0 toast=北極狐 +3 playing
+  9338 2:bear:peek:-:北極熊，別打！ score=23 combo=13 time=21 best=0 toast=北極狐 +3 playing
+  9538 2:bear:peek:-:北極熊，別打！,8:penguin:peek:-:企鵝，+1 分 score=23 combo=13 time=21 best=0 toast=北極狐 +3 playing
+  9688 sound sine 720Hz gain=0.12 dur=0.07
+  9688 vibrate 10
+  9688 2:bear:peek:-:北極熊，別打！,8:penguin:pain:hit:企鵝，已離開可打擊階段 score=24 combo=14 time=21 best=0 toast=企鵝 +1 playing
+  9722 2:bear:warning:-:北極熊，別打！,8:penguin:pain:hit:企鵝，已離開可打擊階段 score=24 combo=14 time=21 best=0 toast=企鵝 +1 playing
+  9848 2:bear:warning:-:北極熊，別打！,8:penguin:sad:hit:企鵝，已離開可打擊階段 score=24 combo=14 time=21 best=0 toast=企鵝 +1 playing
+  9914 2:bear:sneaky:escape:北極熊，已離開可打擊階段,8:penguin:sad:hit:企鵝，已離開可打擊階段 score=24 combo=14 time=21 best=0 toast=企鵝 +1 playing
+  9984 8:penguin:sad:hit:企鵝，已離開可打擊階段 score=24 combo=14 time=21 best=0 toast=企鵝 +1 playing
+ 10000 8:penguin:sad:hit:企鵝，已離開可打擊階段 score=24 combo=14 time=20 best=0 toast=企鵝 +1 playing
+ 10088 empty score=24 combo=14 time=20 best=0 toast=企鵝 +1 playing
+ 10138 3:penguin:peek:-:企鵝，+1 分 score=24 combo=14 time=20 best=0 toast=企鵝 +1 playing
+ 10288 sound sine 720Hz gain=0.12 dur=0.07
+ 10288 vibrate 10
+ 10288 3:penguin:pain:hit:企鵝，已離開可打擊階段 score=26 combo=15 time=20 best=0 toast=連擊獎勵 +2 playing
+ 10448 3:penguin:sad:hit:企鵝，已離開可打擊階段 score=26 combo=15 time=20 best=0 toast=連擊獎勵 +2 playing
+ 10688 empty score=26 combo=15 time=20 best=0 toast=連擊獎勵 +2 playing
+ 10738 1:penguin:peek:-:企鵝，+1 分 score=26 combo=15 time=20 best=0 toast=連擊獎勵 +2 playing
+ 10888 sound sine 720Hz gain=0.12 dur=0.07
+ 10888 vibrate 10
+ 10888 1:penguin:pain:hit:企鵝，已離開可打擊階段 score=27 combo=16 time=20 best=0 toast=企鵝 +1 playing
+ 11000 1:penguin:pain:hit:企鵝，已離開可打擊階段 score=27 combo=16 time=19 best=0 toast=企鵝 +1 playing
+ 11048 1:penguin:sad:hit:企鵝，已離開可打擊階段 score=27 combo=16 time=19 best=0 toast=企鵝 +1 playing
+ 11288 empty score=27 combo=16 time=19 best=0 toast=企鵝 +1 playing
+ 11338 2:penguin:peek:-:企鵝，+1 分 score=27 combo=16 time=19 best=0 toast=企鵝 +1 playing
+ 11488 sound sine 720Hz gain=0.12 dur=0.07
+ 11488 vibrate 10
+ 11488 2:penguin:pain:hit:企鵝，已離開可打擊階段 score=28 combo=17 time=19 best=0 toast=企鵝 +1 playing
+ 11538 2:penguin:pain:hit:企鵝，已離開可打擊階段,6:penguin:peek:-:企鵝，+1 分 score=28 combo=17 time=19 best=0 toast=企鵝 +1 playing
+ 11648 2:penguin:sad:hit:企鵝，已離開可打擊階段,6:penguin:peek:-:企鵝，+1 分 score=28 combo=17 time=19 best=0 toast=企鵝 +1 playing
+ 11688 sound sine 720Hz gain=0.12 dur=0.07
+ 11688 vibrate 10
+ 11688 2:penguin:sad:hit:企鵝，已離開可打擊階段,6:penguin:pain:hit:企鵝，已離開可打擊階段 score=29 combo=18 time=19 best=0 toast=企鵝 +1 playing
+ 11848 2:penguin:sad:hit:企鵝，已離開可打擊階段,6:penguin:sad:hit:企鵝，已離開可打擊階段 score=29 combo=18 time=19 best=0 toast=企鵝 +1 playing
+ 11888 6:penguin:sad:hit:企鵝，已離開可打擊階段 score=29 combo=18 time=19 best=0 toast=企鵝 +1 playing
+ 12000 6:penguin:sad:hit:企鵝，已離開可打擊階段 score=29 combo=18 time=18 best=0 toast=企鵝 +1 playing
+ 12088 empty score=29 combo=18 time=18 best=0 toast=企鵝 +1 playing
+ 12138 1:fox:peek:-:北極狐，+3 分 score=29 combo=18 time=18 best=0 toast=企鵝 +1 playing
+ 12288 sound triangle 760Hz gain=0.12 dur=0.07
+ 12288 vibrate 18
+ 12288 1:fox:pain:hit:北極狐，已離開可打擊階段 score=32 combo=19 time=18 best=0 toast=北極狐 +3 playing
+ 12448 1:fox:sad:hit:北極狐，已離開可打擊階段 score=32 combo=19 time=18 best=0 toast=北極狐 +3 playing
+ 12688 empty score=32 combo=19 time=18 best=0 toast=北極狐 +3 playing
+ 12738 2:fox:peek:-:北極狐，+3 分 score=32 combo=19 time=18 best=0 toast=北極狐 +3 playing
+ 12888 sound triangle 760Hz gain=0.12 dur=0.07
+ 12888 vibrate 18
+ 12888 2:fox:pain:hit:北極狐，已離開可打擊階段 score=36 combo=20 time=18 best=0 toast=連擊獎勵 +4 playing
+ 13000 2:fox:pain:hit:北極狐，已離開可打擊階段 score=36 combo=20 time=17 best=0 toast=連擊獎勵 +4 playing
+ 13048 2:fox:sad:hit:北極狐，已離開可打擊階段 score=36 combo=20 time=17 best=0 toast=連擊獎勵 +4 playing
+ 13288 empty score=36 combo=20 time=17 best=0 toast=連擊獎勵 +4 playing
+ 13338 5:fox:peek:-:北極狐，+3 分 score=36 combo=20 time=17 best=0 toast=連擊獎勵 +4 playing
+ 13488 sound triangle 760Hz gain=0.12 dur=0.07
+ 13488 vibrate 18
+ 13488 5:fox:pain:hit:北極狐，已離開可打擊階段 score=39 combo=21 time=17 best=0 toast=北極狐 +3 playing
+ 13538 3:penguin:peek:-:企鵝，+1 分,5:fox:pain:hit:北極狐，已離開可打擊階段 score=39 combo=21 time=17 best=0 toast=北極狐 +3 playing
+ 13648 3:penguin:peek:-:企鵝，+1 分,5:fox:sad:hit:北極狐，已離開可打擊階段 score=39 combo=21 time=17 best=0 toast=北極狐 +3 playing
+ 13688 sound sine 720Hz gain=0.12 dur=0.07
+ 13688 vibrate 10
+ 13688 3:penguin:pain:hit:企鵝，已離開可打擊階段,5:fox:sad:hit:北極狐，已離開可打擊階段 score=40 combo=22 time=17 best=0 toast=企鵝 +1 playing
+ 13848 3:penguin:sad:hit:企鵝，已離開可打擊階段,5:fox:sad:hit:北極狐，已離開可打擊階段 score=40 combo=22 time=17 best=0 toast=企鵝 +1 playing
+ 13888 3:penguin:sad:hit:企鵝，已離開可打擊階段 score=40 combo=22 time=17 best=0 toast=企鵝 +1 playing
+ 14000 3:penguin:sad:hit:企鵝，已離開可打擊階段 score=40 combo=22 time=16 best=0 toast=企鵝 +1 playing
+ 14088 empty score=40 combo=22 time=16 best=0 toast=企鵝 +1 playing
+ 14138 6:fox:peek:-:北極狐，+3 分 score=40 combo=22 time=16 best=0 toast=企鵝 +1 playing
+ 14288 sound triangle 760Hz gain=0.12 dur=0.07
+ 14288 vibrate 18
+ 14288 6:fox:pain:hit:北極狐，已離開可打擊階段 score=43 combo=23 time=16 best=0 toast=北極狐 +3 playing
+ 14448 6:fox:sad:hit:北極狐，已離開可打擊階段 score=43 combo=23 time=16 best=0 toast=北極狐 +3 playing
+ 14688 empty score=43 combo=23 time=16 best=0 toast=北極狐 +3 playing
+ 14738 0:penguin:peek:-:企鵝，+1 分 score=43 combo=23 time=16 best=0 toast=北極狐 +3 playing
+ 14888 sound sine 720Hz gain=0.12 dur=0.07
+ 14888 vibrate 10
+ 14888 0:penguin:pain:hit:企鵝，已離開可打擊階段 score=44 combo=24 time=16 best=0 toast=企鵝 +1 playing
+ 15000 0:penguin:pain:hit:企鵝，已離開可打擊階段 score=44 combo=24 time=15 best=0 toast=企鵝 +1 playing
+ 15048 0:penguin:sad:hit:企鵝，已離開可打擊階段 score=44 combo=24 time=15 best=0 toast=企鵝 +1 playing
+ 15288 empty score=44 combo=24 time=15 best=0 toast=企鵝 +1 playing
+ 15338 3:fox:peek:-:北極狐，+3 分 score=44 combo=24 time=15 best=0 toast=企鵝 +1 playing
+ 15488 sound triangle 760Hz gain=0.12 dur=0.07
+ 15488 vibrate 18
+ 15488 3:fox:pain:hit:北極狐，已離開可打擊階段 score=48 combo=25 time=15 best=0 toast=連擊獎勵 +4 playing
+ 15538 3:fox:pain:hit:北極狐，已離開可打擊階段,5:penguin:peek:-:企鵝，+1 分 score=48 combo=25 time=15 best=0 toast=連擊獎勵 +4 playing
+ 15648 3:fox:sad:hit:北極狐，已離開可打擊階段,5:penguin:peek:-:企鵝，+1 分 score=48 combo=25 time=15 best=0 toast=連擊獎勵 +4 playing
+ 15688 sound sine 720Hz gain=0.12 dur=0.07
+ 15688 vibrate 10
+ 15688 3:fox:sad:hit:北極狐，已離開可打擊階段,5:penguin:pain:hit:企鵝，已離開可打擊階段 score=49 combo=26 time=15 best=0 toast=企鵝 +1 playing
+ 15848 3:fox:sad:hit:北極狐，已離開可打擊階段,5:penguin:sad:hit:企鵝，已離開可打擊階段 score=49 combo=26 time=15 best=0 toast=企鵝 +1 playing
+ 15888 5:penguin:sad:hit:企鵝，已離開可打擊階段 score=49 combo=26 time=15 best=0 toast=企鵝 +1 playing
+ 16000 5:penguin:sad:hit:企鵝，已離開可打擊階段 score=49 combo=26 time=14 best=0 toast=企鵝 +1 playing
+ 16088 empty score=49 combo=26 time=14 best=0 toast=企鵝 +1 playing
+ 16138 8:penguin:peek:-:企鵝，+1 分 score=49 combo=26 time=14 best=0 toast=企鵝 +1 playing
+ 16288 sound sine 720Hz gain=0.12 dur=0.07
+ 16288 vibrate 10
+ 16288 8:penguin:pain:hit:企鵝，已離開可打擊階段 score=50 combo=27 time=14 best=0 toast=企鵝 +1 playing
+ 16448 8:penguin:sad:hit:企鵝，已離開可打擊階段 score=50 combo=27 time=14 best=0 toast=企鵝 +1 playing
+ 16688 empty score=50 combo=27 time=14 best=0 toast=企鵝 +1 playing
+ 16738 7:bear:peek:-:北極熊，別打！ score=50 combo=27 time=14 best=0 toast=企鵝 +1 playing
+ 17000 7:bear:peek:-:北極熊，別打！ score=50 combo=27 time=13 best=0 toast=企鵝 +1 playing
+ 17122 7:bear:warning:-:北極熊，別打！ score=50 combo=27 time=13 best=0 toast=企鵝 +1 playing
+ 17314 7:bear:sneaky:escape:北極熊，已離開可打擊階段 score=50 combo=27 time=13 best=0 toast=企鵝 +1 playing
+ 17384 6:penguin:peek:-:企鵝，+1 分 score=50 combo=27 time=13 best=0 toast=企鵝 +1 playing
+ 17534 sound sine 720Hz gain=0.12 dur=0.07
+ 17534 vibrate 10
+ 17534 6:penguin:pain:hit:企鵝，已離開可打擊階段 score=51 combo=28 time=13 best=0 toast=企鵝 +1 playing
+ 17584 0:penguin:peek:-:企鵝，+1 分,6:penguin:pain:hit:企鵝，已離開可打擊階段 score=51 combo=28 time=13 best=0 toast=企鵝 +1 playing
+ 17694 0:penguin:peek:-:企鵝，+1 分,6:penguin:sad:hit:企鵝，已離開可打擊階段 score=51 combo=28 time=13 best=0 toast=企鵝 +1 playing
  17734 sound sine 720Hz gain=0.12 dur=0.07
  17734 vibrate 10
- 17734 0:penguin:pain:hit:企鵝，已離開可打擊階段 score=53 combo=26 time=13 best=0 toast=企鵝 +1 playing
- 17894 0:penguin:sad:hit:企鵝，已離開可打擊階段 score=53 combo=26 time=13 best=0 toast=企鵝 +1 playing
- 18000 0:penguin:sad:hit:企鵝，已離開可打擊階段 score=53 combo=26 time=12 best=0 toast=企鵝 +1 playing
- 18134 empty score=53 combo=26 time=12 best=0 toast=企鵝 +1 playing
- 18184 3:fox:peek:-:北極狐，+3 分 score=53 combo=26 time=12 best=0 toast=企鵝 +1 playing
- 18334 sound triangle 760Hz gain=0.12 dur=0.07
- 18334 vibrate 18
- 18334 3:fox:pain:hit:北極狐，已離開可打擊階段 score=56 combo=27 time=12 best=0 toast=北極狐 +3 playing
- 18494 3:fox:sad:hit:北極狐，已離開可打擊階段 score=56 combo=27 time=12 best=0 toast=北極狐 +3 playing
- 18734 empty score=56 combo=27 time=12 best=0 toast=北極狐 +3 playing
- 18784 4:penguin:peek:-:企鵝，+1 分 score=56 combo=27 time=12 best=0 toast=北極狐 +3 playing
+ 17734 0:penguin:pain:hit:企鵝，已離開可打擊階段,6:penguin:sad:hit:企鵝，已離開可打擊階段 score=52 combo=29 time=13 best=0 toast=企鵝 +1 playing
+ 17894 0:penguin:sad:hit:企鵝，已離開可打擊階段,6:penguin:sad:hit:企鵝，已離開可打擊階段 score=52 combo=29 time=13 best=0 toast=企鵝 +1 playing
+ 17934 0:penguin:sad:hit:企鵝，已離開可打擊階段 score=52 combo=29 time=13 best=0 toast=企鵝 +1 playing
+ 18000 0:penguin:sad:hit:企鵝，已離開可打擊階段 score=52 combo=29 time=12 best=0 toast=企鵝 +1 playing
+ 18134 empty score=52 combo=29 time=12 best=0 toast=企鵝 +1 playing
+ 18184 0:penguin:peek:-:企鵝，+1 分 score=52 combo=29 time=12 best=0 toast=企鵝 +1 playing
+ 18334 sound sine 720Hz gain=0.12 dur=0.07
+ 18334 vibrate 10
+ 18334 0:penguin:pain:hit:企鵝，已離開可打擊階段 score=54 combo=30 time=12 best=0 toast=連擊獎勵 +2 playing
+ 18494 0:penguin:sad:hit:企鵝，已離開可打擊階段 score=54 combo=30 time=12 best=0 toast=連擊獎勵 +2 playing
+ 18734 empty score=54 combo=30 time=12 best=0 toast=連擊獎勵 +2 playing
+ 18784 1:penguin:peek:-:企鵝，+1 分 score=54 combo=30 time=12 best=0 toast=連擊獎勵 +2 playing
  18934 sound sine 720Hz gain=0.12 dur=0.07
  18934 vibrate 10
- 18934 4:penguin:pain:hit:企鵝，已離開可打擊階段 score=57 combo=28 time=12 best=0 toast=企鵝 +1 playing
- 19000 4:penguin:pain:hit:企鵝，已離開可打擊階段 score=57 combo=28 time=11 best=0 toast=企鵝 +1 playing
- 19094 4:penguin:sad:hit:企鵝，已離開可打擊階段 score=57 combo=28 time=11 best=0 toast=企鵝 +1 playing
- 19334 empty score=57 combo=28 time=11 best=0 toast=企鵝 +1 playing
- 19384 8:penguin:peek:-:企鵝，+1 分 score=57 combo=28 time=11 best=0 toast=企鵝 +1 playing
- 19534 sound sine 720Hz gain=0.12 dur=0.07
- 19534 vibrate 10
- 19534 8:penguin:pain:hit:企鵝，已離開可打擊階段 score=58 combo=29 time=11 best=0 toast=企鵝 +1 playing
- 19694 8:penguin:sad:hit:企鵝，已離開可打擊階段 score=58 combo=29 time=11 best=0 toast=企鵝 +1 playing
- 19934 empty score=58 combo=29 time=11 best=0 toast=企鵝 +1 playing
- 19984 7:bear:peek:-:北極熊，別打！ score=58 combo=29 time=11 best=0 toast=企鵝 +1 playing
- 20000 7:bear:peek:-:北極熊，別打！ score=58 combo=29 time=10 best=0 toast=企鵝 +1 playing
- 20368 7:bear:warning:-:北極熊，別打！ score=58 combo=29 time=10 best=0 toast=企鵝 +1 playing
- 20560 7:bear:sneaky:escape:北極熊，已離開可打擊階段 score=58 combo=29 time=10 best=0 toast=企鵝 +1 playing
- 20630 6:penguin:peek:-:企鵝，+1 分 score=58 combo=29 time=10 best=0 toast=企鵝 +1 playing
- 20780 sound sine 720Hz gain=0.12 dur=0.07
- 20780 vibrate 10
- 20780 6:penguin:pain:hit:企鵝，已離開可打擊階段 score=60 combo=30 time=10 best=0 toast=連擊獎勵 +2 playing
- 20940 6:penguin:sad:hit:企鵝，已離開可打擊階段 score=60 combo=30 time=10 best=0 toast=連擊獎勵 +2 playing
- 21000 6:penguin:sad:hit:企鵝，已離開可打擊階段 score=60 combo=30 time=9 best=0 toast=連擊獎勵 +2 playing
- 21180 empty score=60 combo=30 time=9 best=0 toast=連擊獎勵 +2 playing
- 21230 0:penguin:peek:-:企鵝，+1 分 score=60 combo=30 time=9 best=0 toast=連擊獎勵 +2 playing
- 21380 sound sine 720Hz gain=0.12 dur=0.07
- 21380 vibrate 10
- 21380 0:penguin:pain:hit:企鵝，已離開可打擊階段 score=61 combo=31 time=9 best=0 toast=企鵝 +1 playing
- 21540 0:penguin:sad:hit:企鵝，已離開可打擊階段 score=61 combo=31 time=9 best=0 toast=企鵝 +1 playing
- 21780 empty score=61 combo=31 time=9 best=0 toast=企鵝 +1 playing
- 21830 8:fox:peek:-:北極狐，+3 分 score=61 combo=31 time=9 best=0 toast=企鵝 +1 playing
- 21980 sound triangle 760Hz gain=0.12 dur=0.07
- 21980 vibrate 18
- 21980 8:fox:pain:hit:北極狐，已離開可打擊階段 score=64 combo=32 time=9 best=0 toast=北極狐 +3 playing
- 22000 8:fox:pain:hit:北極狐，已離開可打擊階段 score=64 combo=32 time=8 best=0 toast=北極狐 +3 playing
- 22140 8:fox:sad:hit:北極狐，已離開可打擊階段 score=64 combo=32 time=8 best=0 toast=北極狐 +3 playing
- 22380 empty score=64 combo=32 time=8 best=0 toast=北極狐 +3 playing
- 22430 5:fox:peek:-:北極狐，+3 分 score=64 combo=32 time=8 best=0 toast=北極狐 +3 playing
- 22580 sound triangle 760Hz gain=0.12 dur=0.07
- 22580 vibrate 18
- 22580 5:fox:pain:hit:北極狐，已離開可打擊階段 score=67 combo=33 time=8 best=0 toast=北極狐 +3 playing
- 22740 5:fox:sad:hit:北極狐，已離開可打擊階段 score=67 combo=33 time=8 best=0 toast=北極狐 +3 playing
- 22980 empty score=67 combo=33 time=8 best=0 toast=北極狐 +3 playing
- 23000 empty score=67 combo=33 time=7 best=0 toast=北極狐 +3 playing
- 23030 4:fox:peek:-:北極狐，+3 分 score=67 combo=33 time=7 best=0 toast=北極狐 +3 playing
- 23180 sound triangle 760Hz gain=0.12 dur=0.07
- 23180 vibrate 18
- 23180 4:fox:pain:hit:北極狐，已離開可打擊階段 score=70 combo=34 time=7 best=0 toast=北極狐 +3 playing
- 23340 4:fox:sad:hit:北極狐，已離開可打擊階段 score=70 combo=34 time=7 best=0 toast=北極狐 +3 playing
- 23580 empty score=70 combo=34 time=7 best=0 toast=北極狐 +3 playing
- 23630 8:fox:peek:-:北極狐，+3 分 score=70 combo=34 time=7 best=0 toast=北極狐 +3 playing
- 23780 sound triangle 760Hz gain=0.12 dur=0.07
- 23780 vibrate 18
- 23780 8:fox:pain:hit:北極狐，已離開可打擊階段 score=74 combo=35 time=7 best=0 toast=連擊獎勵 +4 playing
- 23940 8:fox:sad:hit:北極狐，已離開可打擊階段 score=74 combo=35 time=7 best=0 toast=連擊獎勵 +4 playing
- 24000 8:fox:sad:hit:北極狐，已離開可打擊階段 score=74 combo=35 time=6 best=0 toast=連擊獎勵 +4 playing
- 24180 empty score=74 combo=35 time=6 best=0 toast=連擊獎勵 +4 playing
- 24230 7:penguin:peek:-:企鵝，+1 分 score=74 combo=35 time=6 best=0 toast=連擊獎勵 +4 playing
- 24380 sound sine 720Hz gain=0.12 dur=0.07
- 24380 vibrate 10
- 24380 7:penguin:pain:hit:企鵝，已離開可打擊階段 score=75 combo=36 time=6 best=0 toast=企鵝 +1 playing
- 24540 7:penguin:sad:hit:企鵝，已離開可打擊階段 score=75 combo=36 time=6 best=0 toast=企鵝 +1 playing
- 24780 empty score=75 combo=36 time=6 best=0 toast=企鵝 +1 playing
- 24830 3:fox:peek:-:北極狐，+3 分 score=75 combo=36 time=6 best=0 toast=企鵝 +1 playing
- 24980 sound triangle 760Hz gain=0.12 dur=0.07
- 24980 vibrate 18
- 24980 3:fox:pain:hit:北極狐，已離開可打擊階段 score=78 combo=37 time=6 best=0 toast=北極狐 +3 playing
- 25000 3:fox:pain:hit:北極狐，已離開可打擊階段 score=78 combo=37 time=5 best=0 toast=北極狐 +3 playing
- 25140 3:fox:sad:hit:北極狐，已離開可打擊階段 score=78 combo=37 time=5 best=0 toast=北極狐 +3 playing
- 25380 empty score=78 combo=37 time=5 best=0 toast=北極狐 +3 playing
- 25430 8:fox:peek:-:北極狐，+3 分 score=78 combo=37 time=5 best=0 toast=北極狐 +3 playing
- 25580 sound triangle 760Hz gain=0.12 dur=0.07
- 25580 vibrate 18
- 25580 8:fox:pain:hit:北極狐，已離開可打擊階段 score=81 combo=38 time=5 best=0 toast=北極狐 +3 playing
- 25740 8:fox:sad:hit:北極狐，已離開可打擊階段 score=81 combo=38 time=5 best=0 toast=北極狐 +3 playing
- 25980 empty score=81 combo=38 time=5 best=0 toast=北極狐 +3 playing
- 26000 empty score=81 combo=38 time=4 best=0 toast=北極狐 +3 playing
- 26030 1:fox:peek:-:北極狐，+3 分 score=81 combo=38 time=4 best=0 toast=北極狐 +3 playing
- 26180 sound triangle 760Hz gain=0.12 dur=0.07
- 26180 vibrate 18
- 26180 1:fox:pain:hit:北極狐，已離開可打擊階段 score=84 combo=39 time=4 best=0 toast=北極狐 +3 playing
- 26340 1:fox:sad:hit:北極狐，已離開可打擊階段 score=84 combo=39 time=4 best=0 toast=北極狐 +3 playing
- 26580 empty score=84 combo=39 time=4 best=0 toast=北極狐 +3 playing
- 26630 6:penguin:peek:-:企鵝，+1 分 score=84 combo=39 time=4 best=0 toast=北極狐 +3 playing
- 26780 sound sine 720Hz gain=0.12 dur=0.07
- 26780 vibrate 10
- 26780 6:penguin:pain:hit:企鵝，已離開可打擊階段 score=86 combo=40 time=4 best=0 toast=連擊獎勵 +2 playing
- 26940 6:penguin:sad:hit:企鵝，已離開可打擊階段 score=86 combo=40 time=4 best=0 toast=連擊獎勵 +2 playing
- 27000 6:penguin:sad:hit:企鵝，已離開可打擊階段 score=86 combo=40 time=3 best=0 toast=連擊獎勵 +2 playing
- 27180 empty score=86 combo=40 time=3 best=0 toast=連擊獎勵 +2 playing
- 27230 5:penguin:peek:-:企鵝，+1 分 score=86 combo=40 time=3 best=0 toast=連擊獎勵 +2 playing
- 27380 sound sine 720Hz gain=0.12 dur=0.07
- 27380 vibrate 10
- 27380 5:penguin:pain:hit:企鵝，已離開可打擊階段 score=87 combo=41 time=3 best=0 toast=企鵝 +1 playing
- 27540 5:penguin:sad:hit:企鵝，已離開可打擊階段 score=87 combo=41 time=3 best=0 toast=企鵝 +1 playing
- 27780 empty score=87 combo=41 time=3 best=0 toast=企鵝 +1 playing
- 27830 6:penguin:peek:-:企鵝，+1 分 score=87 combo=41 time=3 best=0 toast=企鵝 +1 playing
- 27980 sound sine 720Hz gain=0.12 dur=0.07
- 27980 vibrate 10
- 27980 6:penguin:pain:hit:企鵝，已離開可打擊階段 score=88 combo=42 time=3 best=0 toast=企鵝 +1 playing
- 28000 6:penguin:pain:hit:企鵝，已離開可打擊階段 score=88 combo=42 time=2 best=0 toast=企鵝 +1 playing
- 28140 6:penguin:sad:hit:企鵝，已離開可打擊階段 score=88 combo=42 time=2 best=0 toast=企鵝 +1 playing
- 28380 empty score=88 combo=42 time=2 best=0 toast=企鵝 +1 playing
- 28430 2:penguin:peek:-:企鵝，+1 分 score=88 combo=42 time=2 best=0 toast=企鵝 +1 playing
- 28580 sound sine 720Hz gain=0.12 dur=0.07
- 28580 vibrate 10
- 28580 2:penguin:pain:hit:企鵝，已離開可打擊階段 score=89 combo=43 time=2 best=0 toast=企鵝 +1 playing
- 28740 2:penguin:sad:hit:企鵝，已離開可打擊階段 score=89 combo=43 time=2 best=0 toast=企鵝 +1 playing
- 28980 empty score=89 combo=43 time=2 best=0 toast=企鵝 +1 playing
- 29000 empty score=89 combo=43 time=1 best=0 toast=企鵝 +1 playing
- 29030 7:penguin:peek:-:企鵝，+1 分 score=89 combo=43 time=1 best=0 toast=企鵝 +1 playing
- 29180 sound sine 720Hz gain=0.12 dur=0.07
- 29180 vibrate 10
- 29180 7:penguin:pain:hit:企鵝，已離開可打擊階段 score=90 combo=44 time=1 best=0 toast=企鵝 +1 playing
- 29340 7:penguin:sad:hit:企鵝，已離開可打擊階段 score=90 combo=44 time=1 best=0 toast=企鵝 +1 playing
- 29580 empty score=90 combo=44 time=1 best=0 toast=企鵝 +1 playing
- 29630 2:fox:peek:-:北極狐，+3 分 score=90 combo=44 time=1 best=0 toast=企鵝 +1 playing
- 29780 sound triangle 760Hz gain=0.12 dur=0.07
- 29780 vibrate 18
- 29780 2:fox:pain:hit:北極狐，已離開可打擊階段 score=94 combo=45 time=1 best=0 toast=連擊獎勵 +4 playing
- 29940 2:fox:sad:hit:北極狐，已離開可打擊階段 score=94 combo=45 time=1 best=0 toast=連擊獎勵 +4 playing
+ 18934 1:penguin:pain:hit:企鵝，已離開可打擊階段 score=55 combo=31 time=12 best=0 toast=企鵝 +1 playing
+ 19000 1:penguin:pain:hit:企鵝，已離開可打擊階段 score=55 combo=31 time=11 best=0 toast=企鵝 +1 playing
+ 19094 1:penguin:sad:hit:企鵝，已離開可打擊階段 score=55 combo=31 time=11 best=0 toast=企鵝 +1 playing
+ 19334 empty score=55 combo=31 time=11 best=0 toast=企鵝 +1 playing
+ 19384 5:fox:peek:-:北極狐，+3 分 score=55 combo=31 time=11 best=0 toast=企鵝 +1 playing
+ 19534 sound triangle 760Hz gain=0.12 dur=0.07
+ 19534 vibrate 18
+ 19534 5:fox:pain:hit:北極狐，已離開可打擊階段 score=58 combo=32 time=11 best=0 toast=北極狐 +3 playing
+ 19584 3:fox:peek:-:北極狐，+3 分,5:fox:pain:hit:北極狐，已離開可打擊階段 score=58 combo=32 time=11 best=0 toast=北極狐 +3 playing
+ 19694 3:fox:peek:-:北極狐，+3 分,5:fox:sad:hit:北極狐，已離開可打擊階段 score=58 combo=32 time=11 best=0 toast=北極狐 +3 playing
+ 19734 sound triangle 760Hz gain=0.12 dur=0.07
+ 19734 vibrate 18
+ 19734 3:fox:pain:hit:北極狐，已離開可打擊階段,5:fox:sad:hit:北極狐，已離開可打擊階段 score=61 combo=33 time=11 best=0 toast=北極狐 +3 playing
+ 19894 3:fox:sad:hit:北極狐，已離開可打擊階段,5:fox:sad:hit:北極狐，已離開可打擊階段 score=61 combo=33 time=11 best=0 toast=北極狐 +3 playing
+ 19934 3:fox:sad:hit:北極狐，已離開可打擊階段 score=61 combo=33 time=11 best=0 toast=北極狐 +3 playing
+ 20000 3:fox:sad:hit:北極狐，已離開可打擊階段 score=61 combo=33 time=10 best=0 toast=北極狐 +3 playing
+ 20134 empty score=61 combo=33 time=10 best=0 toast=北極狐 +3 playing
+ 20184 8:fox:peek:-:北極狐，+3 分 score=61 combo=33 time=10 best=0 toast=北極狐 +3 playing
+ 20334 sound triangle 760Hz gain=0.12 dur=0.07
+ 20334 vibrate 18
+ 20334 8:fox:pain:hit:北極狐，已離開可打擊階段 score=64 combo=34 time=10 best=0 toast=北極狐 +3 playing
+ 20494 8:fox:sad:hit:北極狐，已離開可打擊階段 score=64 combo=34 time=10 best=0 toast=北極狐 +3 playing
+ 20734 empty score=64 combo=34 time=10 best=0 toast=北極狐 +3 playing
+ 20784 7:penguin:peek:-:企鵝，+1 分 score=64 combo=34 time=10 best=0 toast=北極狐 +3 playing
+ 20934 sound sine 720Hz gain=0.12 dur=0.07
+ 20934 vibrate 10
+ 20934 7:penguin:pain:hit:企鵝，已離開可打擊階段 score=66 combo=35 time=10 best=0 toast=連擊獎勵 +2 playing
+ 21000 7:penguin:pain:hit:企鵝，已離開可打擊階段 score=66 combo=35 time=9 best=0 toast=連擊獎勵 +2 playing
+ 21094 7:penguin:sad:hit:企鵝，已離開可打擊階段 score=66 combo=35 time=9 best=0 toast=連擊獎勵 +2 playing
+ 21334 empty score=66 combo=35 time=9 best=0 toast=連擊獎勵 +2 playing
+ 21384 3:fox:peek:-:北極狐，+3 分 score=66 combo=35 time=9 best=0 toast=連擊獎勵 +2 playing
+ 21534 sound triangle 760Hz gain=0.12 dur=0.07
+ 21534 vibrate 18
+ 21534 3:fox:pain:hit:北極狐，已離開可打擊階段 score=69 combo=36 time=9 best=0 toast=北極狐 +3 playing
+ 21584 3:fox:pain:hit:北極狐，已離開可打擊階段,8:fox:peek:-:北極狐，+3 分 score=69 combo=36 time=9 best=0 toast=北極狐 +3 playing
+ 21694 3:fox:sad:hit:北極狐，已離開可打擊階段,8:fox:peek:-:北極狐，+3 分 score=69 combo=36 time=9 best=0 toast=北極狐 +3 playing
+ 21734 sound triangle 760Hz gain=0.12 dur=0.07
+ 21734 vibrate 18
+ 21734 3:fox:sad:hit:北極狐，已離開可打擊階段,8:fox:pain:hit:北極狐，已離開可打擊階段 score=72 combo=37 time=9 best=0 toast=北極狐 +3 playing
+ 21894 3:fox:sad:hit:北極狐，已離開可打擊階段,8:fox:sad:hit:北極狐，已離開可打擊階段 score=72 combo=37 time=9 best=0 toast=北極狐 +3 playing
+ 21934 8:fox:sad:hit:北極狐，已離開可打擊階段 score=72 combo=37 time=9 best=0 toast=北極狐 +3 playing
+ 22000 8:fox:sad:hit:北極狐，已離開可打擊階段 score=72 combo=37 time=8 best=0 toast=北極狐 +3 playing
+ 22134 empty score=72 combo=37 time=8 best=0 toast=北極狐 +3 playing
+ 22184 1:fox:peek:-:北極狐，+3 分 score=72 combo=37 time=8 best=0 toast=北極狐 +3 playing
+ 22334 sound triangle 760Hz gain=0.12 dur=0.07
+ 22334 vibrate 18
+ 22334 1:fox:pain:hit:北極狐，已離開可打擊階段 score=75 combo=38 time=8 best=0 toast=北極狐 +3 playing
+ 22494 1:fox:sad:hit:北極狐，已離開可打擊階段 score=75 combo=38 time=8 best=0 toast=北極狐 +3 playing
+ 22734 empty score=75 combo=38 time=8 best=0 toast=北極狐 +3 playing
+ 22784 6:penguin:peek:-:企鵝，+1 分 score=75 combo=38 time=8 best=0 toast=北極狐 +3 playing
+ 22934 sound sine 720Hz gain=0.12 dur=0.07
+ 22934 vibrate 10
+ 22934 6:penguin:pain:hit:企鵝，已離開可打擊階段 score=76 combo=39 time=8 best=0 toast=企鵝 +1 playing
+ 23000 6:penguin:pain:hit:企鵝，已離開可打擊階段 score=76 combo=39 time=7 best=0 toast=企鵝 +1 playing
+ 23094 6:penguin:sad:hit:企鵝，已離開可打擊階段 score=76 combo=39 time=7 best=0 toast=企鵝 +1 playing
+ 23334 empty score=76 combo=39 time=7 best=0 toast=企鵝 +1 playing
+ 23384 5:penguin:peek:-:企鵝，+1 分 score=76 combo=39 time=7 best=0 toast=企鵝 +1 playing
+ 23534 sound sine 720Hz gain=0.12 dur=0.07
+ 23534 vibrate 10
+ 23534 5:penguin:pain:hit:企鵝，已離開可打擊階段 score=78 combo=40 time=7 best=0 toast=連擊獎勵 +2 playing
+ 23584 5:penguin:pain:hit:企鵝，已離開可打擊階段,6:penguin:peek:-:企鵝，+1 分 score=78 combo=40 time=7 best=0 toast=連擊獎勵 +2 playing
+ 23694 5:penguin:sad:hit:企鵝，已離開可打擊階段,6:penguin:peek:-:企鵝，+1 分 score=78 combo=40 time=7 best=0 toast=連擊獎勵 +2 playing
+ 23734 sound sine 720Hz gain=0.12 dur=0.07
+ 23734 vibrate 10
+ 23734 5:penguin:sad:hit:企鵝，已離開可打擊階段,6:penguin:pain:hit:企鵝，已離開可打擊階段 score=79 combo=41 time=7 best=0 toast=企鵝 +1 playing
+ 23894 5:penguin:sad:hit:企鵝，已離開可打擊階段,6:penguin:sad:hit:企鵝，已離開可打擊階段 score=79 combo=41 time=7 best=0 toast=企鵝 +1 playing
+ 23934 6:penguin:sad:hit:企鵝，已離開可打擊階段 score=79 combo=41 time=7 best=0 toast=企鵝 +1 playing
+ 24000 6:penguin:sad:hit:企鵝，已離開可打擊階段 score=79 combo=41 time=6 best=0 toast=企鵝 +1 playing
+ 24134 empty score=79 combo=41 time=6 best=0 toast=企鵝 +1 playing
+ 24184 2:penguin:peek:-:企鵝，+1 分 score=79 combo=41 time=6 best=0 toast=企鵝 +1 playing
+ 24334 sound sine 720Hz gain=0.12 dur=0.07
+ 24334 vibrate 10
+ 24334 2:penguin:pain:hit:企鵝，已離開可打擊階段 score=80 combo=42 time=6 best=0 toast=企鵝 +1 playing
+ 24494 2:penguin:sad:hit:企鵝，已離開可打擊階段 score=80 combo=42 time=6 best=0 toast=企鵝 +1 playing
+ 24734 empty score=80 combo=42 time=6 best=0 toast=企鵝 +1 playing
+ 24784 7:penguin:peek:-:企鵝，+1 分 score=80 combo=42 time=6 best=0 toast=企鵝 +1 playing
+ 24934 sound sine 720Hz gain=0.12 dur=0.07
+ 24934 vibrate 10
+ 24934 7:penguin:pain:hit:企鵝，已離開可打擊階段 score=81 combo=43 time=6 best=0 toast=企鵝 +1 playing
+ 25000 7:penguin:pain:hit:企鵝，已離開可打擊階段 score=81 combo=43 time=5 best=0 toast=企鵝 +1 playing
+ 25094 7:penguin:sad:hit:企鵝，已離開可打擊階段 score=81 combo=43 time=5 best=0 toast=企鵝 +1 playing
+ 25334 empty score=81 combo=43 time=5 best=0 toast=企鵝 +1 playing
+ 25384 2:fox:peek:-:北極狐，+3 分 score=81 combo=43 time=5 best=0 toast=企鵝 +1 playing
+ 25534 sound triangle 760Hz gain=0.12 dur=0.07
+ 25534 vibrate 18
+ 25534 2:fox:pain:hit:北極狐，已離開可打擊階段 score=84 combo=44 time=5 best=0 toast=北極狐 +3 playing
+ 25584 0:bear:peek:-:北極熊，別打！,2:fox:pain:hit:北極狐，已離開可打擊階段 score=84 combo=44 time=5 best=0 toast=北極狐 +3 playing
+ 25694 0:bear:peek:-:北極熊，別打！,2:fox:sad:hit:北極狐，已離開可打擊階段 score=84 combo=44 time=5 best=0 toast=北極狐 +3 playing
+ 25934 0:bear:peek:-:北極熊，別打！ score=84 combo=44 time=5 best=0 toast=北極狐 +3 playing
+ 25968 0:bear:warning:-:北極熊，別打！ score=84 combo=44 time=5 best=0 toast=北極狐 +3 playing
+ 26000 0:bear:warning:-:北極熊，別打！ score=84 combo=44 time=4 best=0 toast=北極狐 +3 playing
+ 26160 0:bear:sneaky:escape:北極熊，已離開可打擊階段 score=84 combo=44 time=4 best=0 toast=北極狐 +3 playing
+ 26230 1:penguin:peek:-:企鵝，+1 分 score=84 combo=44 time=4 best=0 toast=北極狐 +3 playing
+ 26380 sound sine 720Hz gain=0.12 dur=0.07
+ 26380 vibrate 10
+ 26380 1:penguin:pain:hit:企鵝，已離開可打擊階段 score=86 combo=45 time=4 best=0 toast=連擊獎勵 +2 playing
+ 26540 1:penguin:sad:hit:企鵝，已離開可打擊階段 score=86 combo=45 time=4 best=0 toast=連擊獎勵 +2 playing
+ 26780 empty score=86 combo=45 time=4 best=0 toast=連擊獎勵 +2 playing
+ 26830 4:penguin:peek:-:企鵝，+1 分 score=86 combo=45 time=4 best=0 toast=連擊獎勵 +2 playing
+ 26980 sound sine 720Hz gain=0.12 dur=0.07
+ 26980 vibrate 10
+ 26980 4:penguin:pain:hit:企鵝，已離開可打擊階段 score=87 combo=46 time=4 best=0 toast=企鵝 +1 playing
+ 27000 4:penguin:pain:hit:企鵝，已離開可打擊階段 score=87 combo=46 time=3 best=0 toast=企鵝 +1 playing
+ 27140 4:penguin:sad:hit:企鵝，已離開可打擊階段 score=87 combo=46 time=3 best=0 toast=企鵝 +1 playing
+ 27380 empty score=87 combo=46 time=3 best=0 toast=企鵝 +1 playing
+ 27430 8:penguin:peek:-:企鵝，+1 分 score=87 combo=46 time=3 best=0 toast=企鵝 +1 playing
+ 27580 sound sine 720Hz gain=0.12 dur=0.07
+ 27580 vibrate 10
+ 27580 8:penguin:pain:hit:企鵝，已離開可打擊階段 score=88 combo=47 time=3 best=0 toast=企鵝 +1 playing
+ 27630 6:bear:peek:-:北極熊，別打！,8:penguin:pain:hit:企鵝，已離開可打擊階段 score=88 combo=47 time=3 best=0 toast=企鵝 +1 playing
+ 27740 6:bear:peek:-:北極熊，別打！,8:penguin:sad:hit:企鵝，已離開可打擊階段 score=88 combo=47 time=3 best=0 toast=企鵝 +1 playing
+ 27980 6:bear:peek:-:北極熊，別打！ score=88 combo=47 time=3 best=0 toast=企鵝 +1 playing
+ 28000 6:bear:peek:-:北極熊，別打！ score=88 combo=47 time=2 best=0 toast=企鵝 +1 playing
+ 28014 6:bear:warning:-:北極熊，別打！ score=88 combo=47 time=2 best=0 toast=企鵝 +1 playing
+ 28206 6:bear:sneaky:escape:北極熊，已離開可打擊階段 score=88 combo=47 time=2 best=0 toast=企鵝 +1 playing
+ 28276 5:penguin:peek:-:企鵝，+1 分 score=88 combo=47 time=2 best=0 toast=企鵝 +1 playing
+ 28426 sound sine 720Hz gain=0.12 dur=0.07
+ 28426 vibrate 10
+ 28426 5:penguin:pain:hit:企鵝，已離開可打擊階段 score=89 combo=48 time=2 best=0 toast=企鵝 +1 playing
+ 28586 5:penguin:sad:hit:企鵝，已離開可打擊階段 score=89 combo=48 time=2 best=0 toast=企鵝 +1 playing
+ 28826 empty score=89 combo=48 time=2 best=0 toast=企鵝 +1 playing
+ 28876 6:penguin:peek:-:企鵝，+1 分 score=89 combo=48 time=2 best=0 toast=企鵝 +1 playing
+ 29000 6:penguin:peek:-:企鵝，+1 分 score=89 combo=48 time=1 best=0 toast=企鵝 +1 playing
+ 29026 sound sine 720Hz gain=0.12 dur=0.07
+ 29026 vibrate 10
+ 29026 6:penguin:pain:hit:企鵝，已離開可打擊階段 score=90 combo=49 time=1 best=0 toast=企鵝 +1 playing
+ 29186 6:penguin:sad:hit:企鵝，已離開可打擊階段 score=90 combo=49 time=1 best=0 toast=企鵝 +1 playing
+ 29426 empty score=90 combo=49 time=1 best=0 toast=企鵝 +1 playing
+ 29476 3:penguin:peek:-:企鵝，+1 分 score=90 combo=49 time=1 best=0 toast=企鵝 +1 playing
+ 29626 sound sine 720Hz gain=0.12 dur=0.07
+ 29626 vibrate 10
+ 29626 3:penguin:pain:hit:企鵝，已離開可打擊階段 score=92 combo=50 time=1 best=0 toast=連擊獎勵 +2 playing
+ 29676 1:penguin:peek:-:企鵝，+1 分,3:penguin:pain:hit:企鵝，已離開可打擊階段 score=92 combo=50 time=1 best=0 toast=連擊獎勵 +2 playing
+ 29786 1:penguin:peek:-:企鵝，+1 分,3:penguin:sad:hit:企鵝，已離開可打擊階段 score=92 combo=50 time=1 best=0 toast=連擊獎勵 +2 playing
+ 29826 sound sine 720Hz gain=0.12 dur=0.07
+ 29826 vibrate 10
+ 29826 1:penguin:pain:hit:企鵝，已離開可打擊階段,3:penguin:sad:hit:企鵝，已離開可打擊階段 score=93 combo=51 time=1 best=0 toast=企鵝 +1 playing
+ 29986 1:penguin:sad:hit:企鵝，已離開可打擊階段,3:penguin:sad:hit:企鵝，已離開可打擊階段 score=93 combo=51 time=1 best=0 toast=企鵝 +1 playing
  30000 sound triangle 260Hz gain=0.12 dur=0.09
- 30000 empty score=94 combo=45 time=0 best=94 toast=連擊獎勵 +4 overlay
+ 30000 empty score=93 combo=51 time=0 best=93 toast=企鵝 +1 overlay

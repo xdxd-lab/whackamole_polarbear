@@ -4,7 +4,7 @@
  */
 import assert from 'node:assert/strict';
 import { after, before, describe, test } from 'node:test';
-import { DIFFICULTY, Game, SPECIES_ROLL, holeRoll, startHarness } from './support/game.mjs';
+import { DIFFICULTY, Game, PAIR, SPECIES_ROLL, holeRoll, pairHoles, startHarness } from './support/game.mjs';
 
 const BEST_KEY = 'wam_best_20260904v7';
 // Normal keeps the key every version before 21 wrote to.
@@ -463,6 +463,183 @@ describe('input', () => {
     await game.page.locator('#startBtn').click();
     assert.equal(await game.number('#score'), 0);
     assert.equal(await game.overlayShown(), false);
+  }));
+});
+
+describe('hard pairs', () => {
+  const HARD = DIFFICULTY.hard;
+  // With every target left to escape, the third wave, the first pair, rises at this time.
+  const PAIR_AT = 2 * HARD.next;
+
+  test('every third wave is a pair: a second target rises 200 ms after the first', () => play(async game => {
+    await game.toPair('penguin', 4, ['fox', 0]);
+    assert.deepEqual(await game.targets(), [[4, 'penguin', 'peek']]);
+    await game.advance(PAIR.delay - 1);
+    assert.deepEqual(await game.targets(), [[4, 'penguin', 'peek']]);
+    await game.advance(1);
+    assert.deepEqual(await game.targets(), [[0, 'fox', 'peek'], [4, 'penguin', 'peek']]);
+    // Each keeps a hard window of its own.
+    await game.advance(HARD.hide - PAIR.delay);
+    assert.deepEqual(await game.targets(), [[0, 'fox', 'peek'], [4, 'penguin', 'sneaky']]);
+    await game.advance(PAIR.delay);
+    assert.deepEqual(await game.targets(), [[0, 'fox', 'sneaky']]);
+    // The fourth and fifth waves are single targets, the sixth a pair again.
+    await game.advance(HARD.next - HARD.hide);
+    for (const wave of [4, 5]) {
+      await game.advance(PAIR.delay);
+      assert.equal((await game.targets()).length, 1, `Wave ${wave} is a single target`);
+      await game.advance(HARD.next - PAIR.delay);
+    }
+    await game.advance(PAIR.delay);
+    assert.equal((await game.targets()).length, 2, 'Wave 6 is a pair');
+  }));
+
+  for (let first = 0; first < 9; first += 1) {
+    test(`a pair with its first target in hole ${first}: the second never takes or borders that hole`, () => play(async game => {
+      // Nine pairs in one round, each with the second target's roll further along its range.
+      const waves = k => [holeRoll((first + 2) % 9), SPECIES_ROLL.penguin, holeRoll((first + 1) % 9), SPECIES_ROLL.penguin,
+        holeRoll(first), SPECIES_ROLL.penguin, holeRoll(k), SPECIES_ROLL.penguin];
+      const taken = new Set();
+      await game.start({ difficulty: 'hard', random: waves(0) });
+      for (let k = 0; k < 9; k += 1) {
+        await game.advance(PAIR_AT + PAIR.delay);
+        const holes = (await game.targets()).map(([index]) => index);
+        assert.ok(holes.includes(first), `The first target stays in hole ${first}: ${holes}`);
+        const others = holes.filter(index => index !== first);
+        assert.equal(others.length, 1, `Beside hole ${first}: ${holes}`);
+        taken.add(others[0]);
+        if (k < 8) await game.queueRandom(waves(k + 1));
+        await game.advance(HARD.next);
+      }
+      assert.deepEqual([...taken].sort((p, q) => p - q), pairHoles(first));
+    }));
+  }
+
+  test('every round counts its waves afresh: a restart during the first wave pairs the third', () => play(async game => {
+    await game.startWith('penguin', 0, { difficulty: 'hard' });
+    await game.page.locator('#startBtn').click();
+    await game.page.evaluate(() => window.__test.record());
+    for (const wave of [1, 2]) {
+      await game.advance(PAIR.delay);
+      assert.equal((await game.targets()).length, 1, `Wave ${wave} is a single target`);
+      await game.advance(HARD.next - PAIR.delay);
+    }
+    await game.advance(PAIR.delay);
+    assert.equal((await game.targets()).length, 2, 'Wave 3 is a pair');
+  }));
+
+  test('each target of a pair scores on its own', () => play(async game => {
+    await game.toPair('penguin', 4, ['fox', 0]);
+    await game.advance(50);
+    await game.hit(4);
+    await game.advance(PAIR.delay);
+    await game.hit(0);
+    assert.equal(await game.number('#score'), 4);
+    assert.equal(await game.number('#combo'), 2);
+  }));
+
+  test('two targets hit at the same moment both score', () => play(async game => {
+    await game.toPair('penguin', 4, ['fox', 0]);
+    await game.advance(PAIR.delay + 50);
+    await game.page.evaluate(() => { window.__test.input(4); window.__test.input(0); });
+    assert.equal(await game.number('#score'), 4);
+    assert.equal(await game.number('#combo'), 2);
+  }));
+
+  test('a penguin or fox missed from a pair breaks the combo', () => play(async game => {
+    await game.toPair('penguin', 4, ['penguin', 0]);
+    await game.advance(50);
+    await game.hit(4);
+    assert.equal(await game.number('#combo'), 1);
+    await game.advance(PAIR.delay + HARD.hide - 51);
+    assert.equal(await game.number('#combo'), 1);
+    await game.advance(1);
+    assert.equal(await game.number('#combo'), 0);
+  }));
+
+  test('a bear left alone in a pair keeps the combo', () => play(async game => {
+    await game.toPair('penguin', 4, ['bear', 0]);
+    await game.advance(50);
+    await game.hit(4);
+    await game.advance(PAIR.delay + HARD.hide);
+    assert.deepEqual(await game.targets(), [[0, 'bear', 'sneaky']]);
+    assert.equal(await game.number('#combo'), 1);
+  }));
+
+  test('a pair hit twice: the next wave rises 450 ms after the later hit', () => play(async game => {
+    await game.toPair('penguin', 4, ['penguin', 0]);
+    await game.advance(50);
+    await game.hit(4);
+    await game.advance(PAIR.delay);
+    await game.hit(0);
+    await game.advance(HARD.pain + HARD.sad + HARD.rest - 1);
+    assert.deepEqual(await game.targets(), []);
+    await game.advance(1);
+    assert.equal((await game.targets()).length, 1);
+  }));
+
+  test('a pair left to escape: the next wave rises when the second target\'s turn is up', () => play(async game => {
+    await game.toPair('penguin', 4, ['penguin', 0]);
+    await game.advance(HARD.next);
+    assert.deepEqual(await game.targets(), [[0, 'penguin', 'warning']], 'The first hole is free when its turn is up');
+    await game.advance(PAIR.delay - 1);
+    assert.deepEqual(await game.targets(), [[0, 'penguin', 'sneaky']]);
+    await game.advance(1);
+    assert.deepEqual((await game.targets()).map(([, , state]) => state), ['peek']);
+  }));
+
+  test('a last-moment hit on the second target goes down in full before the next wave', () => play(async game => {
+    await game.toPair('penguin', 4, ['fox', 0]);
+    await game.advance(PAIR.delay + HARD.hide - 1);
+    await game.hit(0);
+    assert.equal(await game.number('#score'), 3);
+    await game.advance(HARD.pain + HARD.sad - 1);
+    assert.deepEqual(await game.targets(), [[0, 'fox', 'sad']]);
+    await game.advance(1);
+    assert.deepEqual(await game.targets(), []);
+    await game.advance(HARD.rest - 1);
+    assert.deepEqual(await game.targets(), []);
+    await game.advance(1);
+    assert.equal((await game.targets()).length, 1);
+  }));
+
+  test('a pause keeps the rest of both targets\' windows', () => play(async game => {
+    await game.toPair('penguin', 4, ['fox', 0]);
+    await game.advance(PAIR.delay + 100);
+    await setHidden(game, true);
+    await game.advance(5_000);
+    await setHidden(game, false);
+    await game.page.locator('#modalBtn').click();
+    // The first target is 300 ms up, the second 100 ms.
+    await game.advance(HARD.hide - 300 - 1);
+    await game.hit(4);
+    assert.equal(await game.number('#score'), 1);
+    await game.advance(PAIR.delay);
+    await game.hit(0);
+    assert.equal(await game.number('#score'), 4);
+  }));
+
+  test('leaving hard before the second target rises: it never does, and no later wave is a pair', () => play(async game => {
+    await game.toPair('penguin', 4);
+    await game.advance(PAIR.delay - 100);
+    await game.choose('normal');
+    await game.advance(100);
+    assert.deepEqual(await game.targets(), [[4, 'penguin', 'peek']]);
+    await game.advance(20_000);
+    const { maxActive } = await game.page.evaluate(() => window.__test.stats());
+    assert.equal(maxActive, 1);
+  }));
+
+  test('when time is up, both targets of a pair leave the board', () => play(async game => {
+    // A hit on the first target at its last moment puts a pair on the board when the round ends.
+    await game.startWith('penguin', 0, { difficulty: 'hard' });
+    await game.advance(HARD.hide - 1);
+    await game.hit(0);
+    await game.advance(30_000 - HARD.hide);
+    assert.equal((await game.targets()).length, 2);
+    await game.advance(1);
+    assert.equal(await game.overlayShown(), true);
+    assert.deepEqual(await game.targets(), []);
   }));
 });
 

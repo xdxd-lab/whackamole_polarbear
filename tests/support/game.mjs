@@ -15,6 +15,19 @@ export const DIFFICULTY = {
   normal: { warning: 587, hide: 870, next: 995, pain: 220, sad: 340, rest: 80 },
   hard: { warning: 384, hide: 576, next: 646, pain: 160, sad: 240, rest: 50 },
 };
+/** Hard only: every third wave is a pair, the second target rising this long after the first. */
+export const PAIR = { every: 3, delay: 200 };
+
+/** Holes that share an edge on the 3×3 board. */
+export const beside = (p, q) => Math.abs((p % 3) - (q % 3)) + Math.abs(Math.floor(p / 3) - Math.floor(q / 3)) === 1;
+/** Holes the second target of a pair may take while the first is in `first`. */
+export const pairHoles = first => [...Array(9).keys()].filter(k => k !== first && !beside(first, k));
+/** Random value that puts the second target of a pair in `hole`. */
+export const pairRoll = (first, hole) => {
+  const open = pairHoles(first);
+  assert.ok(open.includes(hole), `Hole ${hole} is not open beside ${first}`);
+  return (open.indexOf(hole) + 0.5) / open.length;
+};
 
 export async function startHarness(options) {
   const server = await startServer(options);
@@ -73,12 +86,28 @@ export class Game {
   state() { return this.page.evaluate(() => window.__test.state()); }
   species() { return this.page.evaluate(() => window.__test.species()); }
   activeIndex() { return this.page.evaluate(() => window.__test.activeIndex()); }
+  /** Every target on the board, in hole order: [index, species, state]. */
+  targets() { return this.page.evaluate(() => window.__test.targets()); }
   now() { return this.page.evaluate(() => window.__test.now()); }
   trace() { return this.page.evaluate(() => window.__test.trace()); }
   resetTrace() { return this.page.evaluate(() => window.__test.resetTrace()); }
   text(selector) { return this.page.locator(selector).innerText(); }
   async number(selector) { return Number(await this.page.locator(selector).textContent()); }
   overlayShown() { return this.page.evaluate(() => document.getElementById('overlay').classList.contains('show')); }
+
+  /**
+   * Starts a hard round and lets its first two waves escape, so the third wave, the first pair,
+   * rises now with its first target in `hole`. `partner` ([species, hole]) chooses the second
+   * target, which rises PAIR.delay ms later.
+   */
+  async toPair(species, hole, partner) {
+    await this.startWith('penguin', (hole + 2) % 9, { difficulty: 'hard' });
+    await this.nextSpawn('penguin', (hole + 1) % 9);
+    await this.advance(DIFFICULTY.hard.next);
+    await this.nextSpawn(species, hole);
+    await this.advance(DIFFICULTY.hard.next);
+    if (partner) await this.queueRandom([pairRoll(hole, partner[1]), SPECIES_ROLL[partner[0]]]);
+  }
 
   /** Hits the current target after `wait` virtual ms, then lets the next one appear. */
   async hitCurrent(wait = 100) {

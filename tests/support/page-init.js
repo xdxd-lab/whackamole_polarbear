@@ -122,7 +122,8 @@
   let lastSample = '';
   let maxActive = 0;
   let policy = null;
-  let lastTarget = -1;
+  // Holes whose target the scripted player has already reacted to, until that target is hit or gone.
+  const reacted = new Set();
   let spawnsSeen = 0;
 
   const input = index => {
@@ -130,19 +131,23 @@
     record();
   };
 
-  // Scripted player: reacts to what is on screen, a fixed time after it appears.
+  // Scripted player: reacts to each target on screen, a fixed time after it appears.
   const react = () => {
     if (!policy) return;
-    const current = activeHoles()[0];
-    if (!current) { lastTarget = -1; return; }
-    if (current.index === lastTarget || current.element.dataset.state !== 'peek') return;
-    lastTarget = current.index;
-    spawnsSeen += 1;
-    const species = current.element.dataset.character;
-    const shouldHit = policy.mode === 'all'
-      || (policy.mode === 'skip-bears' && species !== 'bear')
-      || (policy.mode === 'every-2nd' && spawnsSeen % 2 === 0);
-    if (shouldHit) schedule(() => input(current.index), policy.reaction, 0);
+    for (const index of reacted) {
+      const state = holes()[index].dataset.state;
+      if (state !== 'peek' && state !== 'warning') reacted.delete(index);
+    }
+    for (const current of activeHoles()) {
+      if (reacted.has(current.index) || current.element.dataset.state !== 'peek') continue;
+      reacted.add(current.index);
+      spawnsSeen += 1;
+      const species = current.element.dataset.character;
+      const shouldHit = policy.mode === 'all'
+        || (policy.mode === 'skip-bears' && species !== 'bear')
+        || (policy.mode === 'every-2nd' && spawnsSeen % 2 === 0);
+      if (shouldHit) schedule(() => input(current.index), policy.reaction, 0);
+    }
   };
 
   function record() {
@@ -181,6 +186,8 @@
     activeIndex: () => activeHoles()[0]?.index ?? -1,
     state: () => activeHoles()[0]?.element.dataset.state ?? 'hidden',
     species: () => activeHoles()[0]?.element.dataset.character ?? null,
+    // Every target on the board, in hole order: [index, species, state].
+    targets: () => activeHoles().map(({ element, index }) => [index, element.dataset.character, element.dataset.state]),
     input,
     // Moves time without firing timers, as a busy main thread would.
     jump: ms => { now += ms; },
@@ -188,7 +195,7 @@
     queueRandom: values => queuedRandom.push(...values),
     record,
     resetTrace: () => { trace.length = 0; lastSample = ''; },
-    setPolicy: value => { policy = value; lastTarget = -1; spawnsSeen = 0; },
+    setPolicy: value => { policy = value; reacted.clear(); spawnsSeen = 0; },
     stats: () => ({ maxActive }),
     fingerprint,
     music: () => ({ log: [...musicLog], playing: musicPlaying.size, level: Math.max(0, ...[...musicPlaying].map(level)), audio: [...musicPlaying][0]?.context.state ?? 'none' }),

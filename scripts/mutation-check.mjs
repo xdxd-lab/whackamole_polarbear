@@ -40,7 +40,7 @@ const MUTANTS = {
   'bear chance .12 becomes .9': replace("r<.12?'bad'", "r<.9?'bad'"),
   'BEST_KEY renamed': replace('wam_best_20260904v7', 'wam_best_new'),
   'hard difficulty removed': replace('<option value="hard">高手</option>', ''),
-  'hits never land': replace('if(!a||a.i!==i||', 'if(true||!a||a.i!==i||'),
+  'hits never land': replace("if(!a||!['peek','warning']", "if(true||!a||!['peek','warning']"),
   'fox +3 becomes +2': replace("delta=a.type==='bonus'?3:1", "delta=a.type==='bonus'?2:1"),
   'combo bonus removed': replace('if(combo%5===0){delta++;', 'if(false){delta++;'),
   'bear no longer breaks combo': replace('delta=-2;combo=0', 'delta=-2'),
@@ -50,19 +50,29 @@ const MUTANTS = {
   'easy spawn 1350 becomes 1300': replace('easy: {spawn: 1350, show: 1050,', 'easy: {spawn: 1300, show: 1050,'),
   'hard show 506 becomes 536': replace('hard: {spawn: 646, show: 506,', 'hard: {spawn: 646, show: 536,'),
   'easy waits no longer than normal after a hit': replace('sad: 340, rest: 240}', 'sad: 340, rest: 80}'),
-  'hard goes down as slowly as normal after a hit': replace('pain: 160, sad: 240, rest: 50}', 'pain: 220, sad: 340, rest: 50}'),
-  'hard rest 50 ms becomes 80 ms': replace('sad: 240, rest: 50}', 'sad: 240, rest: 80}'),
+  'hard goes down as slowly as normal after a hit': replace('pain: 160, sad: 240, rest: 50,', 'pain: 220, sad: 340, rest: 50,'),
+  'hard rest 50 ms becomes 80 ms': replace('sad: 240, rest: 50,', 'sad: 240, rest: 80,'),
   'warning at 62% becomes 70%': replace('cfg.show*.62', 'cfg.show*.7'),
   'hit deadline ignored': replace('if(performance.now()>=a.deadline){escape(a);return;}', ''),
   'pain lasts 80 ms longer': replace('},cfg.pain);', '},cfg.pain+80);'),
-  'next spawn 120 ms later': replace('later(spawn,cfg.rest)', 'later(spawn,cfg.rest+120)'),
+  'next spawn 120 ms later': replace('later(over,cfg.rest)', 'later(over,cfg.rest+120)'),
   'same hole may repeat': replace('while(i===lastHole)', 'while(false)'),
   'bear sound quieter': replace("beep(120,.12,'sawtooth',.16)", "beep(120,.12,'sawtooth',.08)"),
   'hidden page keeps playing': replace("document.addEventListener('visibilitychange',()=>{if(document.hidden)pause();});", ''),
   'hidden page ends the round instead of pausing': replace('if(document.hidden)pause();', 'if(document.hidden&&running)finish();'),
   'coming back continues without a tap': replace('if(document.hidden)pause();', 'if(document.hidden)pause();else resume();'),
   'the clock runs on through a pause': replace('paused=false;started+=away;', 'paused=false;'),
-  'a pause eats the target window': replace('if(actor)actor.deadline+=away;', ''),
+  'a pause eats the target window': replace('actors.forEach(a=>a.deadline+=away);', ''),
+  'a pause keeps only the first target\'s window': replace('actors.forEach(a=>a.deadline+=away);', 'if(actors[0])actors[0].deadline+=away;'),
+  'hard sends no pairs': replace('pairEvery: 3, pairDelay: 200}', 'pairEvery: 0, pairDelay: 200}'),
+  'pairs every second wave': replace('pairEvery: 3,', 'pairEvery: 2,'),
+  'the second target rises with the first': replace('pairDelay: 200}', 'pairDelay: 0}'),
+  'normal sends pairs too': replace('rest: 80}', 'rest: 80, pairEvery: 3, pairDelay: 200}'),
+  'the second target may border the first': replace('o.i!==k&&!beside(o.i,k)', 'o.i!==k'),
+  'the second target may take the first one\'s hole': replace('o.i!==k&&!beside(o.i,k)', '!beside(o.i,k)'),
+  'the second target rises after leaving hard': replace('if(!settings[roundLevel].pairEvery){over();return;}', ''),
+  'the next wave does not wait for both targets': replace('if(--waiting===0)spawn();', 'if(--waiting<2)spawn();'),
+  'waves carry over to the next round': replace('practice=false;wave=0;', 'practice=false;'),
   'targets move on while paused': replace('timers.forEach(t=>{clearTimeout(t.id);t.left=Math.max(0,t.due-pausedAt);});', 'timers.forEach(t=>{t.left=Math.max(0,t.due-pausedAt);});'),
   'hits land while paused': replace('if(!running||paused)return;\n    // The clock ticks', 'if(!running)return;\n    // The clock ticks'),
   'music plays on while paused': replace("if(audioCtx&&audioCtx.state==='running')audioCtx.suspend().catch(()=>{});", ''),
@@ -109,8 +119,8 @@ const MUTANTS = {
   'score message back in one fixed place': replace("el.style.top=Math.max(box.top-area.top+10,el.offsetHeight+2)+'px';", ''),
   'score message may cover the scoreboard': replace('Math.max(box.top-area.top+10,el.offsetHeight+2)', '(box.top-area.top+10)'),
   'score message may leave the board area': replace('area.width-half)', 'area.width+half)'),
-  'version changed in the script but not on the page': replace("const VERSION = '23.0.0';", "const VERSION = '23.0.1';"),
-  'version shown without its release date': replace('· 版本 23.0.0<span class="date">（2026-11-15）</span>', '· 版本 23.0.0'),
+  'version changed in the script but not on the page': replace("const VERSION = '24.0.0';", "const VERSION = '24.0.1';"),
+  'version shown without its release date': replace('· 版本 24.0.0<span class="date">（2026-11-15）</span>', '· 版本 24.0.0'),
   'small screens keep the release date in the footer': replace('@container (max-width:330px){.foot .date{display:none}}', ''),
   'footer line free to break': replace('.foot>span:first-child{white-space:nowrap}', ''),
   'a narrow footer cuts the composers short': replace("credits.classList.toggle('brief',cut);", ''),
@@ -185,9 +195,9 @@ const EQUIVALENTS = {
   },
   // A release changes the number everywhere it is written, and nothing else.
   'version bumped': async ({ html, setHtml, read, write }) => {
-    const bump = text => text.replaceAll('23.0.0', '23.0.1').replaceAll('2026-11-15', '2026-12-01');
+    const bump = text => text.replaceAll('24.0.0', '24.0.1').replaceAll('2026-11-15', '2026-12-01');
     const source = await html();
-    if (!source.includes("const VERSION = '23.0.0';")) return false;
+    if (!source.includes("const VERSION = '24.0.0';")) return false;
     await setHtml(bump(source));
     await write('README.md', bump(await read('README.md')));
     await write('CHANGELOG.md', bump(await read('CHANGELOG.md')));
