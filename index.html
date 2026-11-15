@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#8fd8ff" />
 <link rel="icon" href="data:," />
-<title>雪地敲敲樂｜打企鵝・北極狐 V24</title>
+<title>雪地敲敲樂｜打企鵝・北極狐 V25</title>
 <style>
   :root{
     --sky-top:#8fd8ff; --sky-mid:#cfeeff; --sky-bottom:#eef9ff;
@@ -170,11 +170,11 @@
     </select>
     <button class="btn" id="soundBtn" aria-pressed="true">🔊 音效</button>
   </section>
-  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden><b class="practice">練習局</b>・不計紀錄</span></span> · 版本 24.0.0<span class="date">（2026-11-15）</span></span> <span class="credits"><span class="label">音樂：</span><span class="names"><a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/snowfall" target="_blank" rel="noopener" title="Snowfall">Kistol</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>、<a href="https://opengameart.org/content/snow-theme" target="_blank" rel="noopener" title="Snow Theme">Cleyton Kauffman</a></span><span class="label">（CC0）</span><a class="short" href="https://github.com/xdxd-lab/whackamole_polarbear/blob/main/CREDITS.md" target="_blank" rel="noopener">音樂：4 位作者（CC0）</a></span></div>
+  <div class="tiny foot"><span><span id="bestSlot"><span id="bestLine">最高分<span id="bestLevel">（普通）</span>：<b id="best">0</b></span><span id="practiceMark" hidden><b class="practice">練習局</b>・不計紀錄</span></span> · 版本 25.0.0<span class="date">（2026-11-16）</span></span> <span class="credits"><span class="label">音樂：</span><span class="names"><a href="https://opengameart.org/content/happy-synths-loop-with-slight-christmas-feeling" target="_blank" rel="noopener" title="Happy synths loop with slight christmas feeling">3xBlast</a>、<a href="https://opengameart.org/content/snowfall" target="_blank" rel="noopener" title="Snowfall">Kistol</a>、<a href="https://opengameart.org/content/happy-clappy-loop" target="_blank" rel="noopener" title="Happy Clappy Loop">OwlishMedia</a>、<a href="https://opengameart.org/content/snow-theme" target="_blank" rel="noopener" title="Snow Theme">Cleyton Kauffman</a></span><span class="label">（CC0）</span><a class="short" href="https://github.com/xdxd-lab/whackamole_polarbear/blob/main/CREDITS.md" target="_blank" rel="noopener">音樂：4 位作者（CC0）</a></span></div>
 </main>
 <script>(async () => {
   'use strict';
-  const VERSION = '24.0.0';
+  const VERSION = '25.0.0';
   const BEST_KEY = 'wam_best_20260904v7';
   // One best score per difficulty. Normal keeps the key every earlier version wrote to.
   const BEST_KEYS = {easy: BEST_KEY+'_easy', normal: BEST_KEY, hard: BEST_KEY+'_hard'};
@@ -356,6 +356,11 @@
     rise(i);
     if(pair)later(second,cfg.pairDelay);
   }
+  // The rhythm wobbles: each next target rises up to 12% of the time between two targets
+  // earlier or later. Only the wait before it moves; the time to hit and the way down of a hit
+  // target never do. The roll has its own source, so Math.random stays with the rules.
+  const wobble=.12;
+  const lean=span=>Math.round((crypto.getRandomValues(new Uint32Array(1))[0]/2**32*2-1)*wobble*span);
   // Holes that share an edge on the 3×3 board.
   const beside=(p,q)=>Math.abs(p%3-q%3)+Math.abs((p/3|0)-(q/3|0))===1;
   // The second target of a pair takes a free hole that shares no edge with a target on the board.
@@ -371,6 +376,7 @@
     const cfg=settings[roundLevel];
     const recovered=Math.round((cfg.spawn-cfg.show)*.5);
     const warningAt=Math.round(cfg.show*.62)+recovered;
+    const late=lean(cfg.spawn);
     const hideAt=cfg.show+recovered;
     const a={i,h,m,type,species,phase:'peek',deadline:performance.now()+hideAt,warningTimer:null,hideTimer:null,nextTimer:null};
     actors.push(a);h.dataset.character=species;
@@ -378,8 +384,9 @@
     setState(a,'peek');
     a.warningTimer=later(()=>{if(actors.includes(a)&&a.phase==='peek')setState(a,'warning');},warningAt);
     a.hideTimer=later(()=>escape(a),hideAt);
-    // Unless it is hit, a target's turn ends when a single next target would rise.
-    a.nextTimer=later(()=>{leave(a);over();},cfg.spawn);
+    // Unless it is hit, a target's turn ends when a single next target would rise, give or take
+    // the wobble, but never sooner than 40 ms after it escapes: it is seen sneaking off.
+    a.nextTimer=later(()=>{leave(a);over();},Math.max(hideAt+40,cfg.spawn+late));
   }
   // Frees the hole of a target whose turn has ended.
   function leave(a){resetHole(a.h);actors=actors.filter(o=>o!==a);}
@@ -392,7 +399,8 @@
     a.h.classList.remove('up');setState(a,'sneaky');
     if(a.type!=='bad')combo=0;
     update();
-    // Its hole stays taken for what is left of its turn: 150/125/70 ms.
+    // Its hole stays taken for what is left of its turn: 150/125/70 ms, give or take the
+    // wobble, and at least 40 ms.
   }
   function hit(i){
     const a=actors.find(o=>o.i===i);
@@ -433,7 +441,8 @@
         {duration:cfg.sad,easing:'ease-in',fill:'forwards'});
       later(()=>{
         if(!actors.includes(a))return;
-        leave(a);later(over,cfg.rest);
+        // The wobble moves only the rest after the way down, and never below none.
+        leave(a);later(over,Math.max(0,cfg.rest+lean(cfg.pain+cfg.sad+cfg.rest)));
       },cfg.sad);
     },cfg.pain);
     return a.type;

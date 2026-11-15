@@ -643,6 +643,65 @@ describe('hard pairs', () => {
   }));
 });
 
+describe('rhythm wobble', () => {
+  // The lowest and highest wobble rolls: the earliest and the latest a next target may rise.
+  const EARLIEST = 0, LATEST = 1;
+  // ms. After a miss: from the missed target's rise, 12% of the interval either way, but at least
+  // 40 ms after it escapes. After a hit: from the hit, 12% of the whole wait either way, taken
+  // only from the rest after the way down.
+  const BOUNDS = {
+    easy: { miss: [1240, 1512], hit: [704, 896] },
+    normal: { miss: [910, 1114], hit: [563, 717] },
+    hard: { miss: [616, 724], hit: [400, 504] },
+  };
+
+  for (const [difficulty, { miss, hit }] of Object.entries(BOUNDS)) {
+    const t = DIFFICULTY[difficulty];
+    for (const [roll, edge, at] of [[EARLIEST, 'earliest', miss[0]], [LATEST, 'latest', miss[1]]]) {
+      test(`${difficulty}, after a miss: at the ${edge}, the next target rises at ${at} ms; the window to hit does not move`, () => play(async game => {
+        await game.wobble([roll]);
+        await game.startWith('penguin', 0, { difficulty });
+        await game.nextSpawn('fox', 3);
+        await game.advance(t.warning - 1);
+        assert.equal(await game.state(), 'peek');
+        await game.advance(1);
+        assert.equal(await game.state(), 'warning');
+        await game.advance(t.hide - t.warning);
+        assert.equal(await game.state(), 'sneaky');
+        await game.advance(at - t.hide - 1);
+        assert.deepEqual(await game.targets(), [[0, 'penguin', 'sneaky']]);
+        await game.advance(1);
+        assert.deepEqual(await game.targets(), [[3, 'fox', 'peek']]);
+      }));
+    }
+    for (const [roll, edge, after] of [[EARLIEST, 'earliest', hit[0]], [LATEST, 'latest', hit[1]]]) {
+      test(`${difficulty}, after a hit: at the ${edge}, the next target rises ${after} ms later; the way down plays in full`, () => play(async game => {
+        // The first roll is the hit target's own, taken when it rose; the second its rest.
+        await game.wobble([0.5, roll]);
+        await game.startWith('penguin', 0, { difficulty });
+        await game.nextSpawn('fox', 3);
+        await game.hitCurrent();
+        await game.advance(t.pain + t.sad - 1);
+        assert.equal(await game.state(), 'sad');
+        await game.advance(after - (t.pain + t.sad - 1) - 1);
+        assert.notEqual(await game.activeIndex(), 3);
+        await game.advance(1);
+        assert.equal(await game.activeIndex(), 3);
+      }));
+    }
+  }
+
+  test('a pair\'s second target rises 200 ms after the first, whatever the wobble', () => play(async game => {
+    // Two waves escape with no wobble; then every roll is the earliest.
+    await game.wobble([0.5, 0.5, EARLIEST, EARLIEST, EARLIEST]);
+    await game.toPair('penguin', 4, ['fox', 0]);
+    await game.advance(PAIR.delay - 1);
+    assert.equal((await game.targets()).length, 1);
+    await game.advance(1);
+    assert.deepEqual(await game.targets(), [[0, 'fox', 'peek'], [4, 'penguin', 'peek']]);
+  }));
+});
+
 describe('scoreboard updates', () => {
   test('a timer tick that changes nothing writes nothing', () => play(async game => {
     await game.startWith('penguin');
